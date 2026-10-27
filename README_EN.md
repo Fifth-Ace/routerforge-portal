@@ -56,21 +56,10 @@ Compatible with **Chrome, Edge, Opera and Firefox** through a userscript manager
 
 ## Screenshots
 
-<p align="center"><a href="docs/screenshots/portal-preview.webp"><img src="docs/screenshots/portal-preview.webp" alt="RouterForge Portal demo screenshots in Russian and English" width="100%"></a></p>
-<p align="center"><sub>Chromium screenshots of Portal v0.9.0 with a demo Keenetic profile — not a live router.</sub></p>
-
-<details>
-<summary><b>More screenshots: Russian and English settings, integration catalog</b></summary>
-
-| Russian settings | English settings |
-|:---:|:---:|
-| <a href="docs/screenshots/portal-settings-ru.webp"><img src="docs/screenshots/portal-settings-ru.webp" alt="RouterForge Portal Russian UI" width="420"></a> | <a href="docs/screenshots/portal-settings-en.webp"><img src="docs/screenshots/portal-settings-en.webp" alt="RouterForge Portal English UI" width="420"></a> |
-
-<details><summary>Integration catalog close-up</summary>
-
-![RouterForge Portal integration catalog](docs/screenshots/portal-catalog.webp)
-</details>
-</details>
+<p align="center">
+  <a href="docs/screenshots/portal-live-demo.gif"><img src="docs/screenshots/portal-live-demo.gif" alt="RouterForge Portal inside NETCRAZE/Keenetic: RouterForge Core, nfqws2 and AWG Manager" width="100%"></a>
+</p>
+<p align="center"><sub>Three real UI screenshots supplied by a user: RouterForge Core → nfqws2 → AWG Manager, displayed inside the native NETCRAZE/Keenetic WebUI. The animation loops; click it for a larger view.</sub></p>
 
 ## Features
 

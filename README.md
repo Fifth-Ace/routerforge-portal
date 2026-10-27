@@ -56,21 +56,10 @@
 
 ## Как выглядит
 
-<p align="center"><a href="docs/screenshots/portal-preview.webp"><img src="docs/screenshots/portal-preview.webp" alt="RouterForge Portal — демонстрационные экраны RU/EN" width="100%"></a></p>
-<p align="center"><sub>Скриншоты из Chromium с демонстрационным профилем Keenetic и Portal v0.9.0. Это не снимки реального роутера.</sub></p>
-
-<details>
-<summary><b>Больше скриншотов: русская и английская версии, каталог приложений</b></summary>
-
-| Настройки — RU | Settings — EN |
-|:---:|:---:|
-| <a href="docs/screenshots/portal-settings-ru.webp"><img src="docs/screenshots/portal-settings-ru.webp" alt="Центр приложений RouterForge Portal" width="420"></a> | <a href="docs/screenshots/portal-settings-en.webp"><img src="docs/screenshots/portal-settings-en.webp" alt="RouterForge Portal Application Center" width="420"></a> |
-
-<details><summary>Каталог интеграций крупнее</summary>
-
-![Каталог интеграций RouterForge Portal](docs/screenshots/portal-catalog.webp)
-</details>
-</details>
+<p align="center">
+  <a href="docs/screenshots/portal-live-demo.gif"><img src="docs/screenshots/portal-live-demo.gif" alt="RouterForge Portal внутри NETCRAZE/Keenetic: RouterForge Core, nfqws2 и AWG Manager" width="100%"></a>
+</p>
+<p align="center"><sub>Три настоящих снимка интерфейса, предоставленных пользователем: RouterForge Core → nfqws2 → AWG Manager. Приложения открыты внутри штатной панели NETCRAZE/Keenetic. Анимация циклическая; нажми на изображение, чтобы открыть крупнее.</sub></p>
 
 ## Возможности
 
