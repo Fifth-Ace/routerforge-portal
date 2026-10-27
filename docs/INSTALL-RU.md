@@ -1,8 +1,14 @@
 # RouterForge Portal — установка (v0.9.0)
 
-**До первого GitHub Release прямые ссылки на установки неактивны; после публикации используйте ссылки из README.**
+**Актуальный релиз:** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.9.0
 
-## Chrome / Edge
+## Быстрый способ — Tampermonkey / Violentmonkey (Chrome, Edge, Opera, Firefox)
+1. Установи [Tampermonkey](https://www.tampermonkey.net/) или [Violentmonkey](https://violentmonkey.github.io/).
+2. Открой [routerforge-portal.user.js](https://github.com/Fifth-Ace/routerforge-portal/releases/latest/download/routerforge-portal.user.js) и подтверди установку. Если файл просто скачался, импортируй его через панель менеджера.
+3. В последних версиях Chromium может потребоваться «Разрешить пользовательские скрипты» в настройках Tampermonkey.
+4. Открой Keenetic, авторизуйся, затем настрой интеграции в меню менеджера скриптов.
+
+## Chrome / Edge — нативная установка ZIP
 1. Скачай `routerforge-portal-chromium-v0.9.0.zip`, распакуй в постоянную папку.
 2. Открой `chrome://extensions` / `edge://extensions`, включи режим разработчика.
 3. Нажми «Загрузить распакованное расширение» и выбери папку с `manifest.json`.
