@@ -1,0 +1,348 @@
+/* RouterForge Portal 0.6.0 — standalone extension UI.
+   No router pages or external applications are styled by this file. */
+:root{
+  color-scheme:dark;
+  --bg:#0c0d10;--bg-top:#0c0d10;--panel:#14161a;--panel-lift:#1f2229;--field:#191b21;
+  --text:#f5f7fa;--muted:#8b949e;--soft:#727b86;--line:#242831;--line-soft:#303641;
+  --accent:#38bdf8;--accent-2:#38bdf8;--accent-wash:rgba(56,189,248,.08);
+  --ok:#2ea043;--ok-bg:rgba(46,160,67,.08);--danger:#f85149;--warning:#d29922;
+  --shadow:0 9px 26px rgba(0,0,0,.18);--radius:8px;
+}
+@media(prefers-color-scheme:light){
+  :root:not([data-theme="dark"]):not([data-theme="light"]){
+    color-scheme:light;--bg:#eff4f9;--bg-top:#fff;--panel:#fff;--panel-lift:#edf4fb;--field:#f9fbfe;
+    --text:#192a3a;--muted:#63788c;--soft:#7c91a5;--line:#cfdde9;--line-soft:#e3ebf3;
+    --accent:#057ebc;--accent-2:#0b9b8a;--accent-wash:rgba(5,126,188,.08);
+    --ok:#178a66;--ok-bg:rgba(23,138,102,.08);--danger:#ba4154;--warning:#a87516;
+    --shadow:0 14px 38px rgba(33,58,84,.09);
+  }
+}
+:root[data-theme="light"]{
+  color-scheme:light;--bg:#eff4f9;--bg-top:#fff;--panel:#fff;--panel-lift:#edf4fb;--field:#f9fbfe;
+  --text:#192a3a;--muted:#63788c;--soft:#7c91a5;--line:#cfdde9;--line-soft:#e3ebf3;
+  --accent:#057ebc;--accent-2:#0b9b8a;--accent-wash:rgba(5,126,188,.08);
+  --ok:#178a66;--ok-bg:rgba(23,138,102,.08);--danger:#ba4154;--warning:#a87516;
+  --shadow:0 14px 38px rgba(33,58,84,.09);
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{min-width:300px;min-height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+button,input,select{font:inherit;max-width:100%}
+button{cursor:pointer;transition:background-color .16s,color .16s,border-color .16s;min-height:34px;padding:8px 13px;border:1px solid var(--line);border-radius:5px;color:var(--text);background:var(--panel-lift);font-weight:650}
+button:hover:not(:disabled){border-color:var(--accent);background:var(--accent-wash)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled,input:disabled,select:disabled{opacity:.48;cursor:not-allowed}
+button.primary{background:var(--accent-wash);color:var(--accent);border-color:rgba(56,189,248,.32);font-weight:750}
+button.primary:hover:not(:disabled){background:var(--accent);color:#081017}
+button.secondary{background:var(--panel-lift)}
+button.mini{min-height:28px;padding:5px 10px;font-size:11px}
+button.danger{color:var(--danger)}
+button.textbutton{width:auto;text-align:left;background:transparent;border:0;padding:7px 0;font-size:12px;color:var(--accent)}
+button.textbutton:hover{background:transparent;color:var(--accent-2)}
+input:not([type="file"]),select{display:block;width:100%;padding:9px 11px;min-height:38px;border:1px solid var(--line);border-radius:8px;color:var(--text);background:var(--field)}
+input::placeholder{color:var(--soft);opacity:1}
+input[type="file"]{max-width:100%;font-size:12px}
+label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin:0 0 7px}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:31px;line-height:1.15;letter-spacing:-.85px;margin-bottom:11px}
+h2{font-size:17px;line-height:1.3;letter-spacing:-.25px;margin:3px 0 0}
+h3{font-size:14px;line-height:1.35;margin-bottom:0}
+p{margin-bottom:10px}
+.field{min-width:0;margin-bottom:16px}
+.hint,.muted,.lead{color:var(--muted)}
+.hint{font-size:11.5px;line-height:1.6;margin:9px 0 0}
+.lead{font-size:13px;line-height:1.6;margin-bottom:0}
+.kicker{font-size:10px;letter-spacing:1.28px;font-weight:780;color:var(--accent)}
+.identity{display:flex;align-items:center;gap:11px;min-width:0}
+.brand-mark{display:block;width:40px;height:40px;object-fit:contain;flex:none}
+.brand-copy{min-width:0}
+.brand-copy strong{display:block;font-size:17px;line-height:1.24;letter-spacing:-.35px}
+.brand-copy em{font-style:normal;color:var(--accent-2)}
+.brand-copy small{display:block;color:var(--soft);font-size:10px;letter-spacing:.15px;margin-top:3px}
+.version-tag{border-radius:6px;padding:4px 8px;border:1px solid var(--line);font-size:10px;font-family:Consolas,monospace;color:var(--muted);white-space:nowrap}
+.eyebrow-dot{display:inline-block;height:7px;width:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px var(--ok-bg)}
+.status-pill{color:var(--ok);font-size:10px;font-weight:750;white-space:nowrap;border-radius:6px;border:1px solid var(--line);padding:4px 7px;background:var(--ok-bg)}
+.count-chip{display:inline-flex;align-items:center;justify-content:center;min-width:24px;border-radius:7px;padding:3px 8px;color:var(--accent);background:var(--accent-wash);border:1px solid var(--line-soft);font:700 11px/1.5 Consolas,monospace}
+.notice{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:10px 12px;color:var(--muted);font-size:11.5px;overflow-wrap:anywhere}
+.notice[data-type="ok"]{color:var(--ok);background:var(--ok-bg);border-color:rgba(86,212,163,.36)}
+.notice[data-type="error"]{color:var(--danger)}
+.notice[data-type="warning"]{color:var(--warning);border-color:rgba(242,188,112,.4)}
+#message{margin-bottom:18px;padding:12px 16px;border:1px solid rgba(86,212,163,.3);border-radius:9px;background:var(--ok-bg);color:var(--text);font-size:12px}
+#message.error{border-color:var(--danger);color:var(--danger)}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+/* Browser toolbar popup */
+body.popup {width:392px;min-width:392px;max-height:610px;overflow-y:auto}
+.popup-brand{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg-top);padding:16px 18px 15px;border-bottom:1px solid var(--line)}
+.popup-brand::after{content:"";position:absolute;bottom:-1px;left:18px;width:78px;height:2px;background:linear-gradient(90deg,var(--accent-2),var(--accent))}
+.popup-body{padding:15px 17px 16px}
+.popup-eyebrow{display:flex;align-items:center;gap:8px;color:var(--soft);letter-spacing:.75px;font-size:9px;font-weight:750;margin:1px 0 11px}
+.popup-eyebrow .divider-dot{color:var(--line)}
+.popup #status{margin:0}
+.popup .diagnostic{margin-top:8px}
+.popup #diagnostics button{margin-top:9px;width:100%;font-size:11px}
+.popup section{margin-top:16px}
+.popup section .sectionhead:first-child{padding:2px 0 11px;border-bottom:1px solid var(--line-soft)}
+.popup #router-title{font-weight:700;margin:2px 0 0;font-size:16px;overflow:hidden;text-overflow:ellipsis;max-width:245px;white-space:nowrap}
+.popup .app-section-title{margin:14px 0 10px}
+.popup .app-section-title h3{font-size:13px}
+.popup .applist{display:grid;gap:7px;max-height:250px;overflow-y:auto;padding-right:3px;margin-bottom:14px}
+.popup .appbutton{display:flex;align-items:center;gap:11px;width:100%;text-align:left;min-height:51px;padding:8px 10px;background:var(--panel);border-color:var(--line-soft);font-weight:600}
+.popup .appbutton:hover{border-color:var(--accent);background:var(--panel-lift)}
+.popup .appbutton .app-icon{display:grid;place-items:center;width:32px;height:32px;min-width:32px;border-radius:8px;background:var(--accent-wash);font-size:17px;color:var(--accent)}
+.popup .appbutton .app-copy{display:flex;min-width:0;flex:1;flex-direction:column;gap:1px;line-height:1.25}
+.popup .appbutton .app-copy .app-name{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.popup .appbutton .app-copy .app-mode{font:10px/1.2 Consolas,monospace;color:var(--soft)}
+.popup .appbutton .app-arrow{color:var(--accent);font-size:14px}
+.popup .popup-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}
+.popup .popup-actions button{white-space:nowrap;font-size:11px;padding:9px 10px}
+.popup-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding:9px 17px;background:var(--bg-top)}
+.popup-footer > span{font-size:9px;color:var(--soft);white-space:nowrap}
+.popup-footer strong{color:var(--accent-2);font-weight:750}
+.popup #connect{background:var(--panel);border:1px solid var(--line-soft);border-radius:10px;padding:15px}
+.popup #connect .primary{width:100%;margin-top:10px}
+.popup #choose-box{margin:14px 0 0}
+/* Full settings page */
+.pagebar{background:var(--bg-top);border-bottom:1px solid var(--line);position:relative}
+.pagebar::after{content:"";position:absolute;bottom:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--accent-2),var(--accent),transparent);opacity:.3}
+.pagebar-inner{max-width:1320px;margin:auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.pagebar-right{display:flex;align-items:center;gap:12px}
+.edition-pill{display:flex;align-items:center;gap:9px;padding:5px 11px;background:var(--panel);border:1px solid var(--line-soft);border-radius:20px;font-size:10px;font-weight:700;color:var(--muted)}
+.dashboard {max-width:1320px;margin:0 auto;padding:30px 24px 36px}
+.page-intro{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:28px}
+.intro-text{max-width:800px}
+.page-intro .kicker{margin-bottom:10px}
+.feature-chips{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:400px}
+.feature-chips span{border:1px solid var(--line-soft);border-radius:8px;background:var(--panel);padding:7px 10px;color:var(--muted);font-size:10px;white-space:nowrap}
+.layout {display:grid;grid-template-columns:minmax(260px,315px) minmax(0,1fr);align-items:start;gap:18px}
+.sidecol,.maincol{display:grid;gap:16px;align-content:start;min-width:0}
+.panel {background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 21px;min-width:0;box-shadow:var(--shadow)}
+.panel-title{display:flex;justify-content:space-between;align-items:center;gap:13px;margin:0 0 19px;padding-bottom:17px;border-bottom:1px solid var(--line-soft)}
+.panel-title .kicker{font-size:9px}
+.panel-icon{display:grid;place-items:center;background:var(--accent-wash);border:1px solid var(--line-soft);border-radius:9px;color:var(--accent);width:35px;height:35px;font-size:19px;flex:none}
+.actions2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:13px}
+.actions2 button{font-size:11px}
+.import-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:15px 0 0}
+.import-actions button{font-size:11px;padding:8px 5px}
+.warning-text{border-top:1px solid var(--line-soft);padding-top:12px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.side-caption{font-size:10.5px;line-height:1.85;color:var(--soft);padding:1px 7px}
+.side-caption span{color:var(--accent)}
+.title-row{margin-bottom:14px}
+.app-list .entry{display:flex;align-items:center;gap:15px;justify-content:space-between;padding:13px 14px;border-radius:10px;background:var(--field);border:1px solid var(--line-soft);margin-top:8px}
+.entry > div:first-child{min-width:0;flex:1}
+.entry .name{font-size:13px;font-weight:750;color:var(--text);overflow-wrap:anywhere}
+.entry .meta{color:var(--soft);font:11px/1.6 Consolas,monospace;margin-top:3px;overflow-wrap:anywhere;word-break:break-word}
+.entry .actions{display:flex;gap:8px;flex:none}
+.entry .actions button{font-size:11px}
+.app-list > .hint{border:1px dashed var(--line);border-radius:10px;padding:22px 15px;text-align:center;background:var(--field);margin:0}
+.formrow{display:grid;grid-template-columns:minmax(0,1fr) 175px;gap:14px}
+.editor-panel .form-footer{display:flex;flex-wrap:wrap;gap:9px;align-items:center;border-top:1px solid var(--line-soft);padding-top:16px;margin-top:18px}
+.page-footer{display:flex;justify-content:space-between;gap:15px;font-size:10px;color:var(--soft);padding:25px 0 0}
+@media(max-width:1050px){.page-intro{display:block}.feature-chips{justify-content:flex-start;max-width:none;margin-top:16px}}
+@media(max-width:790px){.dashboard{padding:22px 15px 32px}.pagebar-inner{padding:12px 15px}.layout{grid-template-columns:minmax(0,1fr)}.sidecol{grid-template-columns:repeat(2,minmax(0,1fr))}.side-caption{grid-column:1/-1}.page-footer{flex-wrap:wrap}}
+@media(max-width:580px){.sidecol{grid-template-columns:minmax(0,1fr)}.formrow{grid-template-columns:1fr;gap:0}.app-list .entry{flex-wrap:wrap}.entry .actions{width:100%}.entry .actions button{flex:1}.pagebar .brand-copy small{display:none}.pagebar .edition-pill{display:none}}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+
+a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}
+
+/* Same design language as RouterForge Core, based on app.css tokens. */
+.ecosystem-links{display:flex;flex-wrap:wrap;gap:7px}
+.ecosystem-links a{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:5px;background:var(--panel);padding:6px 9px;color:var(--accent);font-size:11px;font-weight:600;text-decoration:none}
+.ecosystem-links a:hover{border-color:var(--accent);background:var(--accent-wash);text-decoration:none}
+.ecosystem-panel{border-top:1px solid var(--line-soft);padding-top:13px;margin-top:12px}
+.ecosystem-panel .kicker{display:block;margin-bottom:9px}
+.popup-footer{align-items:center}
+.popup-footer .ecosystem-links a{padding:5px 7px;font-size:10px}
+.brand-mark{image-rendering:auto;border:1px solid rgba(56,189,248,.24);border-radius:7px;background:var(--panel);padding:4px}
+:root{--font-sans:'Inter','Segoe UI Variable Text','Segoe UI',sans-serif}
+body{font-family:var(--font-sans)}
+
+/* P5: RouterForge Core visual contract (components/core/frontend/src/app.css).
+   Original tokens: #0c0d10 / #14161a / #191b21 / #1f2229,
+   border #242831, text #f5f7fa, muted #8b949e, accent #38bdf8.
+   These styles apply ONLY to extension popup/options; never to Keenetic or third-party UIs. */
+:root:not([data-theme="light"]){--bg:#0c0d10;--bg-top:#0c0d10;--panel:#14161a;--panel-lift:#1f2229;--field:#191b21;--line:#242831;--line-soft:#303641;--text:#f5f7fa;--muted:#8b949e;--soft:#727b86;--accent:#38bdf8;--accent-2:#38bdf8;--radius:8px;--shadow:none;--font-sans:'Inter','Segoe UI Variable Text','Segoe UI',sans-serif;--font-mono:'Roboto Mono','Cascadia Mono',Consolas,monospace}
+body{font:13px/1.5 var(--font-sans)}
+button{min-height:30px;border-radius:5px;padding:6px 11px;font-size:11px;font-weight:500;transition:.12s ease}
+button.primary{font-weight:600}
+button.mini{min-height:28px;padding:4px 8px;font-size:10px}
+input:not([type="file"]),select{min-height:30px;padding:5px 9px;border-radius:5px;font-size:11px}
+label{font-size:10px;font-weight:600;margin-bottom:5px}
+h1{font-size:20px;line-height:1.2;letter-spacing:0;margin:0 0 5px;font-weight:650}
+h2{font-size:12px;letter-spacing:0;font-weight:600;margin:2px 0 0}
+h3{font-size:12px;font-weight:600}
+.kicker{font-size:9px;letter-spacing:.06em;font-weight:600}
+.hint{font-size:10px;line-height:1.5}
+.lead{font-size:12px;line-height:1.45}
+.field{margin-bottom:12px}
+.pagebar-inner{padding:8px 20px;min-height:48px}
+.dashboard{max-width:1440px;padding:22px 20px 28px}
+.page-intro{margin-bottom:18px;align-items:center}
+.layout{grid-template-columns:minmax(250px,290px) minmax(0,1fr);gap:14px}
+.sidecol,.maincol{gap:14px}
+.panel{padding:15px 16px;border-radius:8px}
+.panel-title{margin-bottom:13px;padding-bottom:11px}
+.panel-icon{width:29px;height:29px;border-radius:5px;font-size:15px}
+.brand-mark{width:32px;height:32px;border-radius:5px;padding:3px}
+.brand-copy strong{font-size:13px;letter-spacing:0}
+.brand-copy small{font-size:9px}
+.version-tag{padding:2px 6px;border-radius:4px;font:600 9px/1.4 var(--font-mono)}
+.feature-chips span{border-radius:4px;padding:5px 8px;font-size:9px}
+.edition-pill{border-radius:4px}
+.app-list .entry{padding:9px 11px;margin-top:7px;border-radius:6px}
+.entry .name{font-size:11px;font-weight:600}
+.entry .meta{font:9px/1.6 var(--font-mono)}
+body.popup{width:392px;min-width:392px}
+.popup-brand{padding:11px 14px}
+.popup-body{padding:11px 13px}
+.popup-footer{padding:8px 13px}
+.popup #router-title{font-size:13px}
+.popup .appbutton{min-height:45px;padding:7px 9px;border-radius:5px}
+.popup .appbutton .app-icon{width:29px;height:29px;min-width:29px;border-radius:5px;font-size:15px}
+.popup .appbutton .app-copy .app-name{font-size:11px}
+.popup .appbutton .app-copy .app-mode{font:9px/1.2 var(--font-mono)}
+.notice{padding:8px 10px;border-radius:5px;font-size:10px}
+.count-chip{border-radius:4px;font:600 10px/1.4 var(--font-mono)}
+.status-pill{border-radius:4px;font-weight:600;font-size:9px}
+.ecosystem-links a{padding:5px 8px;font-size:10px}
+/* Catalog cards: same dashboard geometry as RouterForge Core panels. */
+.catalog-intro{margin:0 0 14px}
+.catalog-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.catalog-card{min-width:0;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.catalog-card.catalog-active{border-color:rgba(56,189,248,.45);background:color-mix(in srgb,var(--accent) 3%,var(--bg))}
+.catalog-top{display:flex;align-items:center;gap:9px;min-height:29px}
+.catalog-symbol{display:grid;place-items:center;flex:none;width:29px;height:29px;border:1px solid var(--line-soft);border-radius:5px;background:var(--panel);color:var(--accent);font-size:14px}
+.catalog-details{min-width:0;flex:1}
+.catalog-name{font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.catalog-category{font-size:9px;color:var(--soft)}
+.catalog-description{min-height:27px;margin:7px 0 10px;color:var(--muted);font-size:10px;line-height:1.35}
+.catalog-fields{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(62px,.7fr) minmax(68px,.8fr) minmax(92px,1fr);gap:7px}
+.catalog-field{display:block;min-width:0;margin:0}
+.catalog-label{display:block;margin:0 0 4px;color:var(--soft);font-size:9px;font-weight:500}
+.catalog-fields input,.catalog-fields select{width:100%;min-width:0;height:28px;min-height:28px;padding:3px 6px;font:10px/1.2 var(--font-mono)}
+.catalog-fields select{font-family:var(--font-sans)}
+.catalog-foot{margin-top:10px;padding-top:9px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.catalog-hint{min-width:0;color:var(--soft);font-size:9px}
+.catalog-toggle{position:relative;width:34px;height:20px;flex:none;cursor:pointer;margin:0}
+.catalog-toggle input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.catalog-switch-track{display:block;width:34px;height:20px;background:var(--line-soft);border:1px solid var(--line);border-radius:999px;transition:.12s}
+.catalog-switch-track::after{content:'';display:block;position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#d8dfe7;transition:.12s}
+.catalog-toggle input:checked+.catalog-switch-track{background:rgba(56,189,248,.22);border-color:var(--accent)}
+.catalog-toggle input:checked+.catalog-switch-track::after{left:17px;background:var(--accent)}
+.catalog-toggle input:focus-visible+.catalog-switch-track{outline:2px solid var(--accent);outline-offset:2px}
+.catalog-save{white-space:nowrap}
+@media(max-width:1120px){.catalog-grid{grid-template-columns:1fr}}
+@media(max-width:790px){.layout{grid-template-columns:1fr}.dashboard{padding:17px 14px}.sidecol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.sidecol{grid-template-columns:1fr}.catalog-fields{grid-template-columns:minmax(0,1fr) 90px}.catalog-description{min-height:0}}
+
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]):not([data-theme="light"]){--bg:#eff4f9;--bg-top:#fff;--panel:#fff;--panel-lift:#edf4fb;--field:#f9fbfe;--line:#cfdde9;--line-soft:#e3ebf3;--text:#192a3a;--muted:#63788c;--soft:#7c91a5;--accent:#057ebc;--accent-2:#057ebc}}
+
+/* P6 accessibility/legibility: larger controls and generous layout at 1080p and QHD.
+   Maintains the exact RouterForge Core colors, without styling Keenetic or hosted UIs. */
+body{font:15px/1.55 var(--font-sans)}
+h1{font-size:27px;line-height:1.2;letter-spacing:-.25px}
+h2{font-size:17px;line-height:1.35}
+h3{font-size:15px}
+.kicker{font-size:11px;letter-spacing:.07em}
+.hint{font-size:13px;line-height:1.55}
+.lead{font-size:15px;line-height:1.5}
+label{font-size:13px;margin-bottom:7px}
+.field{margin-bottom:15px}
+button{min-height:40px;padding:9px 13px;font-size:14px;font-weight:550}
+button.mini{min-height:36px;padding:7px 11px;font-size:13px}
+input:not([type=file]),select{min-height:40px;padding:8px 11px;font-size:14px}
+.pagebar-inner{max-width:1920px;padding:14px 30px;min-height:66px}
+.dashboard{max-width:1920px;padding:30px 30px 40px}
+.layout{grid-template-columns:minmax(310px,380px) minmax(0,1fr);gap:22px}
+.sidecol,.maincol{gap:18px}
+.page-intro{margin-bottom:25px}
+.panel{padding:22px 24px;border-radius:9px}
+.panel-title{margin-bottom:20px;padding-bottom:15px}
+.panel-title .kicker{font-size:11px}
+.panel-icon{height:36px;width:36px;font-size:18px}
+.brand-mark{width:40px;height:40px}
+.brand-copy strong{font-size:17px}
+.brand-copy small{font-size:11px}
+.version-tag{font:600 12px/1.4 var(--font-mono);padding:5px 8px}
+.edition-pill{font-size:12px;padding:7px 12px}
+.feature-chips span{font-size:12px;padding:8px 11px}
+.actions2 button,.import-actions button{font-size:13px}
+.app-list .entry{padding:13px 15px;margin-top:9px}
+.entry .name{font-size:14px}
+.entry .meta{font:12px/1.5 var(--font-mono)}
+.entry .actions button{font-size:13px}
+.catalog-intro{margin-bottom:17px}
+.catalog-grid{gap:14px}
+.catalog-card{padding:17px;border-radius:9px}
+.catalog-top{gap:12px;min-height:40px}
+.catalog-symbol{width:40px;height:40px;font-size:21px;border-radius:7px}
+.catalog-name{font-size:15px}
+.catalog-category{font-size:12px}
+.catalog-description{min-height:37px;margin:10px 0 14px;font-size:13px;line-height:1.45}
+.catalog-fields{grid-template-columns:minmax(110px,1.7fr) minmax(68px,.7fr) minmax(80px,.85fr) minmax(100px,1fr);gap:10px}
+.catalog-label{font-size:12px;margin-bottom:6px}
+.catalog-fields input,.catalog-fields select{height:40px;min-height:40px;padding:7px 9px;font-size:13px}
+.catalog-foot{margin-top:14px;padding-top:13px}
+.catalog-hint{font-size:12px}
+.catalog-toggle,.catalog-switch-track{width:43px;height:25px}
+.catalog-switch-track::after{width:18px;height:18px;left:3px;top:3px}
+.catalog-toggle input:checked+.catalog-switch-track::after{left:20px}
+.count-chip{font:600 12px/1.5 var(--font-mono);padding:4px 9px}
+.side-caption,.page-footer{font-size:12px}
+.ecosystem-links a{font-size:13px;padding:8px 11px}
+.language-control{display:flex;align-items:center;gap:8px;margin:0;font-size:12px;color:var(--muted)}
+.language-control select{min-height:34px;width:auto;min-width:90px;padding:5px 24px 5px 9px;border-radius:5px;font-size:13px;color:var(--accent);font-weight:650}
+.popup-head-actions{display:flex;align-items:center;gap:9px}
+body.popup{width:434px;min-width:434px;max-height:720px}
+.popup-brand{padding:16px 18px}
+.popup-body{padding:16px 18px}
+.popup-footer{padding:12px 18px}
+.popup .language-control select{min-width:60px;font-size:12px;height:32px;min-height:32px}
+.popup .popup-eyebrow{font-size:11px}
+.popup #router-title{font-size:16px}
+.popup .app-section-title h3{font-size:15px}
+.popup .appbutton{min-height:57px;padding:9px 11px}
+.popup .appbutton .app-icon{height:36px;width:36px;min-width:36px;font-size:19px}
+.popup .appbutton .app-copy .app-name{font-size:14px}
+.popup .appbutton .app-copy .app-mode{font:11px/1.3 var(--font-mono)}
+.popup .popup-actions button{font-size:13px;white-space:normal}
+.popup-footer .ecosystem-links a{font-size:12px;padding:6px 7px}
+.notice{font-size:13px;padding:11px 13px}
+.status-pill{font-size:12px}
+@media(min-width:2250px){body.options-page{font-size:16px}.dashboard{max-width:2020px}.pagebar-inner{max-width:2020px}.catalog-card{padding:20px}.catalog-fields input,.catalog-fields select{font-size:14px}}
+@media(max-width:1300px){.catalog-grid{grid-template-columns:1fr}.catalog-description{min-height:0}}
+@media(max-width:900px){.dashboard{padding:20px 18px}.layout{grid-template-columns:1fr}.sidecol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.sidecol{grid-template-columns:1fr}.catalog-fields{grid-template-columns:minmax(0,1fr) minmax(95px,.65fr)}.pagebar-inner{padding:11px 14px}.dashboard{padding:18px 12px}.panel{padding:17px}.feature-chips{display:none}}
+/* Larger screens must enlarge the content itself, not only the canvas. */
+body.options-page{font-size:16px}
+.catalog-name{font-size:16px}
+.catalog-category{font-size:13px}
+.catalog-description{font-size:14px}
+.catalog-label{font-size:13px}
+.catalog-fields input,.catalog-fields select{font-size:14px}
+@media(min-width:2200px){
+  body.options-page{font-size:18px}
+  h1{font-size:31px}h2{font-size:19px}
+  .hint{font-size:14px}.lead{font-size:17px}
+  label{font-size:14px}
+  button{font-size:15px}button.mini{font-size:14px}
+  input:not([type=file]),select{font-size:15px;min-height:44px}
+  .catalog-name{font-size:17px}
+  .catalog-category,.catalog-hint{font-size:14px}
+  .catalog-description{font-size:15px;min-height:40px}
+  .catalog-label{font-size:14px}
+  .catalog-fields input,.catalog-fields select{height:44px;min-height:44px;font-size:15px}
+  .panel{padding:24px 26px}
+  .brand-copy strong{font-size:18px}
+  .app-list .entry .name{font-size:16px}
+}
+
+/* Read-only updater section; matches RouterForge Core styling */
+.update-versions{display:flex;gap:14px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);margin-bottom:12px;font:12px/1.6 var(--font-mono)}
+.update-versions b{color:var(--accent);font-weight:650;margin-left:6px}
+.rf-update-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 12px;border:1px solid rgba(56,189,248,.32);border-radius:5px;background:rgba(56,189,248,.08);color:var(--accent);text-decoration:none;font-size:13px}
+.rf-update-link:hover{background:rgba(56,189,248,.16)}
+.rf-update-link[hidden]{display:none!important}
+.rf-update-hash{font-family:var(--font-mono);overflow-wrap:anywhere}
+.popup-footer{flex-wrap:wrap;gap:7px}

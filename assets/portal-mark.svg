@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="RouterForge Portal">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#39dbcc"/><stop offset="1" stop-color="#34a8ff"/></linearGradient></defs>
+<rect width="128" height="128" rx="30" fill="#0c1625"/>
+<rect x="1.5" y="1.5" width="125" height="125" rx="28.5" fill="none" stroke="#29425b" stroke-width="3"/>
+<path d="M38 87V41h31c16 0 25 7 25 20 0 11-7 18-21 20H53v6" fill="none" stroke="url(#g)" stroke-width="13" stroke-linecap="square" stroke-linejoin="round"/>
+<path d="M54 59h22" stroke="#9dfdf0" stroke-width="7" stroke-linecap="round"/>
+<circle cx="92" cy="90" r="12" fill="#0c1625" stroke="#36b9ff" stroke-width="5"/>
+</svg>

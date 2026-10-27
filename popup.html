@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RouterForge Portal</title><link rel="stylesheet" href="ui.css"></head>
+<body class="popup">
+  <header class="brand popup-brand">
+    <div class="identity">
+      <img src="assets/routerforge-brand.png" alt="" class="brand-mark">
+      <div class="brand-copy"><strong>RouterForge <em>Portal</em></strong><small>Единый центр приложений</small></div>
+    </div>
+    <div class="popup-head-actions"><label class="language-control" for="popup-language"><select id="popup-language" aria-label="Язык интерфейса"><option value="ru">RU</option><option value="en">EN</option></select></label><span class="version-tag" id="popup-version">v0.9.0</span></div>
+  </header>
+  <div class="popup-body">
+    <div class="popup-eyebrow"><span class="eyebrow-dot"></span><span>KEENETIC / NETCRAZE</span><span class="divider-dot">·</span><span>WEBUI INTEGRATION</span></div>
+    <div id="status" class="notice" role="status">Проверка вкладки…</div>
+    <div id="diagnostics" class="notice diagnostic" hidden><div id="bridge-status"></div><button id="repair-btn" class="secondary" hidden>↻ Обновить интерфейс этой вкладки</button></div>
+    <section id="connect" class="connect-card" hidden>
+      <h3>Подключить роутер</h3>
+      <p class="hint">Создадим локальный профиль и добавим Portal в интерфейс устройства.</p>
+      <label for="router-name">Название устройства</label>
+      <input id="router-name" maxlength="70" placeholder="Мой Keenetic">
+      <button id="connect-btn" class="primary">＋ Подключить этот роутер</button>
+      <p class="hint">Разрешение браузера запрашивается только для выбранного адреса.</p>
+    </section>
+    <section id="connected" hidden>
+      <div class="sectionhead"><div><span class="kicker">ПОДКЛЮЧЕНОЕ УСТРОЙСТВО</span><h3 id="router-title">Мой Keenetic</h3></div><span class="status-pill">● Активно</span></div>
+      <div id="choose-box" class="field" hidden><label for="choose-router">Выбрать устройство</label><select id="choose-router"></select></div>
+      <div class="sectionhead app-section-title"><h3>Приложения</h3><span id="popup-appcount" class="count-chip">0</span></div>
+      <div id="apps" class="applist"></div>
+      <div class="popup-actions"><button id="add-btn" class="primary">＋ Управление приложениями</button><button id="open-router-btn" class="secondary">↗ Открыть Keenetic</button></div>
+    </section>
+  </div>
+  <footer class="popup-footer"><button id="settings-btn" class="textbutton">⚙ Настройки Portal</button><button id="updates-btn" class="textbutton" type="button">↻ Обновления</button><nav class="ecosystem-links" aria-label="Экосистема RouterForge"><a href="https://github.com/Fifth-Ace/routerforge" target="_blank" rel="noopener noreferrer" title="RouterForge на GitHub">⌘ RouterForge</a><a href="https://t.me/RouterForge" target="_blank" rel="noopener noreferrer" title="Сообщество RouterForge">✈ Telegram</a></nav></footer>
+<script type="module" src="popup.js"></script>
+</body></html>

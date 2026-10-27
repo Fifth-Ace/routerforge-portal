@@ -1,0 +1,35 @@
+name: CI (four browsers)
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4 pinned
+        with:
+          persist-credentials: false
+      - name: Syntax, tests, security
+        run: |
+          set -euo pipefail
+          npm run lint
+          npm test
+          python3 tools/security_gate.py
+      - name: Build all channels twice, compare hashes
+        run: |
+          set -euo pipefail
+          python3 tools/build_channels.py
+          python3 tests/test_channels.py
+          node --check release/routerforge-portal.user.js
+          sha256sum release/* > /tmp/first-packages.sha256
+          python3 tools/build_channels.py
+          python3 tests/test_channels.py
+          sha256sum release/* > /tmp/second-packages.sha256
+          diff -u /tmp/first-packages.sha256 /tmp/second-packages.sha256
+          echo 'ALL_CHANNELS_REPRODUCIBLE: PASS'

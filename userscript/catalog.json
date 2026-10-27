@@ -1,0 +1,58 @@
+[
+  {
+    "id": "routerforge",
+    "name": "RouterForge Core",
+    "icon": "▣",
+    "category": "RouterForge",
+    "port": 2233,
+    "path": "/"
+  },
+  {
+    "id": "awg-manager",
+    "name": "AWG Manager",
+    "icon": "🌐",
+    "category": "Сеть и VPN",
+    "port": 2222,
+    "path": "/"
+  },
+  {
+    "id": "nfqws-web",
+    "name": "nfqws-keenetic-web",
+    "icon": "🛡",
+    "category": "Сеть и VPN",
+    "port": 90,
+    "path": "/"
+  },
+  {
+    "id": "nfqws2-ui",
+    "name": "nfqws2-ui",
+    "icon": "⚡",
+    "category": "Сеть и VPN",
+    "port": 8090,
+    "path": "/"
+  },
+  {
+    "id": "neofit",
+    "name": "NeoFit",
+    "icon": "🔧",
+    "category": "Сеть и VPN",
+    "port": 92,
+    "path": "/"
+  },
+  {
+    "id": "adguard-home",
+    "name": "AdGuard Home",
+    "icon": "🛡",
+    "category": "DNS и защита",
+    "port": 3000,
+    "path": "/"
+  },
+  {
+    "id": "xkeen-ui",
+    "name": "XKeen UI",
+    "icon": "⚙",
+    "category": "Сеть и VPN",
+    "port": 8089,
+    "path": "/"
+  }
+]

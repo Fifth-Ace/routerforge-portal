@@ -1,0 +1,11 @@
+{
+  "name": "routerforge-portal",
+  "private": true,
+  "version": "0.9.0",
+  "type": "module",
+  "description": "RouterForge Portal browser extension for Keenetic WebUI",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "lint": "node --check background.js && node --check popup.js && node --check options.js && node --check content/bridge.js && node --check shared/model.js && node --check shared/catalog.js && node --check shared/i18n.js && node --check shared/updates.js"
+  }
+}
