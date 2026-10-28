@@ -1,8 +1,8 @@
 'use strict';
-// Built from RouterForge Portal v0.10.1 source. All app state is stored in Tampermonkey.
+// Built from RouterForge Portal v0.10.2 source. All app state is stored in Tampermonkey.
 (() => {
   const KEY='kbridgeState', LANGUAGE_KEY='rfPortalLanguage';
-  const VERSION='0.10.1';
+  const VERSION='0.10.2';
   const BRIDGE_CSS=__BRIDGE_CSS__;
   const ORIGINAL_BRAND=__BRAND_URI__;
   const CATALOG=__CATALOG__;
@@ -61,7 +61,7 @@
   };
   // Match the tiny runtime interface used by existing WebUI bridge; no privileged browser APIs granted.
   const chrome={storage:{local:store,onChanged:{addListener:fn=>callbacks.push(fn)}},runtime:{onMessage:{addListener:()=>{}},sendMessage:async message=>{
-    if(message?.type==='OPEN_OPTIONS'){openSettings();return {ok:true};}
+    if(message?.type==='OPEN_OPTIONS'){openSettings(true);return {ok:true};}
     if(message?.type==='OPEN_APP'){
       const app=current.routers[location.origin]?.apps?.find(a=>a.id===message.id&&a.enabled!==false);
       if(!app)return {ok:false,error:'Unknown app'};
@@ -87,6 +87,43 @@ __BRIDGE_JS__
     .message{padding:8px 12px;background:#0c271c;border:1px solid #25593b;border-radius:6px;color:#a7e6ba;margin:12px 22px 0}.no{background:#31151a;border-color:#8d3742;color:#ffb6bc}
     .smartRow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.smartRow select{max-width:150px}.smartRow button{padding:5px 9px}.smartTitle{font-weight:700;font-size:10px;color:var(--accent);letter-spacing:.06em;margin:12px 0 5px}.smartSearch{width:100%;margin:10px 0}.editor{display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px}.editor label:last-of-type{grid-column:1/-1}.full{grid-column:1/-1}
     @media(max-width:900px){main{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.card .four{grid-template-columns:1fr 1fr}}
+
+    /* P17: current native Portal visual scale, contained to the userscript ShadowRoot. */
+    :host{--bg:#0c0d10;--panel:#14161a;--field:#191b21;--border:#303641;--accent:#38bdf8;--txt:#f5f7fa;--muted:#a4aebb;font:15px/1.55 Inter,'Segoe UI',Arial,sans-serif}
+    #overlay{padding:18px;backdrop-filter:blur(3px);align-items:center}
+    #shell{width:min(1280px,calc(100vw - 36px));max-height:calc(100vh - 36px);display:flex;flex-direction:column;border-radius:10px;box-shadow:0 24px 90px #000c;overflow:hidden}
+    header{flex:none;padding:17px 24px;background:#101216;min-height:78px}
+    header strong{font-size:20px;letter-spacing:-.2px}header small{font-size:12px}
+    header .mark{height:42px;width:42px}header button{width:40px;height:40px}
+    main{flex:1;min-height:0;overflow-y:auto;grid-template-columns:minmax(270px,330px) minmax(0,1fr);gap:18px;padding:22px 24px 28px;align-items:start}
+    aside,.stack{gap:16px}.panel{padding:20px;border-radius:9px;background:var(--panel);border-color:var(--border)}
+    h2{font-size:17px;line-height:1.4;margin-bottom:14px}h3{font-size:15px}
+    .kicker{font-size:11px;letter-spacing:.07em;margin-bottom:7px;font-weight:750}
+    label{font-size:13px;gap:7px;margin-bottom:12px}
+    input,select{min-height:40px;height:40px;padding:8px 11px;font-size:14px}
+    button,.button{min-height:38px;padding:8px 12px;font-size:13px;font-weight:550;border-radius:6px}
+    .primary{background:#38bdf8;color:#08131d;font-weight:700}
+    .actions{gap:9px;margin-top:12px}.hint{font-size:12px;line-height:1.5}
+    .smartSearch{max-width:520px;margin:8px 0 18px}
+    .appRow{display:grid;grid-template-columns:minmax(160px,1fr) auto;gap:12px;align-items:center;margin-bottom:9px;padding:14px 15px;border-radius:8px;background:#101317}
+    .appRow b{font-size:14px}.appRow small{font-size:12px;line-height:1.6;color:#91a0af}
+    .smartRow{justify-content:flex-end;gap:6px;max-width:350px}
+    .smartRow select{min-height:36px;height:36px;min-width:125px;max-width:145px;font-size:12px}
+    .smartTitle{font-size:11px;margin:19px 0 9px;padding:0 3px}
+    .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+    .card{border-radius:8px;padding:15px;background:#101317}
+    .cardHead{margin-bottom:0;min-height:34px;gap:11px}.cardHead h3{font-size:14px}
+    .catalog-advanced{margin-top:12px;border:1px solid #303641;border-radius:7px;padding:0;background:#171b22}
+    .catalog-summary{cursor:pointer;list-style-position:inside;padding:11px 12px;color:var(--accent);font-weight:600;font-size:12px}
+    .catalog-details[open]>.catalog-summary{border-bottom:1px solid #303641}
+    .catalog-details .four{padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .catalog-details label{font-size:12px;margin:0}.catalog-details input,.catalog-details select{width:100%;height:38px;min-height:38px;font-size:13px}
+    .catalog-details footer{padding:3px 12px 12px}
+    .message{margin:15px 24px 0;padding:12px 14px;font-size:13px}
+    .editor{grid-template-columns:1fr 1fr;gap:10px}.editor .full{grid-column:1/-1}
+    @media(max-width:1100px){.grid{grid-template-columns:1fr}.appRow{grid-template-columns:1fr}.smartRow{justify-content:start;max-width:none}}
+    @media(max-width:820px){main{grid-template-columns:1fr;padding:15px}.grid{grid-template-columns:1fr}aside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:560px){#overlay{padding:4px}#shell{width:100%;max-height:99vh}header{padding:10px 13px}header strong{font-size:16px}main{padding:12px}aside{display:flex;flex-direction:column}.panel{padding:14px}.grid{grid-template-columns:1fr}.editor{grid-template-columns:1fr}}
   `;
   function node(tag,cls,content){const e=document.createElement(tag);if(cls)e.className=cls;if(content!==undefined)e.textContent=content;return e;}
   function chooseLink(href,label){const a=node('a','link',label);a.href=href;a.target='_blank';a.rel='noopener noreferrer';return a;}
@@ -96,7 +133,14 @@ __BRIDGE_JS__
   function changeState(next,msg){return store.set({[KEY]:next}).then(()=>{saveNotice(msg||L('saved'));renderSettings();});}
   function validHost(str){if(!str||/[\\/@?#\s]/.test(str)||str.includes('@'))throw Error('Invalid host');const u=new URL('http://'+str+'/');if(u.hostname.toLowerCase()!==str.toLowerCase())throw Error('Invalid host');return u.hostname;}
   function makePresetUrl(host,port,scheme){if(!/^\d{1,5}$/.test(String(port))||+port<1||+port>65535)throw Error('Invalid port');return normalizeUrl(scheme+'//'+validHost(host)+':'+port+'/');}
-  function openSettings(){if(shadowHost?.isConnected){shadowHost.remove();shadowHost=null;shadow=null;return;}if(!document.body)return;
+  function openSettings(advanced=false){
+    // P17: same native settings surface used by the Chromium bridge.
+    // Full standalone dialog is only for first setup, backups and advanced catalog.
+    if(advanced!==true && current.routers[location.origin]){
+      const nativeSettings=document.querySelector('#kbridge-entry .kb-nav-settings');
+      if(nativeSettings){if(shadowHost?.isConnected){shadowHost.remove();shadowHost=null;shadow=null;}nativeSettings.click();return;}
+    }
+    if(shadowHost?.isConnected){shadowHost.remove();shadowHost=null;shadow=null;return;}if(!document.body)return;
     shadowHost=node('div');shadowHost.id='rf-portal-userscript-settings-host';shadowHost.style.cssText='position:fixed;inset:0;z-index:2147483646';shadow=shadowHost.attachShadow({mode:'closed'});const css=node('style');css.textContent=style;shadow.append(css,node('div'));document.body.append(shadowHost);renderSettings();}
   function renderSettings(){if(!shadow)return;const root=shadow.querySelector('div');root.replaceChildren();root.id='overlay';root.addEventListener('click',e=>{if(e.target===root){shadowHost?.remove();shadowHost=null;shadow=null;}});
     const shell=node('div');shell.id='shell';root.append(shell);
@@ -109,17 +153,21 @@ __BRIDGE_JS__
     if(!current.routers[chosen])chosen=Object.keys(current.routers)[0]||location.origin;select.value=chosen;
     select.onchange=()=>{chosen=select.value;renderSettings();};
     const profile=current.routers[chosen],actions=node('div','actions');profBox.append(actions);
-    const connect=node('button','primary',L('connect'));connect.onclick=async()=>{try{const s=JSONclone(current);const key=location.origin;if(!s.routers[key])s.routers[key]={label:new URL(key).host,apps:[],theme:'auto'};chosen=key;await changeState(s);}catch(e){saveNotice(e.message,true);}};actions.append(connect);
+    const connect=node('button','primary',L('connect'));connect.onclick=async()=>{try{const s=JSONclone(current);const key=location.origin;if(!s.routers[key])s.routers[key]={label:new URL(key).host,apps:[],theme:'auto'};chosen=key;await changeState(s);
+      // Profile storage callback mounts the bridge; no page reload or router change.
+      const nativeSettings=document.querySelector('#kbridge-entry .kb-nav-settings');
+      if(nativeSettings){shadowHost?.remove();shadowHost=null;shadow=null;nativeSettings.click();}
+    }catch(e){saveNotice(e.message,true);}};actions.append(connect);
     if(profile){const del=node('button','danger',L('disconnect'));del.onclick=async()=>{if(!confirm(L('confirmDelete')))return;const s=JSONclone(current);delete s.routers[chosen];chosen=location.origin;await changeState(s);};actions.append(del);}
-    const config=node('section','panel');config.append(node('div','kicker','Preferences'),node('h2','',L('settings')));sidebar.append(config);
+    const config=node('section','panel');config.append(node('div','kicker','Оформление / Appearance'),node('h2','',L('settings')));sidebar.append(config);
     const languageSelect=field(config,L('language'),language,'select',[['ru','Русский'],['en','English']]);languageSelect.onchange=async()=>{await store.set({[LANGUAGE_KEY]:languageSelect.value});renderSettings();};
     const themeSelect=field(config,L('theme'),profile?.theme||'auto','select',[['auto',L('auto')],['dark',L('dark')],['light',L('light')]]);themeSelect.disabled=!profile;themeSelect.onchange=async()=>{const s=JSONclone(current);s.routers[chosen].theme=themeSelect.value;await changeState(s);};
-    const backups=node('section','panel');backups.append(node('div','kicker','Configuration'),node('h2','','JSON / Backup'));const backActions=node('div','actions');backups.append(backActions);sidebar.append(backups);
+    const backups=node('section','panel');backups.append(node('div','kicker','Профили / Backup'),node('h2','','JSON / Backup'));const backActions=node('div','actions');backups.append(backActions);sidebar.append(backups);
     const exportBtn=node('button','',L('export'));exportBtn.onclick=downloadConfig;backActions.append(exportBtn);
     const importBtn=node('button','',L('import'));importBtn.onclick=()=>input.click();backActions.append(importBtn);
     const input=node('input');input.type='file';input.accept='.json,application/json';input.style.display='none';input.onchange=async()=>{try{const file=input.files?.[0];input.value='';if(!file)return;if(file.size>200000)throw Error('File too large');const parsed=cleanState(JSON.parse(await file.text()));if(!confirm(L('confirmImport')))return;chosen=location.origin;await changeState(parsed,L('imported'));}catch(e){saveNotice(e.message,true);}};backups.append(input);
     const eco=node('section','panel');eco.append(node('div','kicker',L('ecosystem')));eco.append(chooseLink('https://github.com/Fifth-Ace/routerforge',L('source')),node('div'));eco.append(chooseLink('https://t.me/RouterForge',L('community')));eco.append(node('p','hint',L('status')));sidebar.append(eco);
-    const my=node('section','panel');my.append(node('div','kicker','Application Registry'),node('h2','',L('custom')));body.append(my);
+    const my=node('section','panel');my.append(node('div','kicker','Приложения / Applications'),node('h2','',L('custom')));body.append(my);
     if(!profile)my.append(node('p','hint',L('noRouter')));
     else {
       const search=field(my,L('search'),appSearch);search.className='smartSearch';search.oninput=()=>{appSearch=search.value;renderSettings();const x=shadow?.querySelector('.smartSearch');x?.focus();x?.setSelectionRange(appSearch.length,appSearch.length);};
@@ -137,12 +185,15 @@ __BRIDGE_JS__
       }
     }
     const catalog=node('section','panel');catalog.append(node('div','kicker','Keenetic / Entware'),node('h2','',L('catalog')),node('p','hint',L('hint')));body.append(catalog);
-    if(profile){const quick=node('button','',L('quick'));quick.onclick=async()=>{if(!confirm(language==='en'?'Enable RouterForge Core, AWG Manager and nfqws-keenetic-web using default ports? No scanning.':'Добавить RouterForge Core, AWG Manager и nfqws-keenetic-web с типовыми портами? Сканирования нет.'))return;const s=JSONclone(current),apps=s.routers[chosen].apps;for(const id of ['routerforge','awg-manager','nfqws-web']){const old=apps.find(a=>a.presetId===id);if(old){old.enabled=true;continue;}const x=CATALOG.find(p=>p.id===id);if(apps.some(a=>a.name.trim().toLocaleLowerCase()===x.name.toLocaleLowerCase()))continue;if(apps.length>=100)break;apps.push(cleanApp({id:'preset_'+id,presetId:id,name:x.name,icon:x.icon,url:makePresetUrl(new URL(chosen).hostname,x.port,'http:'),mode:'auto',enabled:true}));}await changeState(s);};catalog.append(quick);const grid=node('div','grid');catalog.append(grid);for(const preset of CATALOG){const old=profile.apps.find(a=>a.presetId===preset.id);const url=new URL(old?.url||('http://'+new URL(chosen).hostname+':'+preset.port+'/'));const card=node('div','card'+(old&&old.enabled!==false?' on':''));const top=node('div','cardHead');top.append(node('span','',preset.icon),node('h3','',preset.name));const check=node('input');check.type='checkbox';check.checked=Boolean(old&&old.enabled!==false);check.setAttribute('aria-label',L('enable')+' '+preset.name);top.append(check);card.append(top);const fields=node('div','four');card.append(fields);
-      const host=field(fields,L('host'),url.hostname);const port=field(fields,L('port'),url.port||String(preset.port));const scheme=field(fields,L('scheme'),url.protocol,'select',[['http:','HTTP'],['https:','HTTPS']]);const mode=field(fields,L('open'),old?.mode||'auto','select',[['auto',L('auto')],['embedded',L('within')],['external',L('separate')]]);const width=field(fields,L('width'),old?.layoutWidth||'native','select',[['native',L('nativeWidth')],['wide',L('wideWidth')]]);const widthPct=field(fields,language==='en'?'Native max width (%)':'Максимум штатной ширины (%)',old?.nativeWidthPct||85,'number');widthPct.min='65';widthPct.max='98';widthPct.step='1';
+    if(profile){const quick=node('button','',L('quick'));quick.onclick=async()=>{if(!confirm(language==='en'?'Enable RouterForge Core, AWG Manager and nfqws-keenetic-web using default ports? No scanning.':'Добавить RouterForge Core, AWG Manager и nfqws-keenetic-web с типовыми портами? Сканирования нет.'))return;const s=JSONclone(current),apps=s.routers[chosen].apps;for(const id of ['routerforge','awg-manager','nfqws-web']){const old=apps.find(a=>a.presetId===id);if(old){old.enabled=true;continue;}const x=CATALOG.find(p=>p.id===id);if(apps.some(a=>a.name.trim().toLocaleLowerCase()===x.name.toLocaleLowerCase()))continue;if(apps.length>=100)break;apps.push(cleanApp({id:'preset_'+id,presetId:id,name:x.name,icon:x.icon,url:makePresetUrl(new URL(chosen).hostname,x.port,'http:'),mode:'auto',enabled:true}));}await changeState(s);};catalog.append(quick);const grid=node('div','grid');catalog.append(grid);for(const preset of CATALOG){const old=profile.apps.find(a=>a.presetId===preset.id);const url=new URL(old?.url||('http://'+new URL(chosen).hostname+':'+preset.port+'/'));const card=node('div','card'+(old&&old.enabled!==false?' on':''));const top=node('div','cardHead');top.append(node('span','',preset.icon),node('h3','',preset.name));const check=node('input');check.type='checkbox';check.checked=Boolean(old&&old.enabled!==false);check.setAttribute('aria-label',L('enable')+' '+preset.name);top.append(check);card.append(top);const advanced=node('details','catalog-advanced');
+      const summary=node('summary','catalog-summary',language==='en'?'Host, port and open mode':'Адрес, порт и способ открытия');
+      advanced.append(summary);card.append(advanced);
+      const fields=node('div','four');advanced.append(fields);
+      const host=field(fields,L('host'),url.hostname);const port=field(fields,L('port'),url.port||String(preset.port));const scheme=field(fields,L('scheme'),url.protocol,'select',[['http:','HTTP'],['https:','HTTPS']]);const mode=field(fields,L('open'),old?.mode||'auto','select',[['auto',L('auto')],['embedded',L('within')],['external',L('separate')]]);const width=field(fields,L('width'),old?.layoutWidth||'native','select',[['native',L('nativeWidth')],['wide',L('wideWidth')]]);const widthPct={value:String(old?.nativeWidthPct ?? 85)}; // legacy storage only; no automatic geometry percentage
       const save=async enabled=>{try{const newUrl=makePresetUrl(host.value.trim(),port.value.trim(),scheme.value);const s=JSONclone(current),apps=s.routers[chosen].apps;const next=cleanApp({id:old?.id||'preset_'+preset.id,presetId:preset.id,name:preset.name,icon:preset.icon,enabled,mode:mode.value,layoutWidth:width.value,nativeWidthPct:Number(widthPct.value),nativeLeftTrimPx:old?.nativeLeftTrimPx??0,nativeRightTrimPx:old?.nativeRightTrimPx??0,manualBounds:old?.manualBounds===true,favorite:old?.favorite===true,group:old?.group||presetGroup(preset.id),url:newUrl});const idx=apps.findIndex(a=>a.presetId===preset.id);if(idx>=0)apps[idx]=next;else apps.push(next);await changeState(s);}catch(e){saveNotice(L('invalid')+' '+e.message,true);}};
-      check.onchange=()=>save(check.checked);const foot=node('footer');const btn=node('button','',L('save'));btn.onclick=()=>save(check.checked);foot.append(btn);card.append(foot);grid.append(card);}}
-    const edit=node('section','panel');edit.append(node('div','kicker','Custom App'),node('h2','',L('newApp')));body.append(edit);
-    if(profile){const form=node('form','editor');const name=field(form,L('name'),'');const url=field(form,L('address'),'http://'+new URL(chosen).hostname+':8080/');url.parentElement.classList.add('full');const mode=field(form,L('open'),'auto','select',[['auto',L('auto')],['embedded',L('within')],['external',L('separate')]]);const width=field(form,L('width'),'native','select',[['native',L('nativeWidth')],['wide',L('wideWidth')]]);const widthPct=field(form,language==='en'?'Native max width (%)':'Максимум штатной ширины (%)',85,'number');widthPct.min='65';widthPct.max='98';widthPct.step='1';const group=field(form,L('group'),'other','select',groups.map(id=>[id,groupName(id)]));const fav=field(form,L('favorite'),'', 'checkbox');fav.checked=false;const btn=node('button','primary full',L('save'));btn.type='submit';form.append(btn);form.onsubmit=async ev=>{ev.preventDefault();try{const s=JSONclone(current);if(s.routers[chosen].apps.length>=100)throw Error('Too many apps');s.routers[chosen].apps.push(cleanApp({name:name.value,url:url.value,mode:mode.value,layoutWidth:width.value,nativeWidthPct:Number(widthPct.value),group:group.value,favorite:fav.checked,icon:'▣'}));await changeState(s);}catch(e){saveNotice(L('invalid')+' '+e.message,true);}};edit.append(form);}
+      check.onchange=()=>save(check.checked);const foot=node('footer');const btn=node('button','',L('save'));btn.onclick=()=>save(check.checked);foot.append(btn);advanced.append(foot);grid.append(card);}}
+    const edit=node('section','panel');edit.append(node('div','kicker','Свои приложения / Custom'),node('h2','',L('newApp')));body.append(edit);
+    if(profile){const form=node('form','editor');const name=field(form,L('name'),'');const url=field(form,L('address'),'http://'+new URL(chosen).hostname+':8080/');url.parentElement.classList.add('full');const mode=field(form,L('open'),'auto','select',[['auto',L('auto')],['embedded',L('within')],['external',L('separate')]]);const width=field(form,L('width'),'native','select',[['native',L('nativeWidth')],['wide',L('wideWidth')]]);const widthPct={value:'85'}; // legacy storage only; hidden from UIconst group=field(form,L('group'),'other','select',groups.map(id=>[id,groupName(id)]));const fav=field(form,L('favorite'),'', 'checkbox');fav.checked=false;const btn=node('button','primary full',L('save'));btn.type='submit';form.append(btn);form.onsubmit=async ev=>{ev.preventDefault();try{const s=JSONclone(current);if(s.routers[chosen].apps.length>=100)throw Error('Too many apps');s.routers[chosen].apps.push(cleanApp({name:name.value,url:url.value,mode:mode.value,layoutWidth:width.value,nativeWidthPct:Number(widthPct.value),group:group.value,favorite:fav.checked,icon:'▣'}));await changeState(s);}catch(e){saveNotice(L('invalid')+' '+e.message,true);}};edit.append(form);}
   }
   if(typeof GM_registerMenuCommand==='function') GM_registerMenuCommand('RouterForge Portal · Settings / Настройки',openSettings);
   // Tampermonkey storage is separate from Chrome/Edge extension storage: use explicit JSON import/export.

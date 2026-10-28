@@ -1,18 +1,23 @@
-# RouterForge Portal v0.10.1 — импорт профилей и возвращение каналов
+# RouterForge Portal v0.10.2 — единый интерфейс Chrome и Tampermonkey
 
-## Исправления
-- После импорта конфигурации Portal отличает сохранённый профиль от действующего разрешения браузера.
-- При отсутствии разрешения показывает понятную причину и кнопку «Разрешить доступ и обновить вкладку»; разрешение запрашивается только по нажатию пользователя.
-- После согласия синхронизирует content scripts и обновляет вкладку Keenetic. Приложения и настройки остаются на месте.
+## Что изменилось
 
-## Платформы
-- Chrome / Microsoft Edge / Opera: нативный Chromium ZIP (MV3).
-- Tampermonkey / Violentmonkey: userscript и metadata.
-- Firefox: XPI **UNSIGNED-DEV**, временная тестовая установка, не подписанная постоянная версия.
+- Настройки Tampermonkey теперь открывают **ту же встроенную страницу настроек Keenetic**, что и Chromium-расширение, вместо отдельной устаревшей панели.
+- Окно первого подключения и резервных копий обновлено: нормальная типографика, крупные элементы, адаптивная компоновка, компактные интеграции. Подробные поля каталога раскрываются по запросу.
+- Устаревшее поле «85%» удалено из интерфейса userscript. Значения старых профилей сохраняются исключительно ради совместимости, но **не используются для автоматической геометрии**.
+- При создании первого профиля userscript переходит к штатному App Center; существующие адреса, приложения, избранное, порядок и режимы открытия сохраняются.
+- Исправлены отображаемые версии в панели и привязки автотестов.
 
-Никаких изменений в RouterForge Core, KeeneticOS и Entware. Production-выпуск после полного CI, проверки хешей и подписей на GitHub Actions.
+## Доступные способы установки
+
+- Chrome / Edge / Opera: Chromium MV3 ZIP.
+- Tampermonkey / Violentmonkey: `routerforge-portal.user.js` и `.meta.js`.
+- Firefox: userscript; неподписанный XPI включён **только для временного тестирования**.
+
+Параметры роутера, RouterForge Core, KeeneticOS и Entware не изменяются. Не включай одновременно userscript и нативное расширение на одной вкладке.
 
 ---
 
 ## English (secondary)
-Import permission repair: detect missing browser site grants, request access only on user action and reload the tab. Restore multichannel build artifacts: Chromium MV3, userscript + metadata, and unsigned Firefox development XPI (not a permanently installable signed release). No router changes.
+
+Tampermonkey now opens the **same in-Keenetic settings UI** as the Chromium extension, with a refreshed onboarding and backup dialog. Advanced catalog fields are collapsed; legacy 85% values remain only for config compatibility and are not used by automatic layout geometry. Existing profiles and app preferences remain intact. Chromium, userscript, and unsigned Firefox development XPI are shipped; no router changes.

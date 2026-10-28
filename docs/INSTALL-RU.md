@@ -1,8 +1,8 @@
-# Установка RouterForge Portal v0.10.1 — все каналы
+# Установка RouterForge Portal v0.10.2 — все каналы
 
-**Актуальный релиз:** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.1
+**Актуальный релиз:** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.2
 
-1. Скачай `routerforge-portal-chromium-v0.10.1.zip` из релиза и проверь SHA-256 по `SHA256SUMS.txt`.
+1. Скачай `routerforge-portal-chromium-v0.10.2.zip` из релиза и проверь SHA-256 по `SHA256SUMS.txt`.
 2. Распакуй в постоянную папку на компьютере; папка должна содержать `manifest.json`.
 3. В Chrome / Edge / Opera открой страницу расширений, включи режим разработчика и нажми **Загрузить распакованное**.
 4. Войди в WebUI Keenetic / NETCRAZE и разреши доступ к адресу роутера, когда браузер предложит.
@@ -12,6 +12,6 @@
 
 Экспортируй JSON перед обновлением. Чтобы сохранить тот же ID расширения и `chrome.storage.local`, оставь установленную папку на месте, сделай её копию, распакуй туда новые файлы и нажми **Обновить/Reload** на странице расширений. Не загружай одновременно вторую копию Portal. При изменении ID перенеси настройки через импорт JSON. Вернуться назад можно восстановлением прежней папки.
 
-В v0.10.1 опубликованы также userscript (`routerforge-portal.user.js` и `.meta.js`) и неподписанный Firefox XPI (`routerforge-portal-firefox-UNSIGNED-DEV-v0.10.1.xpi`, **только временное тестирование**). Для обычного Firefox используй Tampermonkey/Violentmonkey.
+В v0.10.2 опубликованы также userscript (`routerforge-portal.user.js` и `.meta.js`) и неподписанный Firefox XPI (`routerforge-portal-firefox-UNSIGNED-DEV-v0.10.2.xpi`, **только временное тестирование**). Для обычного Firefox используй Tampermonkey/Violentmonkey.
 
 После импорта JSON в нативное расширение открой страницу роутера, нажми значок Portal и, если требуется, «Разрешить доступ и обновить вкладку». Повторно добавлять роутер не нужно.

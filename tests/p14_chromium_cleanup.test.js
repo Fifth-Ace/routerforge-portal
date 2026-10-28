@@ -11,7 +11,7 @@ test('P14 chromium build uses MV3 and only optional website access',()=>{
   assert.equal(manifest.manifest_version,3);
   assert.deepEqual(manifest.permissions,['storage','scripting','activeTab']);
   assert.ok(!('host_permissions' in manifest));
-  assert.equal(manifest.version,'0.10.1');
+  assert.equal(manifest.version,'0.10.2');
   assert.ok(!('version_name' in manifest));
 });
 test('P14 has no SDK handshake and never replaces Keenetic browser history',()=>{

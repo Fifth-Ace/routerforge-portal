@@ -2,7 +2,7 @@
   if (globalThis.__kbridgeInjected) return;
   globalThis.__kbridgeInjected = true;
 
-  const BRIDGE_VERSION = '0.10.1';
+  const BRIDGE_VERSION = '0.10.2';
   const LOCAL_FIX_ID = 'P14-PRODUCTION';
   const KEY = 'kbridgeState';
   const LANGUAGE_KEY = 'rfPortalLanguage';
@@ -1005,7 +1005,7 @@
     const status = make('span', 'kb-frame-status');
     status.hidden = true; status.setAttribute('role','status'); status.setAttribute('aria-live','polite');
     bar.append(status);
-    const buildTag=make('span','kb-build-tag','v0.10.0');
+    const buildTag=make('span','kb-build-tag','v'+BRIDGE_VERSION);
     buildTag.title='Local test — not an official release';bar.append(buildTag);
     const buttons = make('div', 'kbbuttons');
     const widthButton = make('button', 'kb-width-toggle', '⇥⇤');widthButton.type='button';
