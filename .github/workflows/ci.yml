@@ -1,4 +1,4 @@
-name: CI (Chromium)
+name: CI (Chromium + channels)
 on:
   push:
     branches: [main]
@@ -21,14 +21,16 @@ jobs:
           npm run lint
           npm test
           python3 tools/security_gate.py
-      - name: Build Chromium twice and compare exact ZIP hash
+      - name: Build all channels twice and compare exact asset hashes
         run: |
           set -euo pipefail
-          python3 tools/package_release.py
+          python3 tools/build_channels.py
           python3 tests/test_chromium_prod.py
-          sha256sum dist/routerforge-portal-*.zip > /tmp/first.sha256
-          python3 tools/package_release.py
+          python3 tests/test_channels.py
+          ( cd release && sha256sum * > /tmp/first.sha256 )
+          python3 tools/build_channels.py
           python3 tests/test_chromium_prod.py
-          sha256sum dist/routerforge-portal-*.zip > /tmp/second.sha256
+          python3 tests/test_channels.py
+          ( cd release && sha256sum * > /tmp/second.sha256 )
           diff -u /tmp/first.sha256 /tmp/second.sha256
-          echo CHROMIUM_REPRODUCIBLE_PASS
+          echo ALL_CHANNELS_REPRODUCIBLE_PASS

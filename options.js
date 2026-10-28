@@ -234,10 +234,12 @@ async function initialize() {
       if (file.size>200000) throw Error(T('Файл слишком большой.'));
       const next=cleanState(JSON.parse(await file.text()));
       if (!confirm(lang==='en'?'Replace all existing profiles and applications with the imported configuration?':'Заменить текущие профили и приложения импортированными?')) return;
-      state=next; selected=''; clearForm(); await persist(T('Импорт выполнен. Для новых роутеров выдай доступ через браузер.'));
+      state=next; selected=''; clearForm(); await persist(lang==='en'
+        ? 'Import complete. Open each router tab and grant browser site access from the Portal popup if needed.'
+        : 'Импорт завершён. Если Portal не появился, открой вкладку роутера и нажми «Разрешить доступ и обновить вкладку» в окне Portal.');
     } catch (error) { notify((lang==='en'?'Import failed: ':'Импорт не выполнен: ')+T(error.message),true); }
   });
-  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.0');
+  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.1');
   $('#check-updates').addEventListener('click', manualUpdateCheck);
   chrome.storage.onChanged.addListener(async (changes,area) => {
     if(area==='local' && KEY in changes){ state=await readState(); render(); }

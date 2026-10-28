@@ -17,7 +17,7 @@ setup='''(version) => {
     runtime:{getManifest:()=>({version:'0.8.0'}),sendMessage:async()=>({ok:true}),openOptionsPage:()=>{}},
     storage:{local:{get:async k=>{if(k==='rfPortalLanguage')return {rfPortalLanguage:window.__lang};return {kbridgeState:state};},set:async obj=>{if(obj.rfPortalLanguage){window.__lang=obj.rfPortalLanguage;listeners.forEach(f=>f({rfPortalLanguage:{newValue:window.__lang}},'local'))}}},onChanged:{addListener:f=>listeners.push(f)}},
     tabs:{query:async()=>[{id:7,url:'http://192.168.1.1/'}],sendMessage:async(_id,msg)=>msg.type==='BRIDGE_VERSION'?{ok:true,version:window.__pingVersion}:{ok:true},reload:async()=>{window.__reloaded=true},create:()=>{}},
-    permissions:{request:async()=>true},scripting:{insertCSS:async()=>{},executeScript:async()=>{}}
+    permissions:{contains:async()=>true,request:async()=>true},scripting:{insertCSS:async()=>{},executeScript:async()=>{}}
   };window.close=()=>{};
 }'''
 with sync_playwright() as p:

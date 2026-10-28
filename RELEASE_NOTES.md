@@ -1,13 +1,18 @@
-# RouterForge Portal v0.10.0 — native NETCRAZE integration
+# RouterForge Portal v0.10.1 — импорт профилей и возвращение каналов
 
-Chromium-only production release (Chrome / Edge / Opera). Real-world verification performed on NETCRAZE Ultra; P14 local Chromium audit additionally verified with automated mock-page tests.
+## Исправления
+- После импорта конфигурации Portal отличает сохранённый профиль от действующего разрешения браузера.
+- При отсутствии разрешения показывает понятную причину и кнопку «Разрешить доступ и обновить вкладку»; разрешение запрашивается только по нажатию пользователя.
+- После согласия синхронизирует content scripts и обновляет вкладку Keenetic. Приложения и настройки остаются на месте.
 
-- **Native responsive layout:** use actual Keenetic content bounds and observe resize/collapsed navigation; no fixed 85% width and no mandatory manual pixel offsets.
-- **Workspace:** up to three cached live iframes with tab switching and cleanup on logout or return to native Keenetic pages.
-- **Smart App Center:** favorites, categories, custom order, search and safe catalog quick-setup.
-- **Native settings:** app editor inside Keenetic, themes and RU/EN; cleaned catalog with optional advanced settings.
-- **Quality:** P14 Chromium checks, safe optional host access, preserved old config fields for lossless migration, no SDK handshake and no Keenetic history monkey-patching.
-- **Documentation:** new ten-frame animated GIF captured on a real NETCRAZE Ultra, reused in both RU/EN README files.
-- **Channels:** this release ships only the unpacked Chromium MV3 ZIP. Prior v0.9.0 remains intact; Firefox and userscript have not been tested for this version.
+## Платформы
+- Chrome / Microsoft Edge / Opera: нативный Chromium ZIP (MV3).
+- Tampermonkey / Violentmonkey: userscript и metadata.
+- Firefox: XPI **UNSIGNED-DEV**, временная тестовая установка, не подписанная постоянная версия.
 
-**Upgrade:** export JSON, update files in the same unpacked-extension directory, Reload in browser extensions. No router firmware or RouterForge Core changes.
+Никаких изменений в RouterForge Core, KeeneticOS и Entware. Production-выпуск после полного CI, проверки хешей и подписей на GitHub Actions.
+
+---
+
+## English (secondary)
+Import permission repair: detect missing browser site grants, request access only on user action and reload the tab. Restore multichannel build artifacts: Chromium MV3, userscript + metadata, and unsigned Firefox development XPI (not a permanently installable signed release). No router changes.

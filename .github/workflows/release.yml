@@ -1,4 +1,4 @@
-name: Release (Chromium)
+name: Release (all channels)
 on:
   workflow_dispatch:
 permissions:
@@ -27,31 +27,31 @@ jobs:
           test "$GITHUB_REF_NAME" = "v${VERSION}"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor "$GITHUB_SHA" origin/main
-      - name: Verify, build and checksum exact tag
+      - name: Verify all clients, build and hash exact tag
         shell: bash
         run: |
           set -euo pipefail
           npm run lint
           npm test
           python3 tools/security_gate.py
-          python3 tools/package_release.py
+          python3 tools/build_channels.py
           python3 tests/test_chromium_prod.py
-          VERSION="$(node -p "require('./package.json').version")"
+          python3 tests/test_channels.py
+          ( cd release && sha256sum -c SHA256SUMS.txt )
           mkdir -p publish
-          cp "dist/routerforge-portal-v${VERSION}-install.zip" "publish/routerforge-portal-chromium-v${VERSION}.zip"
-          ( cd publish && sha256sum routerforge-portal-chromium-*.zip > SHA256SUMS.txt )
-      - name: Attest Chromium asset
+          cp release/* publish/
+      - name: Attest all downloadable clients
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4 pinned
         with:
-          subject-path: publish/routerforge-portal-chromium-*.zip
+          subject-path: publish/*
       - name: Publish only new immutable release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then echo RELEASE_ALREADY_EXISTS;exit 1;fi
-          gh release create "$GITHUB_REF_NAME" publish/routerforge-portal-chromium-*.zip publish/SHA256SUMS.txt \
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then echo RELEASE_ALREADY_EXISTS; exit 1; fi
+          gh release create "$GITHUB_REF_NAME" publish/* \
             --repo "$GITHUB_REPOSITORY" --verify-tag --draft \
             --title "RouterForge Portal $GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md
           gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false

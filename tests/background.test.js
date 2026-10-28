@@ -4,15 +4,15 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const source=fs.readFileSync(new URL('../background.js',import.meta.url),'utf8');
-function harness() {
+function harness({ initialSiteAccess = true } = {}) {
   const callbacks={}, calls={ registered:[],unregistered:[],opened:[] };
   const state={version:1,routers:{'http://192.168.1.1':{label:'Home',apps:[{id:'my_app_1',name:'Test',url:'http://192.168.1.1:8080',mode:'external'},{id:'preset_awg-manager',presetId:'awg-manager',enabled:false,name:'AWG Manager',url:'http://192.168.1.1:2222',mode:'external'}]}}};
-  let registration=[];
+  let registration=[]; let siteAccess=initialSiteAccess;
   const chrome={
     scripting:{getRegisteredContentScripts:async()=>registration,
       unregisterContentScripts:async ({ids})=>{registration=registration.filter(s=>!ids.includes(s.id));calls.unregistered.push(...ids)},
       registerContentScripts:async scripts=>{registration.push(...scripts);calls.registered.push(...scripts)}},
-    permissions:{contains:async ({origins})=>origins[0]==='http://192.168.1.1/*',
+    permissions:{contains:async ({origins})=>siteAccess && origins[0]==='http://192.168.1.1/*',
       onAdded:{addListener:f=>callbacks.permissionAdded=f},onRemoved:{addListener:f=>callbacks.permissionRemoved=f}},
     storage:{local:{get:async()=>({kbridgeState:state})},onChanged:{addListener:f=>callbacks.changed=f}},
     tabs:{create:async arg=>calls.opened.push(arg)},
@@ -20,7 +20,7 @@ function harness() {
       onMessage:{addListener:f=>callbacks.message=f},openOptionsPage:async()=>{}}
   };
   vm.runInNewContext(source,{chrome,console,URL,Promise}, {filename:'background.js'});
-  return {calls,callbacks};
+  return {calls,callbacks,setSiteAccess:value=>{siteAccess=value;}};
 }
 function message(callbacks,msg,sender={tab:{url:'http://192.168.1.1',id:9}}) {
   return new Promise(resolve=>callbacks.message(msg,sender,resolve));
@@ -43,4 +43,16 @@ test('app open requires configured ID and router tab origin',async()=>{
   assert.equal((await message(callbacks,{type:'OPEN_APP',id:'preset_awg-manager'})).ok,false);
   assert.equal((await message(callbacks,{type:'OPEN_APP',id:'my_app_1'},{tab:{url:'https://evil.example',id:8}})).ok,false);
   assert.equal(calls.opened.length,1);
+});
+test('P15 imported profile cannot inject until explicit site permission granted',async()=>{
+  const {callbacks,calls,setSiteAccess}=harness({initialSiteAccess:false});
+  const before=await message(callbacks,{type:'SYNC'});
+  assert.equal(before.ok,true);
+  assert.equal(before.count,0);
+  assert.equal(calls.registered.length,0);
+  setSiteAccess(true); // Mimic the user granting permissions in the Portal popup.
+  const after=await message(callbacks,{type:'SYNC'});
+  assert.equal(after.ok,true);
+  assert.equal(after.count,1);
+  assert.equal(calls.registered[0].matches[0],'http://192.168.1.1/*');
 });

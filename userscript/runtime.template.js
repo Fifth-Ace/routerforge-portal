@@ -1,8 +1,8 @@
 'use strict';
-// Built from RouterForge Portal v0.9.0 source. All app state is stored in Tampermonkey.
+// Built from RouterForge Portal v0.10.1 source. All app state is stored in Tampermonkey.
 (() => {
   const KEY='kbridgeState', LANGUAGE_KEY='rfPortalLanguage';
-  const VERSION='0.9.0';
+  const VERSION='0.10.1';
   const BRIDGE_CSS=__BRIDGE_CSS__;
   const ORIGINAL_BRAND=__BRAND_URI__;
   const CATALOG=__CATALOG__;

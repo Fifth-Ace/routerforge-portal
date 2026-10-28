@@ -13,9 +13,9 @@
 [![Release](https://img.shields.io/github/v/release/Fifth-Ace/routerforge-portal?style=flat-square&label=release&color=38bdf8)](https://github.com/Fifth-Ace/routerforge-portal/releases/latest)
 [![CI](https://img.shields.io/github/actions/workflow/status/Fifth-Ace/routerforge-portal/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/Fifth-Ace/routerforge-portal/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/Fifth-Ace/routerforge-portal?style=flat-square)](LICENSE)
-![Chrome / Edge / Opera](https://img.shields.io/badge/Chrome%20%7C%20Edge%20%7C%20Opera-v0.10.0-24313d?style=flat-square)
+![Chrome / Edge / Opera](https://img.shields.io/badge/Chrome%20%7C%20Edge%20%7C%20Opera-v0.10.1-24313d?style=flat-square)
 
-### [📦 Скачать Chromium v0.10.0](https://github.com/Fifth-Ace/routerforge-portal/releases/latest) · [💬 Telegram](https://t.me/RouterForge)
+### [📦 Скачать v0.10.1 для всех каналов](https://github.com/Fifth-Ace/routerforge-portal/releases/latest) · [💬 Telegram](https://t.me/RouterForge)
 
 [Возможности](#возможности) · [Установка](#установка) · [Скриншоты](#как-выглядит) · [FAQ](#частые-вопросы)
 
@@ -30,16 +30,18 @@
 > [!IMPORTANT]
 > Portal **не устанавливает** приложения на роутер и **не заменяет** штатную панель Keenetic. Управляемый сервис должен быть установлен и доступен отдельно.
 
-## Установка — актуальная версия v0.10.0 (Chromium)
+## Установка — актуальная версия v0.10.1 (Chromium)
 
-**Поддерживается Chrome, Microsoft Edge и Opera.** Для v0.10.0 выпускается только нативное расширение MV3; Firefox и userscript в этом выпуске не тестировались и не публикуются.
+**Каналы v0.10.1:** Chrome, Edge и Opera — Chromium MV3 ZIP; Tampermonkey/Violentmonkey — userscript для поддерживаемых браузеров; Firefox — userscript или неподписанный XPI **только для временного тестирования** (не постоянная установка).
 
-1. [Скачай Chromium ZIP v0.10.0](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.0/routerforge-portal-chromium-v0.10.0.zip).
+1. [Скачай Chromium ZIP v0.10.1](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.1/routerforge-portal-chromium-v0.10.1.zip).
 2. Распакуй архив в постоянную папку.
 3. В `chrome://extensions`, `edge://extensions` или `opera://extensions` включи режим разработчика и выбери **«Загрузить распакованное расширение»**.
-4. Открой NETCRAZE/Keenetic, авторизуйся и разреши Portal доступ к адресу роутера по запросу браузера.
+4. Открой NETCRAZE/Keenetic, авторизуйся и разреши Portal доступ к адресу роутера по запросу браузера. После импорта JSON нажми «Разрешить доступ и обновить вкладку», если разрешение не восстановлено.
 
-**Обновление с v0.9.0:** сначала экспортируй JSON-настройки. Сохраняй ту же папку установленного расширения и нажимай **«Обновить»**; не удаляй прежний экземпляр до проверки профилей. Старый релиз `v0.9.0` (включая его userscript) остаётся [в истории выпусков](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.9.0), но не входит в новую сборку.
+**Другие платформы:** в релизе находятся `routerforge-portal.user.js` и `.meta.js` для Tampermonkey/Violentmonkey, а также `routerforge-portal-firefox-UNSIGNED-DEV-v0.10.1.xpi` (только временные тесты). Не включай userscript одновременно с расширением на одном роутере.
+
+**Обновление с v0.9.0:** сначала экспортируй JSON-настройки. Сохраняй ту же папку установленного расширения и нажимай **«Обновить»**; не удаляй прежний экземпляр до проверки профилей. Старый релиз `v0.9.0` (включая его userscript) остаётся [в истории выпусков](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.9.0), и не изменяется при публикации v0.10.1.
 
 **[Подробная инструкция](docs/INSTALL-RU.md)** · [English guide](docs/INSTALL-EN.md).
 

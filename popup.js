@@ -10,23 +10,39 @@ function options() { chrome.runtime.openOptionsPage(); }
 async function diagnoseBridge() {
   const box = $('#diagnostics');
   const button = $('#repair-btn');
+  const badge = $('#connected .status-pill');
   const version = chrome.runtime.getManifest().version;
   $('#popup-version').textContent = 'v' + version;
   box.hidden = true;
   button.hidden = true;
   if (!tab?.id || !origin || chosen !== origin) return;
   box.hidden = false;
+  if (badge) badge.textContent = lang === 'en' ? '● Checking' : '● Проверка';
+  button.textContent = lang === 'en' ? '↻ Refresh the current tab' : '↻ Обновить интерфейс этой вкладки';
   try {
+    const allowed = await chrome.permissions.contains({ origins: [hostMatch(origin)] });
+    if (!allowed) {
+      $('#bridge-status').textContent = lang === 'en'
+        ? 'Router profile restored, but browser site access was not restored from the backup.'
+        : 'Профиль восстановлен, но разрешение браузера для этого роутера не было перенесено при импорте.';
+      box.dataset.type = 'warning';
+      if (badge) badge.textContent = lang === 'en' ? '● Access needed' : '● Нет доступа';
+      button.textContent = lang === 'en' ? 'Grant access and reload tab' : 'Разрешить доступ и обновить вкладку';
+      button.hidden = false;
+      return;
+    }
     const response = await chrome.tabs.sendMessage(tab.id, { type: 'BRIDGE_VERSION' });
     if (response?.authenticated === false) {
       $('#bridge-status').textContent = T('Выполни вход в Keenetic — Portal появится после авторизации.');
       box.dataset.type = 'info';
+      if (badge) badge.textContent = lang === 'en' ? '● Sign-in required' : '● Нужен вход';
       button.hidden = true;
       return;
     }
     if (response?.version === version) {
       $('#bridge-status').textContent = (lang==='en'?'✓ Portal active in this tab · v':'✓ Portal активен на странице · v') + version;
       box.dataset.type = 'ok';
+      if (badge) badge.textContent = lang === 'en' ? '● Active' : '● Активно';
       return;
     }
     $('#bridge-status').textContent = response?.version
@@ -36,6 +52,7 @@ async function diagnoseBridge() {
     $('#bridge-status').textContent = T('На этой вкладке не обнаружен интерфейс текущей версии (возможна старая инъекция).');
   }
   box.dataset.type = 'warning';
+  if (badge) badge.textContent = lang === 'en' ? '● Attention needed' : '● Требует внимания';
   button.hidden = false;
 }
 function renderApps(profile) {
@@ -84,7 +101,9 @@ async function refresh() {
   }
   chooser.value = chosen || '';
   if (profile) {
-    status((lang==='en'?'● Portal connected: ':'● Portal подключён: ') + chosen, 'ok');
+    const permitted = chosen === origin && await chrome.permissions.contains({origins:[hostMatch(origin)]});
+    status((permitted ? (lang==='en'?'● Portal connected: ':'● Portal подключён: ') : (lang==='en'?'● Saved router profile: ':'● Профиль роутера сохранён: ')) + chosen, permitted?'ok':'info');
+    $('#connected .status-pill').textContent = permitted ? (lang==='en'?'● Checking':'● Проверка') : (lang==='en'?'● Profile saved':'● Профиль сохранён');
     $('#router-title').textContent = profile.label;
     $('#popup-appcount').textContent=String(profile.apps.filter(a=>a.enabled!==false).length);
     renderApps(profile);
@@ -103,8 +122,11 @@ async function initialize() {
     btn.disabled = true;
     try {
       if (!tab?.id || !origin || chosen !== origin) throw Error((lang==='en'?'No active connected Keenetic tab.':'Нет активной вкладки подключённого Keenetic.'));
+      // Site permissions are not part of JSON backups; request inside the user click.
+      const grant = chrome.permissions.request({origins:[hostMatch(origin)]});
+      if (!(await grant)) throw Error(lang==='en'?'Site access was not granted.':'Доступ к роутеру не предоставлен.');
       const sync = await chrome.runtime.sendMessage({type:'SYNC'});
-      if (!sync?.ok) throw Error(sync?.error || (lang==='en'?'Unable to refresh scripts':'Не удалось обновить регистрацию скриптов'));
+      if (!sync?.ok || sync.count < 1) throw Error(sync?.error || (lang==='en'?'Unable to register a script for this router':'Не удалось зарегистрировать скрипт для этого роутера'));
       await chrome.tabs.reload(tab.id, { bypassCache: true });
       window.close();
     } catch(error) {
