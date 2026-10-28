@@ -35,6 +35,7 @@ jobs:
           npm test
           python3 tools/security_gate.py
           python3 tools/build_channels.py
+          node --check release/routerforge-portal.user.js
           python3 tests/test_chromium_prod.py
           python3 tests/test_channels.py
           ( cd release && sha256sum -c SHA256SUMS.txt )

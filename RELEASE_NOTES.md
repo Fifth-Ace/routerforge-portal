@@ -1,23 +1,18 @@
-# RouterForge Portal v0.10.2 — единый интерфейс Chrome и Tampermonkey
+# RouterForge Portal v0.10.3 — исправление запуска userscript
 
-## Что изменилось
+## Исправлено
 
-- Настройки Tampermonkey теперь открывают **ту же встроенную страницу настроек Keenetic**, что и Chromium-расширение, вместо отдельной устаревшей панели.
-- Окно первого подключения и резервных копий обновлено: нормальная типографика, крупные элементы, адаптивная компоновка, компактные интеграции. Подробные поля каталога раскрываются по запросу.
-- Устаревшее поле «85%» удалено из интерфейса userscript. Значения старых профилей сохраняются исключительно ради совместимости, но **не используются для автоматической геометрии**.
-- При создании первого профиля userscript переходит к штатному App Center; существующие адреса, приложения, избранное, порядок и режимы открытия сохраняются.
-- Исправлены отображаемые версии в панели и привязки автотестов.
+- Исправлена ошибка синтаксиса в сборке userscript v0.10.2: однострочный комментарий при удалении старого поля ширины скрывал код и отключал весь Portal в Tampermonkey/Violentmonkey.
+- Каталог, современная встроенная панель настроек и ранее сохранённые профили остались без изменения.
+- Включена обязательная проверка **собранного** файла routerforge-portal.user.js через node --check в генераторе, CI и Release. Отдельная проверка bridge.js больше не считается достаточной.
+- Дополнительный регрессионный тест запрещает повторение пропавшего кода после комментария.
 
-## Доступные способы установки
+## Платформы
 
-- Chrome / Edge / Opera: Chromium MV3 ZIP.
-- Tampermonkey / Violentmonkey: `routerforge-portal.user.js` и `.meta.js`.
-- Firefox: userscript; неподписанный XPI включён **только для временного тестирования**.
-
-Параметры роутера, RouterForge Core, KeeneticOS и Entware не изменяются. Не включай одновременно userscript и нативное расширение на одной вкладке.
+Chrome / Edge / Opera — Chromium ZIP. Tampermonkey / Violentmonkey — userscript и metadata. Firefox — userscript; unsigned XPI только для временной разработки. Никакого изменения RouterForge Core, KeeneticOS и Entware.
 
 ---
 
 ## English (secondary)
 
-Tampermonkey now opens the **same in-Keenetic settings UI** as the Chromium extension, with a refreshed onboarding and backup dialog. Advanced catalog fields are collapsed; legacy 85% values remain only for config compatibility and are not used by automatic layout geometry. Existing profiles and app preferences remain intact. Chromium, userscript, and unsigned Firefox development XPI are shipped; no router changes.
+Fix userscript v0.10.2 syntax failure caused by an inline comment accidentally swallowing the following JavaScript. Tampermonkey/Violentmonkey now start normally, preserving stored profiles and the redesigned settings UI. Built userscript syntax is checked during build, CI and release. All six platform assets are supplied; no router changes.

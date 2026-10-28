@@ -58,6 +58,7 @@ def build():
     DIST.mkdir(exist_ok=True)
     (DIST/'routerforge-portal.user.js').write_text(HEADER+runtime,encoding='utf-8',newline='\n')
     (DIST/'routerforge-portal.meta.js').write_text(HEADER,encoding='utf-8',newline='\n')
+    subprocess.run(['node','--check',str(DIST/'routerforge-portal.user.js')],cwd=HERE,check=True)
     return DIST/'routerforge-portal.user.js'
 
 if __name__=='__main__':

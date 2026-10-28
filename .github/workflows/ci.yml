@@ -25,10 +25,12 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/build_channels.py
+          node --check release/routerforge-portal.user.js
           python3 tests/test_chromium_prod.py
           python3 tests/test_channels.py
           ( cd release && sha256sum * > /tmp/first.sha256 )
           python3 tools/build_channels.py
+          node --check release/routerforge-portal.user.js
           python3 tests/test_chromium_prod.py
           python3 tests/test_channels.py
           ( cd release && sha256sum * > /tmp/second.sha256 )

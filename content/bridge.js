@@ -2,7 +2,7 @@
   if (globalThis.__kbridgeInjected) return;
   globalThis.__kbridgeInjected = true;
 
-  const BRIDGE_VERSION = '0.10.2';
+  const BRIDGE_VERSION = '0.10.3';
   const LOCAL_FIX_ID = 'P14-PRODUCTION';
   const KEY = 'kbridgeState';
   const LANGUAGE_KEY = 'rfPortalLanguage';

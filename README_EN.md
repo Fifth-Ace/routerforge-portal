@@ -15,11 +15,11 @@ Put AWG Manager, RouterForge Core, nfqws and other web panels into your router's
 [![License](https://img.shields.io/github/license/Fifth-Ace/routerforge-portal?style=flat-square)](LICENSE)
 ![Chrome / Edge / Opera](https://img.shields.io/badge/Chrome%20%7C%20Edge%20%7C%20Opera-MV3-24313d?style=flat-square)
 ![Firefox](https://img.shields.io/badge/Firefox-userscript-24313d?style=flat-square)
-![Tampermonkey / Violentmonkey](https://img.shields.io/badge/Tampermonkey%20%7C%20Violentmonkey-v0.10.2-24313d?style=flat-square)
+![Tampermonkey / Violentmonkey](https://img.shields.io/badge/Tampermonkey%20%7C%20Violentmonkey-v0.10.3-24313d?style=flat-square)
 
-### [⬇ Chrome / Edge / Opera](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/routerforge-portal-chromium-v0.10.2.zip) · [⬇ Firefox / Userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/routerforge-portal.user.js)
+### [⬇ Chrome / Edge / Opera](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip) · [⬇ Firefox / Userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)
 
-[📦 All downloads](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.2) · [💬 Telegram](https://t.me/RouterForge)
+[📦 All downloads](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.3) · [💬 Telegram](https://t.me/RouterForge)
 
 [Features](#features) · [Install](#installation) · [Screenshots](#screenshots) · [FAQ](#faq)
 
@@ -29,16 +29,16 @@ Put AWG Manager, RouterForge Core, nfqws and other web panels into your router's
 
 ## Installation
 
-**RouterForge Portal v0.10.2** runs in your browser, not on the router. Choose a channel below. All installation methods are visible here, VOT-style, with direct release links.
+**RouterForge Portal v0.10.3** runs in your browser, not on the router. Choose a channel below. All installation methods are visible here, VOT-style, with direct release links.
 
 | Browser | Recommended channel | Install |
 |:--|:--|:--|
-| **Google Chrome** | Native MV3 extension | **[⬇ Download for Chrome](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/routerforge-portal-chromium-v0.10.2.zip)** |
-| **Microsoft Edge** | Native MV3 extension | **[⬇ Download for Edge](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/routerforge-portal-chromium-v0.10.2.zip)** |
-| **Opera** | Native MV3 extension | **[⬇ Download for Opera](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/routerforge-portal-chromium-v0.10.2.zip)** |
-| **Mozilla Firefox** | Userscript with a manager | **[⬇ Install for Firefox](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/routerforge-portal.user.js)** |
-| **Chromium / Firefox with Tampermonkey** | Userscript | **[⬇ Install userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/routerforge-portal.user.js)** |
-| **Opera / other browsers with Violentmonkey** | Userscript | **[⬇ Install userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/routerforge-portal.user.js)** |
+| **Google Chrome** | Native MV3 extension | **[⬇ Download for Chrome](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip)** |
+| **Microsoft Edge** | Native MV3 extension | **[⬇ Download for Edge](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip)** |
+| **Opera** | Native MV3 extension | **[⬇ Download for Opera](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip)** |
+| **Mozilla Firefox** | Userscript with a manager | **[⬇ Install for Firefox](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
+| **Chromium / Firefox with Tampermonkey** | Userscript | **[⬇ Install userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
+| **Opera / other browsers with Violentmonkey** | Userscript | **[⬇ Install userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
 
 ### Chrome, Edge, Opera — native extension
 
@@ -49,16 +49,16 @@ Put AWG Manager, RouterForge Core, nfqws and other web panels into your router's
 ### Firefox, Tampermonkey, Violentmonkey — userscript
 
 1. Install **[Tampermonkey](https://www.tampermonkey.net/)** or **[Violentmonkey](https://violentmonkey.github.io/)**. Violentmonkey is recommended for Opera.
-2. Choose **[Install RouterForge Portal userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/routerforge-portal.user.js)** and confirm in your userscript manager. If the browser downloads the `.user.js` file instead, import the file through the manager's UI.
+2. Choose **[Install RouterForge Portal userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** and confirm in your userscript manager. If the browser downloads the `.user.js` file instead, import the file through the manager's UI.
 3. Open the router WebUI and configure Portal. Tampermonkey 5.2+ on Chromium may require Developer Mode; Chromium 138+ may also require enabling user scripts in the extension details.
 
 > [!WARNING]
-> **The Firefox XPI is unsigned and not a permanent-install release.** The [routerforge-portal-firefox-UNSIGNED-DEV-v0.10.2.xpi](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/routerforge-portal-firefox-UNSIGNED-DEV-v0.10.2.xpi) asset is only for temporary testing on an appropriate Firefox configuration. For normal Firefox use the userscript. No browser-store listing is available.
+> **The Firefox XPI is unsigned and not a permanent-install release.** The [routerforge-portal-firefox-UNSIGNED-DEV-v0.10.3.xpi](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-firefox-UNSIGNED-DEV-v0.10.3.xpi) asset is only for temporary testing on an appropriate Firefox configuration. For normal Firefox use the userscript. No browser-store listing is available.
 
 > [!IMPORTANT]
 > Use **only one channel** on the same router page. Running native extension and userscript together creates duplicate navigation. Export JSON before updating; keep the same unpacked extension folder to preserve the browser extension ID and local data. Native ZIP updates are manual; userscript managers may check for updates using their own mechanisms.
 
-**[📦 All v0.10.2 assets](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.2)** · **[🔐 SHA256SUMS.txt](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.2/SHA256SUMS.txt)** · [English installation guide](docs/INSTALL-EN.md) · [Русская версия](README.md)
+**[📦 All v0.10.3 assets](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.3)** · **[🔐 SHA256SUMS.txt](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/SHA256SUMS.txt)** · [English installation guide](docs/INSTALL-EN.md) · [Русская версия](README.md)
 
 **Tampermonkey:** after connecting a router, Portal settings open inside the Keenetic WebUI; backup and advanced options remain available from the dedicated settings button.
 
