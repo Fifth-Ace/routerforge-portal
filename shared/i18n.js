@@ -15,6 +15,13 @@ export async function writeLanguage(lang) {
 }
 // Russian source strings are also the stable keys for HTML leaf text nodes.
 const EN = Object.freeze({
+  'Ширина встроенной панели':'Embedded workspace width',
+  'По границам Keenetic (рекомендуется)':'Match Keenetic content (recommended)',
+  'Широкая — вся доступная область':'Wide — use all available space',
+  'Для каждого приложения отдельно. Можно переключить прямо в панели Portal.':'Saved per app. You can also toggle it in the Portal toolbar.',
+  'Ширина':'Width', 'Как в Keenetic':'Match Keenetic', 'Широкая':'Wide',
+  'Поиск приложений':'Search applications', '⚡ Быстро подключить 3 приложения':'⚡ Quick connect 3 apps',
+  'Группа':'Group','Избранное':'Favorite','Другое':'Other',
   'Обновления Portal':'Portal updates',
   'Проверка выполняется только по нажатию. Никакой автоматической установки или исполнения файлов.':'Only checks when requested. Never silently installs or executes downloaded files.',
   'Установлено':'Installed','↻ Проверить обновления':'↻ Check for updates','↓ Скачать ZIP':'↓ Download ZIP',

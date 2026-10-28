@@ -1,4 +1,4 @@
-name: CI (four browsers)
+name: CI (Chromium)
 on:
   push:
     branches: [main]
@@ -21,15 +21,14 @@ jobs:
           npm run lint
           npm test
           python3 tools/security_gate.py
-      - name: Build all channels twice, compare hashes
+      - name: Build Chromium twice and compare exact ZIP hash
         run: |
           set -euo pipefail
-          python3 tools/build_channels.py
-          python3 tests/test_channels.py
-          node --check release/routerforge-portal.user.js
-          sha256sum release/* > /tmp/first-packages.sha256
-          python3 tools/build_channels.py
-          python3 tests/test_channels.py
-          sha256sum release/* > /tmp/second-packages.sha256
-          diff -u /tmp/first-packages.sha256 /tmp/second-packages.sha256
-          echo 'ALL_CHANNELS_REPRODUCIBLE: PASS'
+          python3 tools/package_release.py
+          python3 tests/test_chromium_prod.py
+          sha256sum dist/routerforge-portal-*.zip > /tmp/first.sha256
+          python3 tools/package_release.py
+          python3 tests/test_chromium_prod.py
+          sha256sum dist/routerforge-portal-*.zip > /tmp/second.sha256
+          diff -u /tmp/first.sha256 /tmp/second.sha256
+          echo CHROMIUM_REPRODUCIBLE_PASS

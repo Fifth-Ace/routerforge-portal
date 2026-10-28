@@ -1,9 +1,11 @@
 """Offline browser smoke test: mock Keenetic DOM, no live router access."""
 from pathlib import Path
+import json
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 MOCK = ROOT / 'tests' / 'mock'
+VERSION = json.loads((ROOT/'manifest.json').read_text(encoding='utf-8'))['version']
 MOCK.mkdir(parents=True, exist_ok=True)
 HTML = '''<!doctype html><html lang="ru" data-theme="dark"><head><meta charset="utf-8">
 <style>
@@ -47,9 +49,9 @@ def check(page, theme='dark'):
     page.locator('#kbridge-entry .kb-nav-item').first.wait_for(timeout=4000)
     assert page.locator('aside #kbridge-entry').count()==1, 'native navigation dock'
     assert page.locator('#kbridge-entry .kb-nav-item').count()==3, 'inline app list'
-    assert page.locator('#kbridge-entry').get_attribute('data-kb-version')=='0.8.0', 'version marker'
+    assert page.locator('#kbridge-entry').get_attribute('data-kb-version')==VERSION, 'version marker'
     version = page.evaluate("() => {let r;window.__kbRuntimeListeners[0]({type:'BRIDGE_VERSION'},null,x=>r=x);return r.version;}")
-    assert version == '0.8.0', 'content script version ping'
+    assert version == VERSION, 'content script version ping'
     assert page.locator('#kbridge-entry').get_attribute('data-kb-theme')==theme, 'theme override'
     page.locator('[data-app-id="awg_test"]').click()
     assert page.locator('#kbridge-workspace').is_visible(), 'frame workspace'

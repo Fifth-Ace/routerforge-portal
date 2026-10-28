@@ -1,5 +1,5 @@
 // Catalog suggestions only. No network probing, scanning or automatic activation.
-import { cleanApp, parseAddress } from './model.js';
+import { cleanApp, parseAddress, presetGroup } from './model.js';
 
 export const CATALOG = Object.freeze([
   { id:'routerforge', name:'RouterForge Core', icon:'▣', category:'RouterForge', port:2233, path:'/', description:'Модульная платформа RouterForge' },
@@ -38,5 +38,5 @@ export function makeCatalogApp(router,id,overrides={},enabled=true,old=null) {
   const template=catalogById(id);
   if(!template) throw Error('Неизвестная интеграция.');
   const url=catalogUrl(router,id,overrides);
-  return cleanApp({id: old?.id || 'preset_'+id,name:template.name,icon:template.icon,mode:overrides.mode || old?.mode || 'auto',url,enabled,presetId:id});
+  return cleanApp({id: old?.id || 'preset_'+id,name:template.name,icon:template.icon,mode:overrides.mode || old?.mode || 'auto',layoutWidth:overrides.layoutWidth || old?.layoutWidth || 'native',nativeWidthPct:overrides.nativeWidthPct ?? old?.nativeWidthPct ?? 85,nativeLeftTrimPx:overrides.nativeLeftTrimPx ?? old?.nativeLeftTrimPx ?? 0,nativeRightTrimPx:overrides.nativeRightTrimPx ?? old?.nativeRightTrimPx ?? 0,manualBounds:overrides.manualBounds ?? old?.manualBounds ?? false,favorite:overrides.favorite ?? old?.favorite ?? false,group:overrides.group ?? old?.group ?? presetGroup(id),url,enabled,presetId:id});
 }

@@ -2,7 +2,7 @@
 <html lang="ru">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RouterForge Portal — Центр приложений</title><link rel="stylesheet" href="ui.css"></head>
 <body class="options-page">
-<div class="pagebar"><div class="pagebar-inner"><div class="identity"><img src="assets/routerforge-brand.png" class="brand-mark" alt=""><div class="brand-copy"><strong>RouterForge <em>Portal</em></strong><small>WEBUI APPLICATION HUB</small></div></div><div class="pagebar-right"><label class="language-control" for="ui-language"><span>RU / EN</span><select id="ui-language" aria-label="Язык интерфейса"><option value="ru">Русский</option><option value="en">English</option></select></label><span class="edition-pill"><span class="eyebrow-dot"></span> Browser Extension</span><span class="version-tag">v0.9.0</span></div></div></div>
+<div class="pagebar"><div class="pagebar-inner"><div class="identity"><img src="assets/routerforge-brand.png" class="brand-mark" alt=""><div class="brand-copy"><strong>RouterForge <em>Portal</em></strong><small>WEBUI APPLICATION HUB</small></div></div><div class="pagebar-right"><label class="language-control" for="ui-language"><span>RU / EN</span><select id="ui-language" aria-label="Язык интерфейса"><option value="ru">Русский</option><option value="en">English</option></select></label><span class="edition-pill"><span class="eyebrow-dot"></span> Browser Extension</span><span class="version-tag">v0.10.0</span></div></div></div>
 <div class="dashboard">
   <header class="page-intro"><div class="intro-text"><div class="kicker">ROUTERFORGE ECOSYSTEM / PORTAL</div><h1>Центр приложений</h1><p class="lead">Сторонние веб-панели в привычном интерфейсе Keenetic — без установки модулей на роутер.</p></div><div class="feature-chips"><span>◈ Независим от Core</span><span>▣ 2 режима открытия</span><span>⌘ Локальные профили</span></div></header>
   <div id="message" role="status" aria-live="polite" hidden></div>
@@ -27,7 +27,7 @@
       <section class="panel update-panel" id="portal-updates">
         <div class="panel-title"><div><span class="kicker">RELEASES / UPDATES</span><h2>Обновления Portal</h2></div><span class="panel-icon">↻</span></div>
         <p class="hint">Проверка выполняется только по нажатию. Никакой автоматической установки или исполнения файлов.</p>
-        <div class="update-versions"><span>Установлено <b id="update-current">v0.9.0</b></span><span>GitHub <b id="update-remote">—</b></span></div>
+        <div class="update-versions"><span>Установлено <b id="update-current">v0.10.0</b></span><span>GitHub <b id="update-remote">—</b></span></div>
         <p id="update-status" class="hint" role="status" aria-live="polite">Нажми «Проверить» для обращения к GitHub Releases.</p>
         <div class="import-actions"><button id="check-updates" class="secondary" type="button">↻ Проверить обновления</button><a id="update-download" class="secondary rf-update-link" href="#" target="_blank" rel="noopener noreferrer" hidden>↓ Скачать ZIP</a></div>
         <p id="update-hash" class="hint rf-update-hash" hidden></p>
@@ -37,7 +37,7 @@
       <div class="side-caption">ROUTERFORGE PORTAL <span>•</span> локально в браузере<br>Прошивка и RouterForge Core не изменяются.</div>
     </aside>
     <main class="maincol">
-      <section class="panel apps-panel"><div class="panel-title title-row"><div><span class="kicker">APPLICATION REGISTRY</span><h2>Мои приложения</h2></div><span id="appcount" class="count-chip">0 приложений</span></div><div id="app-list" class="app-list"></div></section>
+      <section class="panel apps-panel"><div class="panel-title title-row"><div><span class="kicker">APPLICATION REGISTRY</span><h2>Мои приложения</h2></div><span id="appcount" class="count-chip">0 приложений</span></div><div class="p11-toolbar"><input id="app-search" type="search" maxlength="120" placeholder="Поиск приложений" aria-label="Поиск приложений"><button id="quick-setup" class="secondary" type="button">⚡ Быстро подключить 3 приложения</button></div><div id="app-list" class="app-list"></div></section>
       <section class="panel catalog-panel" id="catalog-panel">
         <div class="panel-title title-row"><div><span class="kicker">INTEGRATION CATALOG</span><h2>Сервисы Keenetic / Entware</h2></div><span id="catalog-count" class="count-chip">0 активно</span></div>
         <p class="hint catalog-intro">Только приложения для Keenetic и Entware. Любой другой веб-сервис можно добавить вручную.</p>
@@ -47,7 +47,9 @@
         <form id="app-form">
           <div class="formrow"><div class="field"><label for="name">Название</label><input id="name" maxlength="70" required placeholder="Например, AWG Manager"></div><div class="field"><label for="icon">Значок</label><select id="icon"><option value="▣">▣ Приложение</option><option value="⚡">⚡ Скорость</option><option value="🛡">🛡 Защита</option><option value="⚙">⚙ Настройки</option><option value="🌐">🌐 Сеть</option><option value="📡">📡 Сигнал</option><option value="📦">📦 Пакеты</option><option value="🔧">🔧 Инструменты</option></select></div></div>
           <div class="field"><label for="url">Адрес веб-интерфейса (включая порт)</label><input id="url" type="url" maxlength="2048" required placeholder="http://192.168.1.1:8080/"><p class="hint">URL сохранится в профиле устройства — запоминать порт больше не придётся.</p></div>
-          <div class="field"><label for="mode">Способ открытия</label><select id="mode"><option value="auto">Автоматически — сначала внутри Keenetic</option><option value="embedded">Внутри Keenetic</option><option value="external">В отдельной вкладке</option></select><p class="hint">Некоторые сервисы запрещают iframe через CSP или X-Frame-Options. Для них используй отдельную вкладку.</p></div>
+          <div class="formrow p11-edit-controls"><div class="field"><label for="app-group">Группа</label><select id="app-group"><option value="routerforge">RouterForge</option><option value="network">Сеть и VPN</option><option value="security">DNS и защита</option><option value="other">Другое</option></select></div><div class="field p11-favorite-field"><label for="app-favorite">Избранное</label><input id="app-favorite" type="checkbox"></div></div><div class="field"><label for="mode">Способ открытия</label><select id="mode"><option value="auto">Автоматически — сначала внутри Keenetic</option><option value="embedded">Внутри Keenetic</option><option value="external">В отдельной вкладке</option></select><p class="hint">Некоторые сервисы запрещают iframe через CSP или X-Frame-Options. Для них используй отдельную вкладку.</p></div>
+          <div class="field"><label for="layout-width">Ширина встроенной панели</label><select id="layout-width"><option value="native">По границам Keenetic (рекомендуется)</option><option value="wide">Широкая — вся доступная область</option></select><p class="hint">Для каждого приложения отдельно. Можно переключить прямо в панели Portal.</p></div>
+          <p class="hint">Границы встроенной панели определяются автоматически по разметке Keenetic. Точная ручная калибровка при необходимости доступна прямо в панели приложения.</p>
           <div class="form-footer"><button id="save" class="primary" type="submit">＋ Сохранить приложение</button><button id="cancel" class="secondary" type="button" hidden>Отмена</button></div>
         </form>
       </section>

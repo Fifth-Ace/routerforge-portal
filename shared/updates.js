@@ -17,10 +17,11 @@ export function compareVersions(a,b) {
 }
 export function parseRelease(data,current) {
   if(!data || typeof data!=='object' || data.draft || data.prerelease) throw Error('NOT_STABLE_RELEASE');
+  if(data.immutable !== true) throw Error('RELEASE_NOT_IMMUTABLE');
   if(typeof data.tag_name!=='string' || !/^v\d+\.\d+\.\d+(?:\.\d+)?$/.test(data.tag_name)) throw Error('INVALID_RELEASE_TAG');
   const version=data.tag_name.slice(1);
   compareVersions(version,current);
-  const expected=`routerforge-portal-v${version}-install.zip`;
+  const expected=`routerforge-portal-chromium-v${version}.zip`;
   const list=Array.isArray(data.assets)?data.assets:[];
   const asset=list.find(a=>a?.name===expected);
   if(!asset) throw Error('INSTALL_ASSET_NOT_PUBLISHED');

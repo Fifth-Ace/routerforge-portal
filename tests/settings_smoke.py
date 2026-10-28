@@ -4,7 +4,7 @@ from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 model=(ROOT/'shared/model.js').read_text().replace('export ', '')
 i18n=(ROOT/'shared/i18n.js').read_text().replace('export ', '')
-catalog=(ROOT/'shared/catalog.js').read_text().replace('export ', '').replace("import { cleanApp, parseAddress } from './model.js';",'')
+catalog=(ROOT/'shared/catalog.js').read_text().replace('export ', '').replace("import { cleanApp, parseAddress, presetGroup } from './model.js';",'')
 app='\n'.join(x for x in (ROOT/'options.js').read_text().splitlines() if not x.startswith('import '))
 state={'version':1,'routers':{'http://192.168.1.1':{'label':'Netcraze Ultra','theme':'dark','apps':[{'id':'app_legacy_123','name':'123','url':'http://192.168.1.1:2222/','mode':'auto','icon':'▣'}]}}}
 with sync_playwright() as p:

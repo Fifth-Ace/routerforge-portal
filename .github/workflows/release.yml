@@ -1,4 +1,4 @@
-name: Release (GitHub + Tampermonkey)
+name: Release (Chromium)
 on:
   workflow_dispatch:
 permissions:
@@ -17,49 +17,41 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - name: Gate exact tag and source
+      - name: Gate exact version, tag and main ancestry
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REPOSITORY" = 'Fifth-Ace/routerforge-portal' || { echo UNEXPECTED_REPOSITORY; exit 1; }
+          test "$GITHUB_REPOSITORY" = Fifth-Ace/routerforge-portal
           VERSION="$(node -p "JSON.parse(require('fs').readFileSync('manifest.json','utf8')).version")"
-          test "$GITHUB_REF_TYPE" = 'tag' || { echo DISPATCH_MUST_TARGET_TAG; exit 1; }
-          test "$GITHUB_REF_NAME" = "v${VERSION}" || { echo VERSION_TAG_MISMATCH; exit 1; }
+          test "$GITHUB_REF_TYPE" = tag
+          test "$GITHUB_REF_NAME" = "v${VERSION}"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          git merge-base --is-ancestor "$GITHUB_SHA" origin/main || { echo TAG_NOT_ON_MAIN; exit 1; }
-      - name: Re-test exact tag and build all channels
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - name: Verify, build and checksum exact tag
         shell: bash
         run: |
           set -euo pipefail
           npm run lint
           npm test
           python3 tools/security_gate.py
-          python3 tools/build_channels.py
-          python3 tests/test_channels.py
-          node --check release/routerforge-portal.user.js
-      - name: Attest release assets
+          python3 tools/package_release.py
+          python3 tests/test_chromium_prod.py
+          VERSION="$(node -p "require('./package.json').version")"
+          mkdir -p publish
+          cp "dist/routerforge-portal-v${VERSION}-install.zip" "publish/routerforge-portal-chromium-v${VERSION}.zip"
+          ( cd publish && sha256sum routerforge-portal-chromium-*.zip > SHA256SUMS.txt )
+      - name: Attest Chromium asset
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4 pinned
         with:
-          subject-path: |
-            release/routerforge-portal-chromium-*.zip
-            release/routerforge-portal.user.js
-            release/routerforge-portal.meta.js
-            release/routerforge-portal-firefox-UNSIGNED-DEV-*.xpi
-      - name: Publish verified immutable release, do not overwrite
+          subject-path: publish/routerforge-portal-chromium-*.zip
+      - name: Publish only new immutable release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo RELEASE_ALREADY_EXISTS; exit 1
-          fi
-          gh release create "$GITHUB_REF_NAME" release/routerforge-portal-chromium-*.zip \
-            release/routerforge-portal.user.js release/routerforge-portal.meta.js \
-            release/routerforge-portal-firefox-UNSIGNED-DEV-*.xpi \
-            release/SHA256SUMS.txt release/CHANNELS.json \
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then echo RELEASE_ALREADY_EXISTS;exit 1;fi
+          gh release create "$GITHUB_REF_NAME" publish/routerforge-portal-chromium-*.zip publish/SHA256SUMS.txt \
             --repo "$GITHUB_REPOSITORY" --verify-tag --draft \
-            --title "RouterForge Portal $GITHUB_REF_NAME" \
-            --notes-file RELEASE_NOTES.md
-          # Immutable releases lock assets when published, not while the draft is assembled.
+            --title "RouterForge Portal $GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md
           gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false

@@ -6,8 +6,8 @@ const get = p => readFileSync(new URL(p,root),'utf8');
 const manifest = JSON.parse(get('manifest.json'));
 test('Portal branding is consistent with runtime version',()=>{
   assert.equal(manifest.name,'RouterForge Portal');
-  assert.equal(manifest.version,'0.9.0');
-  assert.match(get('content/bridge.js'),/BRIDGE_VERSION = '0\.9\.0'/);
+  assert.equal(manifest.version,'0.10.0');
+  assert.match(get('content/bridge.js'),/BRIDGE_VERSION = '0\.10\.0'/);
   assert.match(get('popup.html'),/RouterForge <em>Portal<\/em>/);
   assert.match(get('options.html'),/RouterForge <em>Portal<\/em>/);
 });

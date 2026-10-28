@@ -33,12 +33,17 @@ with sync_playwright() as p:
     assert page.locator('.entry').count()==1, 'PRESERVE_MANUAL_123'
     awg=page.locator('#catalog-awg-manager')
     assert awg.locator('.catalog-port').input_value()=='2222'
+    assert awg.locator('.catalog-primary input').count()==2, 'ONLY_HOST_AND_PORT_ON_CARD'
+    assert awg.locator('.catalog-width-pct, .catalog-left-trim, .catalog-right-trim').count()==0,'OBSOLETE_UI_ABSENT'
+    assert not awg.locator('.catalog-advanced').evaluate('(e)=>e.open'),'ADVANCED_COLLAPSED_BY_DEFAULT'
+    awg.locator('.catalog-advanced summary').click()
     awg.locator('.catalog-port').fill('2288')
     awg.locator('.catalog-mode').select_option('external')
     awg.locator('.catalog-enabled').check()
     page.wait_for_function("window.__storage.routers['http://192.168.1.1'].apps.some(a=>a.presetId==='awg-manager' && a.enabled && a.url.includes(':2288'))")
     assert page.locator('.entry').count()==2, 'ENABLED_PRESET_VISIBLE'
     awg=page.locator('#catalog-awg-manager')
+    assert awg.locator('.catalog-advanced').evaluate('(e)=>e.open'),'ADVANCED_STATE_PRESERVED_ON_RENDER'
     awg.locator('.catalog-enabled').uncheck()
     page.wait_for_function("window.__storage.routers['http://192.168.1.1'].apps.some(a=>a.presetId==='awg-manager' && a.enabled===false)")
     assert page.locator('.entry').count()==1,'DISABLED_PRESET_HIDDEN'
@@ -53,12 +58,12 @@ with sync_playwright() as p:
     awg.locator('.catalog-enabled').check()
     page.wait_for_function("window.__storage.routers['http://192.168.1.1'].apps.some(a=>a.presetId==='awg-manager' && a.enabled)")
     page.locator('#message').evaluate('(e)=>e.hidden=true')
-    page.locator('.catalog-panel').screenshot(path=str(ROOT.parent/'routerforge-portal-v0.8.0-catalog-dark.png'))
-    page.screenshot(path=str(ROOT.parent/'routerforge-portal-v0.8.0-settings-dark.png'),full_page=True)
+    page.locator('.catalog-panel').screenshot(path=str(ROOT.parent/'RouterForgePortal-P13-CATALOG-DARK.png'))
+    page.screenshot(path=str(ROOT.parent/'RouterForgePortal-P13-OPTIONS-DARK.png'),full_page=True)
     # Light theme, same DOM and spacing
     page.locator('#router-theme').select_option('light')
     page.wait_for_function("document.documentElement.dataset.theme === 'light'")
-    page.screenshot(path=str(ROOT.parent/'routerforge-portal-v0.8.0-settings-light.png'),full_page=True)
+    page.screenshot(path=str(ROOT.parent/'RouterForgePortal-P13-OPTIONS-LIGHT.png'),full_page=True)
     print('CATALOG_BROWSER: PASS (7 defaults OFF / toggle / custom port / mode / persistence / invalid port / legacy app)')
     browser.close()
 

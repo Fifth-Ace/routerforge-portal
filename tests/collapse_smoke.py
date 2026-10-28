@@ -53,16 +53,16 @@ with sync_playwright() as p:
           <div class=row>3.1Ge　　　<span class=pill>АКТИВЕН</span>　　　　　　　<span class=muted>Endpoint</span>　　　　　　　　　<span class=accent>↑ 25.6 Кбит/с</span></div>
           <div class=row>3.1NL　　　<span class=muted>ВЫКЛЮЧЕН</span>　　　　　　　<span class=muted>Маршрут не установлен</span></div>
           </body></html>`;}''')
-        page.wait_for_function("Math.abs(document.querySelector('#kbridge-workspace').getBoundingClientRect().left-215)<2")
+        page.wait_for_function("Math.abs(document.querySelector('#kbridge-workspace').getBoundingClientRect().left-235)<2")
         r=rect(page,'#kbridge-workspace')
-        close_to(r['x'],215);close_to(r['y'],35);close_to(r['width'],1497);close_to(r['height'],1021)
+        close_to(r['x'],235);close_to(r['y'],35);close_to(r['width'],1477);close_to(r['height'],1021)
         assert page.locator('#kbridge-workspace').evaluate('(e)=>getComputedStyle(e).borderTopWidth')=='0px'
         page.screenshot(path=str(ROOT.parent/'keenetic-webui-bridge-v0.3.0-expanded.png'))
         # Actual Keenetic collapses to a 65px icon rail without reloading the page.
         page.locator('body').evaluate("e=>e.classList.add('collapsed')")
-        page.wait_for_function("document.querySelector('#kbridge-entry').dataset.kbCollapsed === 'true' && Math.abs(document.querySelector('#kbridge-workspace').getBoundingClientRect().left-65)<2")
+        page.wait_for_function("document.querySelector('#kbridge-entry').dataset.kbCollapsed === 'true' && Math.abs(document.querySelector('#kbridge-workspace').getBoundingClientRect().left-85)<2")
         r=rect(page,'#kbridge-workspace')
-        close_to(r['x'],65);close_to(r['y'],35);close_to(r['width'],1647);close_to(r['height'],1021)
+        close_to(r['x'],85);close_to(r['y'],35);close_to(r['width'],1627);close_to(r['height'],1021)
         assert page.locator('#kbridge-entry .kb-nav-list').is_hidden()
         assert page.locator('#kbridge-entry .kb-rail-trigger').is_visible()
         assert page.locator('#kbridge-workspace').is_visible()
@@ -77,7 +77,7 @@ with sync_playwright() as p:
         assert page.locator('#kbridge-workspace').is_visible()
         # Unfold while application is active, verify no large overlay or leftover gaps.
         page.locator('body').evaluate("e=>e.classList.remove('collapsed')")
-        page.wait_for_function("document.querySelector('#kbridge-entry').dataset.kbCollapsed === 'false' && Math.abs(document.querySelector('#kbridge-workspace').getBoundingClientRect().left-215)<2")
+        page.wait_for_function("document.querySelector('#kbridge-entry').dataset.kbCollapsed === 'false' && Math.abs(document.querySelector('#kbridge-workspace').getBoundingClientRect().left-235)<2")
         assert page.locator('#kbridge-entry .kb-nav-list').is_visible()
         page.locator('#native').click()
         assert page.locator('#kbridge-workspace').is_hidden(), 'native navigation returns'

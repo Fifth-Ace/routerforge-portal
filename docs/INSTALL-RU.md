@@ -1,33 +1,15 @@
-# RouterForge Portal — установка (v0.9.0)
+# Установка RouterForge Portal v0.10.0 — Chromium
 
-**Актуальный релиз:** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.9.0
+**Актуальный релиз:** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.0
 
-## Быстрый способ — Tampermonkey / Violentmonkey (Chrome, Edge, Opera, Firefox)
-1. Установи [Tampermonkey](https://www.tampermonkey.net/) или [Violentmonkey](https://violentmonkey.github.io/).
-2. Открой [routerforge-portal.user.js](https://github.com/Fifth-Ace/routerforge-portal/releases/latest/download/routerforge-portal.user.js) и подтверди установку. Если файл просто скачался, импортируй его через панель менеджера.
-3. В последних версиях Chromium может потребоваться «Разрешить пользовательские скрипты» в настройках Tampermonkey.
-4. Открой Keenetic, авторизуйся, затем настрой интеграции в меню менеджера скриптов.
+1. Скачай `routerforge-portal-chromium-v0.10.0.zip` из релиза и проверь SHA-256 по `SHA256SUMS.txt`.
+2. Распакуй в постоянную папку на компьютере; папка должна содержать `manifest.json`.
+3. В Chrome / Edge / Opera открой страницу расширений, включи режим разработчика и нажми **Загрузить распакованное**.
+4. Войди в WebUI Keenetic / NETCRAZE и разреши доступ к адресу роутера, когда браузер предложит.
+5. В разделе «Приложения» добавляй доступные сервисы; если встраивание запрещено CSP/X-Frame-Options, переключи сервис в режим отдельной вкладки.
 
-## Chrome / Edge — нативная установка ZIP
-1. Скачай `routerforge-portal-chromium-v0.9.0.zip`, распакуй в постоянную папку.
-2. Открой `chrome://extensions` / `edge://extensions`, включи режим разработчика.
-3. Нажми «Загрузить распакованное расширение» и выбери папку с `manifest.json`.
-4. Подключи профиль Keenetic в окне Portal; для настройки роутера потребуется согласие на доступ к его адресу.
+## Обновление с v0.9.0 и локальных P14
 
-## Opera
-**Вариант A:** установи Tampermonkey или Violentmonkey и открой файл `routerforge-portal.user.js`. Это рекомендуемый путь без магазина RouterForge.
-**Вариант B:** распакуй `routerforge-portal-chromium-v0.9.0.zip`, открой `opera://extensions`, включи Developer Mode, затем Load unpacked и выбери папку с `manifest.json`.
+Экспортируй JSON перед обновлением. Чтобы сохранить тот же ID расширения и `chrome.storage.local`, оставь установленную папку на месте, сделай её копию, распакуй туда новые файлы и нажми **Обновить/Reload** на странице расширений. Не загружай одновременно вторую копию Portal. При изменении ID перенеси настройки через импорт JSON. Вернуться назад можно восстановлением прежней папки.
 
-## Firefox
-**Рекомендуемый путь:** установи Tampermonkey или Violentmonkey для Firefox, открой файл `routerforge-portal.user.js`, подтверди установку.
-**Нативный тест:** `routerforge-portal-firefox-UNSIGNED-DEV-v0.9.0.xpi` создан только для тестов через `about:debugging` → This Firefox → Load Temporary Add-on. Пропадёт после перезапуска. Обычная постоянная установка Firefox потребует Mozilla-подписанный XPI (даже при размещении на GitHub).
-
-## Общее: настройка и ограничения
-- Userscript и нативный extension хранят конфигурации отдельно. Переносится через экспорт/импорт JSON.
-- **Не включай оба варианта одновременно в одном браузере для одного Keenetic** — они будут дублировать интерфейс.
-- Интерфейс активен лишь после входа в штатный WebUI; приложение не устанавливает службы на роутер.
-- Для неизвестных доменных имён локальной сети нужно расширить правила соответствия URL в самом userscript, либо пользоваться нативным расширением с отдельным разрешением на хост.
-- `@updateURL` и `@downloadURL` начнут работать только после первого опубликованного GitHub Release с `.meta.js` и `.user.js`. Пользовательский менеджер проверяет обновления, но не удостоверяет GitHub Attestation: доверие к аккаунту и выпуску остаётся важным.
-- Все встроенные сервисы должны допускать iframe. Если сайт запрещает встраивание, открывай его отдельно; защитные заголовки не удаляются.
-
-Источники: https://github.com/ilyhalight/voice-over-translation (схема распространения); https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/background (Firefox MV3); https://help.opera.com/en/extensions/testing/ (Opera).
+Firefox и Tampermonkey не выпускались и не проверялись для v0.10.0. Старые файлы v0.9.0 сохранены в прежнем релизе.

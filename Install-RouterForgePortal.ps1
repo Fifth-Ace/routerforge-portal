@@ -125,12 +125,13 @@ try {
     $headers=@{ 'Accept'='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28';'User-Agent'='RouterForgePortal-PS51-Installer' }
     $release=Invoke-RestMethod -Uri $Api -Method Get -Headers $headers -TimeoutSec 20
     Gate ($release -and -not $release.draft -and -not $release.prerelease) 'RELEASE_NOT_STABLE'
+    Gate ($release.immutable -eq $true) 'RELEASE_NOT_IMMUTABLE'
     $tag=[string]$release.tag_name
     Gate ($tag -cmatch '^v[0-9]+\.[0-9]+\.[0-9]+(?:\.[0-9]+)?$') 'RELEASE_TAG_INVALID'
     $remoteVersion=$tag.Substring(1)
     $releaseUrl='https://github.com/' + $Repo + '/releases/tag/' + $tag
     Gate ([string]$release.html_url -ceq $releaseUrl) 'RELEASE_PAGE_MISMATCH'
-    $name='routerforge-portal-' + $tag + '-install.zip'
+    $name='routerforge-portal-chromium-' + $tag + '.zip'
     $assets=@($release.assets | Where-Object { [string]$_.name -ceq $name })
     Gate ($assets.Count -eq 1) 'EXACT_INSTALL_ASSET_MISSING'
     $asset=$assets[0]

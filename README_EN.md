@@ -13,9 +13,9 @@ Put AWG Manager, RouterForge Core, nfqws and other web panels into your router's
 [![Release](https://img.shields.io/github/v/release/Fifth-Ace/routerforge-portal?style=flat-square&label=release&color=38bdf8)](https://github.com/Fifth-Ace/routerforge-portal/releases/latest)
 [![CI](https://img.shields.io/github/actions/workflow/status/Fifth-Ace/routerforge-portal/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/Fifth-Ace/routerforge-portal/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/Fifth-Ace/routerforge-portal?style=flat-square)](LICENSE)
-![Chrome / Edge / Opera / Firefox](https://img.shields.io/badge/Chrome%20%7C%20Edge%20%7C%20Opera%20%7C%20Firefox-supported%20channels-24313d?style=flat-square)
+![Chrome / Edge / Opera](https://img.shields.io/badge/Chrome%20%7C%20Edge%20%7C%20Opera-v0.10.0-24313d?style=flat-square)
 
-### [📦 Download](https://github.com/Fifth-Ace/routerforge-portal/releases/latest) · [⚡ Install with Tampermonkey](https://github.com/Fifth-Ace/routerforge-portal/releases/latest/download/routerforge-portal.user.js) · [💬 Telegram](https://t.me/RouterForge)
+### [📦 Download Chromium v0.10.0](https://github.com/Fifth-Ace/routerforge-portal/releases/latest) · [💬 Telegram](https://t.me/RouterForge)
 
 [Features](#features) · [Install](#installation) · [Screenshots](#screenshots) · [FAQ](#faq)
 
@@ -30,36 +30,25 @@ Put AWG Manager, RouterForge Core, nfqws and other web panels into your router's
 > [!IMPORTANT]
 > Portal **does not install** services on your router and **does not replace** the Keenetic interface. Each web application must already be installed and reachable.
 
-## Installation
+## Install — v0.10.0 (Chromium)
 
-### Option 1 — Tampermonkey / Violentmonkey (easiest)
+**Supported: Chrome, Microsoft Edge, Opera.** The v0.10.0 release ships only the native MV3 extension. Firefox and userscript channels were not tested for this release and are not shipped with it.
 
-Compatible with **Chrome, Edge, Opera and Firefox** through a userscript manager.
+1. [Download the Chromium ZIP v0.10.0](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.0/routerforge-portal-chromium-v0.10.0.zip).
+2. Extract it to a permanent folder.
+3. In `chrome://extensions`, `edge://extensions` or `opera://extensions`, enable **Developer Mode** and select **Load unpacked**.
+4. Sign into NETCRAZE/Keenetic and grant permission to access the router address when prompted.
 
-1. Install [Tampermonkey](https://www.tampermonkey.net/) or [Violentmonkey](https://violentmonkey.github.io/).
-2. Open **[routerforge-portal.user.js — install userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/latest/download/routerforge-portal.user.js)** and confirm installation in the userscript manager. If your browser downloads the file instead, import it from the manager's dashboard.
-3. Open the Keenetic WebUI and sign in. Portal appears only after login. Configure integrations using the Tampermonkey / Violentmonkey menu.
+**Updating from v0.9.0:** export your profiles to JSON first. Replace the files in the **same installed folder**, then click Reload; avoid removing the extension until your settings are verified. The [historical v0.9.0 release](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.9.0), including its userscript, is left untouched.
 
-> [!NOTE]
-> Recent Chromium versions may require **Allow User Scripts** in Tampermonkey's extension settings, and possibly Developer Mode depending on the manager. Check your manager's documentation.
-
-### Option 2 — native Chrome / Edge / Opera extension
-
-1. **[Download Chromium ZIP v0.9.0](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.9.0/routerforge-portal-chromium-v0.9.0.zip)** and unzip it to a permanent folder.
-2. Open `chrome://extensions`, `edge://extensions` or `opera://extensions`; enable **Developer Mode**.
-3. Select **Load unpacked**, then choose the folder containing `manifest.json`.
-4. Open Keenetic and grant Portal access to your router's address when prompted by the browser.
-
-**Firefox:** use the userscript for normal use. The release's `firefox-UNSIGNED-DEV.xpi` is **not Mozilla-signed** and is intended only for temporary `about:debugging` tests, not permanent installation.
-
-**[Full installation guide (English)](docs/INSTALL-EN.md)** · [Инструкция на русском](docs/INSTALL-RU.md) · [All releases](https://github.com/Fifth-Ace/routerforge-portal/releases)
+**[Full English instructions](docs/INSTALL-EN.md)** · [Инструкция на русском](docs/INSTALL-RU.md).
 
 ## Screenshots
 
 <p align="center">
   <a href="docs/screenshots/portal-live-demo.gif"><img src="docs/screenshots/portal-live-demo.gif" alt="RouterForge Portal inside NETCRAZE/Keenetic: RouterForge Core, nfqws2 and AWG Manager" width="100%"></a>
 </p>
-<p align="center"><sub>Three real UI screenshots supplied by a user: RouterForge Core → nfqws2 → AWG Manager, displayed inside the native NETCRAZE/Keenetic WebUI. The animation loops; click it for a larger view.</sub></p>
+<p align="center"><sub>Ten real NETCRAZE Ultra screenshots supplied by a user: Portal settings, nfqws2, AWG Manager, RouterForge Core and the app catalog, displayed inside the native NETCRAZE/Keenetic WebUI. The animation loops; click it for a larger view.</sub></p>
 
 ## Features
 
@@ -71,7 +60,9 @@ Compatible with **Chrome, Edge, Opera and Firefox** through a userscript manager
 | 🪟 **Two launch modes** | Embedded within Keenetic or a separate browser tab. When CSP/X-Frame-Options block embedding, use a tab. |
 | 🎨 **Appearance** | Dark/light themes and Russian/English UI. |
 | 💾 **Profiles** | Local settings, JSON import and export. |
-| 🔄 **Updates** | Userscript updates through the manager; native ZIP installation is updated manually. |
+| 🗂️ **Workspace** | Up to three live iframe tabs, favorites, groups, settings inside Keenetic. |
+| 📐 **Responsive** | Respects the native WebUI boundaries when the browser window is resized. |
+| 🔄 **Updates** | Manual updates for the native unpacked extension; no silent code installation. |
 
 ## FAQ
 
@@ -89,7 +80,7 @@ Avoid doing so on the same router page: it will duplicate the menu. Choose one c
 </details>
 <details><summary><b>Are updates secure and automatic?</b></summary>
 
-Userscript managers can check GitHub Release update links, but they do **not** validate GitHub build attestations. Native extensions do not silently replace their executable code; verify release file hashes and update your unpacked extension manually. [Read the security policy](SECURITY.md).
+Legacy v0.9.0 userscript managers could check GitHub Release update links, but they do **not** validate GitHub build attestations. Native extensions do not silently replace their executable code; verify release file hashes and update your unpacked extension manually. [Read the security policy](SECURITY.md).
 </details>
 
 ## Privacy and development

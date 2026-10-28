@@ -2,6 +2,23 @@ export const KEY = 'kbridgeState';
 export const VERSION = 1;
 export const MODES = ['auto', 'embedded', 'external'];
 export const THEMES = ['auto', 'dark', 'light'];
+export const WIDTHS = ['native', 'wide'];
+export const GROUPS = ['routerforge','network','security','other'];
+export function presetGroup(id) { return id==='routerforge'?'routerforge':id==='adguard-home'?'security':(['awg-manager','nfqws-web','nfqws2-ui','neofit','xkeen-ui'].includes(id)?'network':'other'); }
+export const appGroup = app => GROUPS.includes(app.group)?app.group:presetGroup(app.presetId);
+export function orderedApps(apps) {
+  const rank = g => GROUPS.indexOf(g);
+  return apps.filter(a=>a.enabled!==false).slice().sort((a,b)=>Number(Boolean(b.favorite))-Number(Boolean(a.favorite)) || rank(appGroup(a))-rank(appGroup(b)));
+}
+export function moveApp(apps,id,delta) {
+  const at=apps.findIndex(a=>a.id===id);
+  if(at<0 || ![-1,1].includes(delta))return false;
+  const current=apps[at];
+  const peers=apps.map((a,i)=>({a,i})).filter(({a})=>a.enabled!==false && Boolean(a.favorite)===Boolean(current.favorite) && appGroup(a)===appGroup(current));
+  const index=peers.findIndex(x=>x.i===at);const next=peers[index+delta];
+  if(!next)return false;
+  [apps[at],apps[next.i]]=[apps[next.i],apps[at]];return true;
+}
 export const newState = () => ({ version: VERSION, routers: {} });
 
 export function parseAddress(input) {
@@ -30,8 +47,16 @@ export function cleanApp(src) {
   const id = /^[a-zA-Z0-9_-]{4,64}$/.test(String(src.id || '')) ? src.id : crypto.randomUUID();
   const icon = ['▣', '⚡', '🛡', '⚙', '🌐', '📡', '📦', '🔧'].includes(src.icon) ? src.icon : '▣';
   const enabled = src.enabled !== false;
+  const favorite = src.favorite === true;
+  const group = GROUPS.includes(src.group) ? src.group : presetGroup(src.presetId);
+  const layoutWidth = WIDTHS.includes(src.layoutWidth) ? src.layoutWidth : 'native';
+  const value = Number(src.nativeWidthPct);
+  const nativeWidthPct = Number.isInteger(value) && value >= 65 && value <= 98 ? value : 85;
+  const manualBounds = src.manualBounds === true;
+  const nativeLeftTrimPx = Number.isInteger(Number(src.nativeLeftTrimPx)) && Number(src.nativeLeftTrimPx) >= 0 && Number(src.nativeLeftTrimPx) <= 160 ? Number(src.nativeLeftTrimPx) : 0;
+  const nativeRightTrimPx = Number.isInteger(Number(src.nativeRightTrimPx)) && Number(src.nativeRightTrimPx) >= 0 && Number(src.nativeRightTrimPx) <= 160 ? Number(src.nativeRightTrimPx) : 0;
   const presetId = /^[a-z0-9-]{2,35}$/.test(String(src.presetId || '')) ? src.presetId : undefined;
-  return { id, name, url, mode, icon, enabled, ...(presetId ? {presetId} : {}) };
+  return { id, name, url, mode, icon, enabled, favorite, group, layoutWidth, nativeWidthPct, nativeLeftTrimPx, nativeRightTrimPx, manualBounds, ...(presetId ? {presetId} : {}) };
 }
 
 export function cleanState(src) {

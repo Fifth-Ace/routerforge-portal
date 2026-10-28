@@ -346,3 +346,23 @@ body.options-page{font-size:16px}
 .rf-update-link[hidden]{display:none!important}
 .rf-update-hash{font-family:var(--font-mono);overflow-wrap:anywhere}
 .popup-footer{flex-wrap:wrap;gap:7px}
+
+/* P11 — Smart App Center. No global Keenetic styling. */
+.options-page .p11-toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:2px 0 15px!important;}
+.options-page #app-search{min-width:190px;flex:1;max-width:420px;}
+.options-page .p11-group-title{color:#38bdf8;letter-spacing:.06em;font-size:10px;font-weight:750;margin:14px 0 6px;padding:0 3px;}
+.options-page .p11-group-select{width:112px!important;min-width:100px!important;font-size:11px!important;padding:5px 4px!important;}
+.options-page .entry .actions{flex-wrap:wrap!important;justify-content:flex-end!important;}
+.options-page .p11-favorite-field{display:flex;align-items:center;gap:8px;justify-content:center;}
+.options-page .p11-favorite-field input{width:20px;height:20px;accent-color:#38bdf8;}
+.options-page .p11-toolbar button{white-space:normal;}
+
+/* P13: concise integration cards; preserve optional controls in a native accessible disclosure. */
+.catalog-fields.catalog-primary{grid-template-columns:minmax(0,1fr) minmax(90px,125px);gap:12px}
+.catalog-advanced{margin-top:10px;border:1px solid var(--line-soft);border-radius:7px;background:var(--panel);overflow:hidden}
+.catalog-advanced-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;cursor:pointer;color:var(--text);font-size:13px;font-weight:600;list-style-position:inside}
+.catalog-advanced-summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.catalog-current-settings{margin-left:auto;color:var(--muted);font-size:12px;font-weight:400;text-align:right}
+.catalog-fields.catalog-extra{padding:0 12px 12px;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.catalog-description{min-height:0;margin:9px 0 11px}
+@media(max-width:650px){.catalog-fields.catalog-primary{grid-template-columns:minmax(0,1fr) 105px}.catalog-fields.catalog-extra{grid-template-columns:1fr}.catalog-current-settings{font-size:11px}}
