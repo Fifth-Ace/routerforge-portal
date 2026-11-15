@@ -1,0 +1,56 @@
+name: Portal Site / GitHub Pages
+on:
+  workflow_run:
+    workflows: ["CI (Chromium + channels)"]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: portal-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout verified main commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4 pinned
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - name: Validate static site
+        run: python3 tests/test_site.py
+      - name: Assemble static assets (no external build dependencies)
+        run: |
+          set -euo pipefail
+          mkdir -p .pages-output/media
+          cp site/index.html site/styles.css site/app.js .pages-output/
+          cp assets/icon-128.png .pages-output/media/
+          cp docs/screenshots/portal-preview.webp .pages-output/media/
+          cp docs/screenshots/portal-catalog.webp .pages-output/media/
+          cp docs/screenshots/portal-settings-ru.webp .pages-output/media/
+          cp docs/screenshots/portal-settings-en.webp .pages-output/media/
+          touch .pages-output/.nojekyll
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5 pinned
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4 pinned
+        with:
+          path: .pages-output
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4 pinned

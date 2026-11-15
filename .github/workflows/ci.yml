@@ -21,6 +21,7 @@ jobs:
           npm run lint
           npm test
           python3 tools/security_gate.py
+          python3 tests/test_site.py
       - name: Build all channels twice and compare exact asset hashes
         run: |
           set -euo pipefail

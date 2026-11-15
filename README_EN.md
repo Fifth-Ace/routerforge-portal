@@ -17,7 +17,7 @@ Put AWG Manager, RouterForge Core, nfqws and other web panels into your router's
 ![Firefox](https://img.shields.io/badge/Firefox-userscript-24313d?style=flat-square)
 ![Tampermonkey / Violentmonkey](https://img.shields.io/badge/Tampermonkey%20%7C%20Violentmonkey-v0.10.3-24313d?style=flat-square)
 
-### [⬇ Chrome / Edge / Opera](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip) · [⬇ Firefox / Userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)
+### [🧩 Install from Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) · [📦 Edge / Opera / ZIP](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip) · [🦊 Firefox / userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)
 
 [📦 All downloads](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.3) · [💬 Telegram](https://t.me/RouterForge)
 
@@ -27,13 +27,15 @@ Put AWG Manager, RouterForge Core, nfqws and other web panels into your router's
 
 ---
 
+[🌐 Official website](https://fifth-ace.github.io/routerforge-portal/) · [🧩 Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij)
+
 ## Installation
 
 **RouterForge Portal v0.10.3** runs in your browser, not on the router. Choose a channel below. All installation methods are visible here, VOT-style, with direct release links.
 
 | Browser | Recommended channel | Install |
 |:--|:--|:--|
-| **Google Chrome** | Native MV3 extension | **[⬇ Download for Chrome](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip)** |
+| **Google Chrome** | Native MV3 extension | **[Install from Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij)** |
 | **Microsoft Edge** | Native MV3 extension | **[⬇ Download for Edge](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip)** |
 | **Opera** | Native MV3 extension | **[⬇ Download for Opera](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip)** |
 | **Mozilla Firefox** | Userscript with a manager | **[⬇ Install for Firefox](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
@@ -41,10 +43,11 @@ Put AWG Manager, RouterForge Core, nfqws and other web panels into your router's
 | **Opera / other browsers with Violentmonkey** | Userscript | **[⬇ Install userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
 
 ### Chrome, Edge, Opera — native extension
+1. **Google Chrome:** [open RouterForge Portal in Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) and click **Add to Chrome**. The store handles updates automatically.
+2. **Edge / Opera (manual channel):** [download the ZIP](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip), extract it into a permanent folder with `manifest.json`, then enable **Developer Mode → Load unpacked** in `edge://extensions` / `opera://extensions`.
+3. Sign in to your Keenetic / NETCRAZE and grant access **only to the router addresses you trust**. If a prompt appears after JSON import, use **Grant access and reload tab**.
 
-1. Download the ZIP above and **extract** it to a permanent directory. `manifest.json` must be at the root.
-2. Open `chrome://extensions`, `edge://extensions` or `opera://extensions`; enable **Developer Mode**, then **Load unpacked** and select the extracted folder, not the ZIP.
-3. Sign in to Keenetic / NETCRAZE and grant the browser permission for your router address. After JSON import, if prompted, use **Grant access and reload tab** in the popup. There is no need to recreate the router profile.
+**Important:** the Chrome Web Store installation and unpacked ZIP use different extension IDs and local storage. Export profiles to JSON before switching; don't enable both copies simultaneously.
 
 ### Firefox, Tampermonkey, Violentmonkey — userscript
 
@@ -53,7 +56,7 @@ Put AWG Manager, RouterForge Core, nfqws and other web panels into your router's
 3. Open the router WebUI and configure Portal. Tampermonkey 5.2+ on Chromium may require Developer Mode; Chromium 138+ may also require enabling user scripts in the extension details.
 
 > [!WARNING]
-> **The Firefox XPI is unsigned and not a permanent-install release.** The [routerforge-portal-firefox-UNSIGNED-DEV-v0.10.3.xpi](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-firefox-UNSIGNED-DEV-v0.10.3.xpi) asset is only for temporary testing on an appropriate Firefox configuration. For normal Firefox use the userscript. No browser-store listing is available.
+> **The Firefox XPI is unsigned and not a permanent-install release.** The [routerforge-portal-firefox-UNSIGNED-DEV-v0.10.3.xpi](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-firefox-UNSIGNED-DEV-v0.10.3.xpi) asset is only for temporary testing on an appropriate Firefox configuration. For normal Firefox use the userscript. Chrome users can use the [official Chrome Web Store listing](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij); Firefox users should use the userscript.
 
 > [!IMPORTANT]
 > Use **only one channel** on the same router page. Running native extension and userscript together creates duplicate navigation. Export JSON before updating; keep the same unpacked extension folder to preserve the browser extension ID and local data. Native ZIP updates are manual; userscript managers may check for updates using their own mechanisms.
