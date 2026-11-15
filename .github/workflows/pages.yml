@@ -4,7 +4,18 @@ on:
     workflows: ["CI (Chromium + channels)"]
     types: [completed]
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      ci_run_id:
+        description: 'Exact successful main push CI Run ID'
+        required: true
+        type: string
+      verified_sha:
+        description: 'Exact CI-verified main commit SHA'
+        required: true
+        type: string
 permissions:
+  actions: read
   contents: read
 concurrency:
   group: portal-pages
@@ -12,16 +23,39 @@ concurrency:
 jobs:
   build:
     if: >-
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_branch == 'main'
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main') ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout verified main commit
+      - name: Checkout exact CI-verified main commit
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4 pinned
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.verified_sha || github.event.workflow_run.head_sha }}
           persist-credentials: false
+      - name: Gate exact successful CI, main SHA and workflow identity
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERIFIED_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.verified_sha || github.event.workflow_run.head_sha }}
+          VERIFIED_CI_ID: ${{ github.event_name == 'workflow_dispatch' && inputs.ci_run_id || github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = 'Fifth-Ace/routerforge-portal'
+          test "$GITHUB_REF" = 'refs/heads/main'
+          [[ "$VERIFIED_SHA" =~ ^[a-f0-9]{40}$ ]]
+          [[ "$VERIFIED_CI_ID" =~ ^[0-9]+$ ]]
+          test "$(git rev-parse HEAD)" = "$VERIFIED_SHA"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')" = "$VERIFIED_SHA"
+          run="repos/$GITHUB_REPOSITORY/actions/runs/$VERIFIED_CI_ID"
+          test "$(gh api "$run" --jq '.head_sha')" = "$VERIFIED_SHA"
+          test "$(gh api "$run" --jq '.head_branch')" = 'main'
+          test "$(gh api "$run" --jq '.event')" = 'push'
+          test "$(gh api "$run" --jq '.path')" = '.github/workflows/ci.yml'
+          test "$(gh api "$run" --jq '.conclusion')" = 'success'
+          echo "GATE: PASS / EXACT SUCCESSFUL PUSH CI $VERIFIED_CI_ID / $VERIFIED_SHA"
       - name: Validate static site
         run: python3 tests/test_site.py
       - name: Assemble static assets (no external build dependencies)
@@ -45,6 +79,7 @@ jobs:
     needs: build
     runs-on: ubuntu-24.04
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
