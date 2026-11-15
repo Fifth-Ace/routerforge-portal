@@ -52,6 +52,11 @@ def check():
     assert {'lang-ru', 'lang-en'} <= parser.lang_buttons
     assert {'features', 'preview', 'install'} <= parser.ids
     assert parser.scripts == ['./app.js'], 'unexpected remote script'
+    assert html.count('./media/portal-live-demo.gif') == 1, 'hero animation must be unique'
+    assert '<picture>' in html and 'media="(prefers-reduced-motion: reduce)"' in html, 'reduced motion fallback missing'
+    assert '.preview-window picture{display:block}' in css, 'hero picture layout missing'
+    pages = (ROOT / '.github/workflows/pages.yml').read_text(encoding='utf-8')
+    assert 'cp docs/screenshots/portal-live-demo.gif .pages-output/media/' in pages, 'GIF omitted from Pages deploy'
     for ref in parser.refs:
         if ref.startswith('#'):
             assert ref[1:] in parser.ids, f'broken navigation anchor: {ref}'
@@ -60,6 +65,7 @@ def check():
     expected_media = {
         './media/icon-128.png': 'assets/icon-128.png',
         './media/portal-preview.webp': 'docs/screenshots/portal-preview.webp',
+        './media/portal-live-demo.gif': 'docs/screenshots/portal-live-demo.gif',
         './media/portal-catalog.webp': 'docs/screenshots/portal-catalog.webp',
         './media/portal-settings-ru.webp': 'docs/screenshots/portal-settings-ru.webp',
         './media/portal-settings-en.webp': 'docs/screenshots/portal-settings-en.webp',
@@ -75,6 +81,12 @@ def check():
     security_gate_source = (ROOT / 'tools/security_gate.py').read_text(encoding='utf-8')
     assert '.read_text()' not in security_gate_source, 'implicit Python text encoding in security gate'
     assert security_gate_source.count("read_text(encoding='utf-8')") >= 4, 'UTF-8 security input check missing'
+    # Cross-platform text decoding: Node emits UTF-8; Windows defaults must not drift.
+    builder = (ROOT / 'tools/build_userscript.py').read_text(encoding='utf-8')
+    assert "cwd=HERE,text=True,encoding='utf-8'" in builder, 'Node catalog stdout must decode as UTF-8'
+    for script_path in ('tests/test_channels.py', 'tests/test_chromium_prod.py'):
+        script = (ROOT / script_path).read_text(encoding='utf-8')
+        assert '.read_text()' not in script, f'implicit Windows decoding: {script_path}'
     proc = subprocess.run(['node', '--check', str(SITE / 'app.js')], capture_output=True, text=True)
     assert proc.returncode == 0, f'JavaScript syntax error: {proc.stderr}'
     print('PORTAL_SITE_CONTRACT: PASS / CHROME_STORE / RU_EN / IMAGES / NO_REMOTE_JS')

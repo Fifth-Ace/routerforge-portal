@@ -3,10 +3,10 @@
 import hashlib, json, pathlib, re, zipfile
 R=pathlib.Path(__file__).resolve().parent.parent
 D=R/'release'
-M=json.loads((R/'manifest.json').read_text())
+M=json.loads((R/'manifest.json').read_text(encoding='utf-8'))
 v=M['version']
-script=(D/'routerforge-portal.user.js').read_text()
-meta=(D/'routerforge-portal.meta.js').read_text()
+script=(D/'routerforge-portal.user.js').read_text(encoding='utf-8')
+meta=(D/'routerforge-portal.meta.js').read_text(encoding='utf-8')
 assert script.startswith('// ==UserScript==\n')
 assert meta.startswith('// ==UserScript==\n')
 assert meta.rstrip().endswith('// ==/UserScript==')
@@ -35,7 +35,7 @@ with zipfile.ZipFile(n) as zipn,zipfile.ZipFile(f) as zipf:
     assert set(zipn.namelist())==set(zipf.namelist())
     for item in set(zipn.namelist())-{'manifest.json'}:assert zipn.read(item)==zipf.read(item)
     assert zipn.testzip() is None and zipf.testzip() is None
-for line in (D/'SHA256SUMS.txt').read_text().splitlines():
+for line in (D/'SHA256SUMS.txt').read_text(encoding='utf-8').splitlines():
     sha,file=line.split('  ',1)
     assert hashlib.sha256((D/file).read_bytes()).hexdigest()==sha
 print('CHANNEL_GATE: PASS (Chromium, Tampermonkey, Firefox unsigned dev, hashes, scope)')

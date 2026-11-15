@@ -65,6 +65,7 @@ jobs:
           cp site/index.html site/styles.css site/app.js .pages-output/
           cp assets/icon-128.png .pages-output/media/
           cp docs/screenshots/portal-preview.webp .pages-output/media/
+          cp docs/screenshots/portal-live-demo.gif .pages-output/media/
           cp docs/screenshots/portal-catalog.webp .pages-output/media/
           cp docs/screenshots/portal-settings-ru.webp .pages-output/media/
           cp docs/screenshots/portal-settings-en.webp .pages-output/media/

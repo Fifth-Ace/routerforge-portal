@@ -41,7 +41,7 @@ def build():
     main_js = (SOURCE/'content'/'bridge.js').read_text(encoding='utf-8')
     main_css = (SOURCE/'content'/'bridge.css').read_text(encoding='utf-8')
     # The native catalog is authoritative: derive Tampermonkey presets from the SAME module.
-    native=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {CATALOG} from './shared/catalog.js'; console.log(JSON.stringify(CATALOG))"],cwd=HERE,text=True))
+    native=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {CATALOG} from './shared/catalog.js'; console.log(JSON.stringify(CATALOG))"],cwd=HERE,text=True,encoding='utf-8'))
     catalog=[{k:row[k] for k in ('id','name','icon','category','port','path')} for row in native]
     reference=json.loads((HERE/'userscript'/'catalog.json').read_text(encoding='utf-8'))
     if catalog != reference: raise SystemExit('USERSCRIPT_CATALOG_DRIFT')
