@@ -22,7 +22,7 @@ test('P17 catalogue advanced configuration is collapsed; no visible obsolete 85 
 });
 test('P17 version label follows manifest and does not present fake local test',()=>{
  const m=JSON.parse(get('manifest.json'));
- assert.equal(m.version,'0.10.3');
+ assert.equal(m.version,JSON.parse(get('package.json')).version);
  assert.match(bridge,/make\('span','kb-build-tag','v'\+BRIDGE_VERSION\)/);
  assert.ok(userscript.includes("const VERSION='"+m.version+"'"), 'userscript version must match manifest.json');
  assert.match(userscript,/P17: current native Portal visual scale/);

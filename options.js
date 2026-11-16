@@ -1,4 +1,5 @@
 import {checkForUpdates} from './shared/updates.js';
+import {distributionChannel, updateChannelHelp, CHROME_STORE_URL} from './shared/store_channel.js';
 import { LANGUAGE_KEY, readLanguage, writeLanguage, localizeStatic, t } from './shared/i18n.js';
 import { readState, writeState, routerOrigin, cleanApp, cleanState, newState, KEY, hostMatch, GROUPS, orderedApps, appGroup, moveApp } from './shared/model.js';
 import { CATALOG, catalogById, catalogUrl, makeCatalogApp, validatePort } from './shared/catalog.js';
@@ -16,6 +17,19 @@ async function manualUpdateCheck() {
   const button=$('#check-updates'), statusEl=$('#update-status'), download=$('#update-download'), digest=$('#update-hash');
   button.disabled=true;download.hidden=true;download.removeAttribute('href');digest.hidden=true;
   $('#update-remote').textContent='—';
+  const channel=distributionChannel(chrome.runtime.getManifest(),chrome.runtime.id);
+  if(channel!=='manual'){
+    // Store-managed updates are signed and delivered by the browser; never suggest ZIP replacement.
+    statusEl.textContent=updateChannelHelp(channel,lang);
+    if(channel==='chrome-web-store'){
+      download.href=CHROME_STORE_URL;
+      download.textContent=lang==='en'?'Open Chrome Web Store':'Открыть Chrome Web Store';
+      download.hidden=false;
+    }
+    button.disabled=false;
+    return;
+  }
+  download.textContent=lang==='en'?'Download verified ZIP':'Скачать проверенный ZIP';
   statusEl.textContent=lang==='en'?'Checking GitHub Releases…':'Проверяю GitHub Releases…';
   try {
     // Request GitHub host access only on a direct user click; no network on startup.

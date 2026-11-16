@@ -37,3 +37,7 @@ jobs:
           ( cd release && sha256sum * > /tmp/second.sha256 )
           diff -u /tmp/first.sha256 /tmp/second.sha256
           echo ALL_CHANNELS_REPRODUCIBLE_PASS
+      - name: Validate Chrome and Mozilla store candidates
+        run: |
+          python3 tools/build_store_candidates.py
+          python3 tests/test_store_candidates.py

@@ -1,4 +1,5 @@
 dist/
+store_dist/
 release/
 node_modules/
 __pycache__/
