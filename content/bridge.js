@@ -2,7 +2,7 @@
   if (globalThis.__kbridgeInjected) return;
   globalThis.__kbridgeInjected = true;
 
-  const BRIDGE_VERSION = '0.10.12';
+  const BRIDGE_VERSION = '0.10.13';
   const LOCAL_FIX_ID = 'P14-PRODUCTION';
   const KEY = 'kbridgeState';
   const LANGUAGE_KEY = 'rfPortalLanguage';
@@ -388,10 +388,6 @@
     const button=p7DrawerButtons()[p7Selection];
     if(button)button.click();
   }
-  function p7Editable(target) {
-    return Boolean(target?.closest?.('input, textarea, select, [contenteditable="true"], [role="textbox"]'));
-  }
-
   function openExternal(id) {
     chrome.runtime.sendMessage({ type: 'OPEN_APP', id }).then(response => {
       if (!response?.ok) console.warn('RouterForge Portal:', response?.error);
@@ -869,7 +865,7 @@
       more.type = 'button'; more.addEventListener('click', ev => {ev.preventDefault();toggleDrawer();});
       list.append(more);
     }
-    const find = make('button','kb-nav-item kb-nav-find','⌕ '+L('quickFind')+' · Alt+Shift+K');
+    const find = make('button','kb-nav-item kb-nav-find','⌕ '+L('quickFind'));
     find.type='button';find.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();openAppSearch();});
     const add = make('button','kb-nav-item kb-nav-add','＋ '+L('addAny'));
     add.type='button';add.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();openNativeAdd();});
@@ -1227,16 +1223,7 @@
       if (host?.contains(event.target)) closeWorkspace();
     }, true);
     listen(document, 'keydown', event => {
-      // Ctrl/Cmd+K works only on the authenticated Keenetic shell and never steals
-      // text-editor shortcuts or shortcuts inside the embedded application's iframe.
-      // Some browsers reserve Ctrl+K for the address bar: Alt+Shift+K is a fallback.
-      const p7Key=event.key.toLowerCase()==='k'&&(
-        ((event.ctrlKey||event.metaKey)&&!event.altKey&&!event.shiftKey)||
-        (event.altKey&&event.shiftKey&&!event.ctrlKey&&!event.metaKey)
-      );
-      if(p7Key&&entry&&isAuthenticatedShell()&&!p7Editable(event.target)){
-        event.preventDefault();openAppSearch();return;
-      }
+      // No global app-search shortcut: browser/host shortcuts remain untouched.
       if(event.key==='Escape'){
         if(drawer&&!drawer.hidden){event.preventDefault();dismiss();return;}
         if(!workspace?.hidden)closeWorkspace();

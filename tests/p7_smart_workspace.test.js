@@ -5,15 +5,12 @@ import vm from 'node:vm';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const bridge=read('content/bridge.js'),css=read('content/bridge.css');
 
-test('P7 Ctrl/Cmd+K opens the native Keenetic launcher only when authenticated and not editing',()=>{
-  assert.match(bridge,/event\.ctrlKey\|\|event\.metaKey/);
-  assert.match(bridge,/event\.key\.toLowerCase\(\)==='k'/);
-  assert.match(bridge,/event\.altKey&&event\.shiftKey&&!event\.ctrlKey&&!event\.metaKey/);
-  assert.match(bridge,/entry&&isAuthenticatedShell\(\)&&!p7Editable\(event\.target\)/);
+test('P8 launcher opens only through explicit Keenetic menu action; no global K binding',()=>{
   assert.match(bridge,/function openAppSearch\(\)/);
   assert.match(bridge,/if\s*\(!drawer \|\| !profile \|\| !isAuthenticatedShell\(\)\) return;/);
-  assert.match(bridge,/function p7Editable\(target\)/);
-  assert.match(bridge,/\[contenteditable="true"\]/);
+  assert.match(bridge,/find\.addEventListener\('click'.*openAppSearch\(\)/);
+  assert.doesNotMatch(bridge,/p7Key|p7Editable|Alt\+Shift\+K|Ctrl\/Cmd\+K/);
+  assert.doesNotMatch(bridge,/event\.ctrlKey\|\|event\.metaKey/);
   assert.doesNotMatch(bridge,/history\.(pushState|replaceState)\s*=/);
 });
 test('P7 input supports arrows, Enter, Escape without closing the active app workspace',()=>{
@@ -46,7 +43,7 @@ test('P7 keeps all manual and Core apps, recent list does not duplicate apps',()
 });
 test('P7 Chromium, Firefox and Userscript share the unchanged bridge and permissions',()=>{
   const m=JSON.parse(read('manifest.json'));
-  assert.equal(m.version,'0.10.12');
+  assert.equal(m.version,'0.10.13');
   assert.deepEqual(m.permissions,['storage','scripting','activeTab']);
   assert.ok(!m.host_permissions);
   assert.ok(read('userscript/runtime.template.js').includes('__BRIDGE_JS__'));

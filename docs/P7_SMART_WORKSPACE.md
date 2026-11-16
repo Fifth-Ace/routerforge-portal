@@ -1,24 +1,19 @@
-# P7 — Smart Workspace / native Keenetic keyboard launcher
+# P7 — Smart Workspace / native Keenetic launcher
 
 ## Goal
-Make the existing Keenetic-integrated Portal menu genuinely useful for daily navigation. Do not create another status dashboard and do not limit manual third-party applications.
+Use the existing Keenetic navigation for finding and launching Portal applications. Avoid browser-level keyboard shortcuts and duplicate status dashboards. Keep manual third-party applications independent of Core.
 
-## Behaviour
+## Behavior
 
-- In an authenticated Keenetic shell, `Ctrl+K` or `Cmd+K` (fallback `Alt+Shift+K` if the browser reserves that shortcut) opens the existing Portal application search drawer and focuses the search field.
-- Shortcuts do not intercept keystrokes inside input, textarea, select, editable controls, or cross-origin embedded application frames.
-- The search field supports Arrow Up/Down, Enter to open the selected application, and Escape to close the drawer without closing the current application workspace.
-- The three most recently opened applications appear at the top of the drawer without duplicating entries in their normal groups. Recent order is volatile and wiped on teardown/logout.
-- Existing favorites and group ordering remain unchanged in the underlying profile; manual URLs and Core-sourced applications use exactly the same launcher.
-- `auto` and `embedded` still open inside Keenetic. The user's explicitly selected `external` mode remains honored.
-- Existing native add/edit/delete functions remain available. No Core installation required.
+- The native Keenetic Portal menu has an explicit search button. Global `Ctrl+K`, `Cmd+K` and `Alt+Shift+K` bindings are deliberately absent: browsers and host pages own those shortcuts.
+- In the opened search field, Arrow Up/Down selects applications, Enter launches the selection, and Escape closes only the drawer without closing the current embedded workspace.
+- The three most recently opened applications appear at the top without duplicating their regular group entries. Recent order is session-only and cleared on logout or extension teardown.
+- Manual URLs and apps imported from RouterForge Core share the same launcher and follow the user's saved open mode. New apps use embedded Keenetic mode by default.
+- Direct manual URL entry and edit/delete remain available with or without RouterForge Core.
 
-## Security and scope
+## Security and release
 
-- Does not modify Keenetic, Entware, Core, cookies, router configuration, profile schema, browser permissions, or network endpoints.
-- No background polling, telemetry, service scans, or profile persistence of recent launches.
-- No GitHub push or store submission before manual Chrome verification.
-
-## Chrome acceptance
-
-Open Keenetic with the P7 candidate loaded as an unpacked extension and verify: shortcut in the authenticated UI, search with two or more apps, arrow selection and Enter, Escape while an iframe is already open, recent list ordering without duplicates, manual URL, Core imported URL, and explicit external-mode behavior. Check RU and EN labels and collapsed Keenetic navigation. `STOP` on any regression.
+- No modification of Keenetic, Entware, Core, authentication cookies, profiles, browser permissions, or router API.
+- No background polling or scans; no persistence of recent launches.
+- P7 `0.10.12` passed local Chrome and CI. The removal of global shortcuts is part of P8 final acceptance `0.10.13`.
+- Store publication and GitHub Release require separate explicit authorization.

@@ -86,5 +86,5 @@ test('P6 native UI exposes user-click preview and import; no Core dependency for
   const manifest=JSON.parse(source('manifest.json'));
   assert.deepEqual(manifest.permissions,['storage','scripting','activeTab']);
   assert.ok(!('host_permissions' in manifest));
-  assert.equal(manifest.version,'0.10.12');
+  assert.equal(manifest.version,'0.10.13');
 });
