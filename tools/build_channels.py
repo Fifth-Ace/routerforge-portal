@@ -17,7 +17,7 @@ with zipfile.ZipFile(N) as z:
     files={n:z.read(n) for n in z.namelist()}
 firefox=dict(M)
 firefox['background']={'scripts':['background.js']}
-firefox['browser_specific_settings']={'gecko':{'id':'routerforge-portal@fifth-ace.github.io','strict_min_version':'121.0'}}
+firefox['browser_specific_settings']={'gecko':{'id':'routerforge-portal@fifth-ace.github.io','strict_min_version':'140.0','data_collection_permissions':{'required':['none']}}}
 files['manifest.json']=(json.dumps(firefox,ensure_ascii=False,sort_keys=True,indent=2)+'\n').encode('utf-8')
 firefox_file=D/f'routerforge-portal-firefox-UNSIGNED-DEV-v{V}.xpi'
 with zipfile.ZipFile(firefox_file,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:

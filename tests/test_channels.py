@@ -32,6 +32,9 @@ with zipfile.ZipFile(n) as zipn,zipfile.ZipFile(f) as zipf:
     assert mn['background']=={'service_worker':'background.js'}
     assert mf['background']=={'scripts':['background.js']}
     assert mf['browser_specific_settings']['gecko']['id']=='routerforge-portal@fifth-ace.github.io'
+    assert mf['browser_specific_settings']['gecko']['strict_min_version']=='140.0'
+    assert mf['browser_specific_settings']['gecko']['data_collection_permissions']=={'required':['none']}
+    assert 'browser_specific_settings' not in mn
     assert set(zipn.namelist())==set(zipf.namelist())
     for item in set(zipn.namelist())-{'manifest.json'}:assert zipn.read(item)==zipf.read(item)
     assert zipn.testzip() is None and zipf.testzip() is None
