@@ -14,6 +14,8 @@ test('Only installed local web metadata creates suggestions; no scanning or gues
   assert.equal(suggestions.length,2);
   assert.equal(suggestions[0].url,'http://192.168.10.1:55358/ui');
   assert.equal(suggestions[1].url,'https://192.168.10.1:8282/console');
+  assert.equal(suggestions[0].mode,'auto');
+  assert.equal(suggestions[1].mode,'auto');
 });
 test('Rejects unsafe web paths, protocols and off-router targets',()=>{
   const entries=[app('evil1','Evil',3000,'//evil.test/p'),app('evil2','Evil',3001,'/../admin'),app('evil3','Evil',3002,'/x\\evil'),app('evil4','Evil',3003,'/ok','javascript'),app('evil5','Evil',3004,'/bad#hash')];

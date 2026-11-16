@@ -39,7 +39,7 @@ export function suggestCoreWebApps(catalog, routerOrigin, existing = []) {
       const id = kind + '_' + entry.id;
       if (seen.has(id) || usedSources.has(id) || usedUrls.has(url.href)) continue;
       seen.add(id);usedUrls.add(url.href);
-      result.push(Object.freeze({coreSourceId:id,name:entry.name.trim(),url:url.href,icon:kind==='m'?'▣':'🌐',group:kind==='m'?'routerforge':'other',mode:'external'}));
+      result.push(Object.freeze({coreSourceId:id,name:entry.name.trim(),url:url.href,icon:kind==='m'?'▣':'🌐',group:kind==='m'?'routerforge':'other',mode:'auto'}));
       if (result.length >= 16) return result;
     }
   }

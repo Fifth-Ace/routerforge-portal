@@ -314,14 +314,21 @@ function renderApps(profile) {
     const arrow=document.createElement('span');arrow.className='app-arrow';arrow.textContent='↗';
     btn.append(icon,copy,arrow); btn.title = app.url;
     btn.addEventListener('click', async () => {
-      if (app.mode === 'external' || !tab?.id || origin !== chosen) {
-        chrome.tabs.create({ url: app.url }); return;
-      }
+      // Explicit external mode stays external. All other launches target Keenetic itself.
+      if (app.mode === 'external') { await chrome.tabs.create({url:app.url}); return; }
+      const selectedRouter=chosen;
+      if (!selectedRouter) return;
+      // Browser permission request starts inside the click gesture, before any await.
+      const grant=chrome.permissions.request({origins:[hostMatch(selectedRouter)]});
+      btn.disabled=true;
       try {
-        const reply = await chrome.tabs.sendMessage(tab.id, { type: 'SHOW_APP', id: app.id });
-        if (!reply?.ok) throw Error('Not injected');
+        if (!(await grant)) throw Error('ROUTER_PERMISSION_DENIED');
+        const reply=await chrome.runtime.sendMessage({type:'OPEN_EMBEDDED_APP',router:selectedRouter,id:app.id});
+        if (!reply?.ok) throw Error(reply?.error || 'KEENETIC_LAUNCH_FAILED');
         window.close();
-      } catch { chrome.tabs.create({ url: app.url }); }
+      } catch(error) {
+        status(coreText('Не удалось открыть внутри Keenetic: ','Could not open inside Keenetic: ')+error.message,'error');
+      } finally {btn.disabled=false;}
     });
     list.append(btn);
   }
