@@ -7,7 +7,7 @@ const popup=read('popup.js'), options=read('options.js'), html=read('popup.html'
 test('P3 popup uses same selected device for overview, core and applications',()=>{
   for(const id of ['router-overview','router-overview-list','router-overview-count'])assert.match(html,new RegExp('id="'+id+'"'));
   assert.match(popup,/renderRouterOverview\(state\)/);
-  assert.match(popup,/chooseRouter\(state,\s*chosen,\s*origin,\s*savedRouter\)/);
+  assert.match(popup,/chooseRouter\(state,\s*chosen,\s*origin,\s*defaultRouter\|\|savedRouter\)/);
   assert.match(popup,/saveSelectedRouter\(state,\s*target\)/);
   assert.match(popup,/resetCoreStatus\(chosen\)/);
 });

@@ -406,3 +406,32 @@ body.options-page{font-size:16px}
 .router-overview-help{margin:7px 0 0;font-size:9px;color:var(--soft)}
 .router-overview-settings .router-overview-list{max-height:265px}
 .router-overview-settings .router-overview-name{font-size:12px}
+
+
+/* P4 / compact popup and safe profile management */
+.popup details.router-overview,.popup details.core-status-card{display:block;margin:9px 0 0;padding:8px 10px}
+.popup details.router-overview[hidden],.popup details.core-status-card[hidden]{display:none}
+.popup .router-overview-head,.popup .core-status-head{cursor:pointer;list-style:none;margin:0;min-height:24px;display:flex;align-items:center;gap:8px}
+.popup .router-overview-head::-webkit-details-marker,.popup .core-status-head::-webkit-details-marker{display:none}
+.popup .router-overview-head::before,.popup .core-status-head::before{content:'▸';font-size:11px;color:var(--accent)}
+.popup details[open] > .router-overview-head::before,.popup details[open] > .core-status-head::before{content:'▾'}
+.popup .router-overview-head .count-chip,.popup .core-status-head #core-badge{margin-left:auto}
+.popup details.router-overview:not([open]) .router-overview-list,.popup details.core-status-card:not([open]) .core-status-actions{display:none}
+.popup .router-overview-list,.popup .core-modules-list,.popup .core-suggestions-list{max-height:none;overflow:visible}
+.popup .applist{max-height:none;overflow:visible}
+.popup .popup-favorite-controls{display:flex;align-items:center;justify-content:flex-start;gap:7px;margin:-2px 0 9px}
+.popup .popup-favorite-controls[hidden]{display:none}
+.popup .popup-favorite-controls button{padding:5px 9px;font-size:10px}
+.popup .popup-favorite-controls button[aria-pressed='true']{border-color:var(--accent);color:var(--accent)}
+.router-overview-settings .router-overview-list{max-height:none;overflow:visible}
+.router-overview-settings > summary{cursor:pointer;list-style:none}
+.router-overview-settings > summary::-webkit-details-marker{display:none}
+.router-overview-settings > summary::before{content:'▸';color:var(--accent)}
+.router-overview-settings[open] > summary::before{content:'▾'}
+.router-profile-controls{margin:10px 0;padding:10px;border:1px solid var(--line-soft);border-radius:7px}
+.router-profile-controls[hidden]{display:none}
+.router-profile-edit{display:flex;gap:6px;align-items:center;margin-top:6px}
+.router-profile-edit input{flex:1;min-width:0}
+.router-profile-edit button{flex-shrink:0;white-space:nowrap}
+.router-profile-default{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:9px}
+.router-profile-default .hint{flex:1;min-width:150px;font-size:10px;margin:0}

@@ -10,5 +10,6 @@ test('imported profiles require an explicit, user-initiated site grant, never im
   assert.match(popup, /await chrome\.runtime\.sendMessage\(\{type:'SYNC'\}\)/);
   assert.match(popup, /await chrome\.tabs\.reload\(tab\.id, \{ bypassCache: true \}\)/);
   assert.match(popup, /Профиль восстановлен, но разрешение браузера/);
-  assert.match(options, /Импорт завершён\. Если Portal не появился/);
+  assert.match(options, /Права браузера выдаются отдельно/);
+  assert.match(options, /mergeRouterProfiles\(state,next\)/);
 });

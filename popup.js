@@ -5,8 +5,9 @@ import { readCoreCatalogInTab, summarizeCoreModules } from './shared/core_catalo
 import { coreOriginForRouter, suggestCoreWebApps } from './shared/core_suggestions.js';
 import { routerOverview, routerProfileKeys, isCoreServiceOrigin, chooseRouter, readSelectedRouter, saveSelectedRouter } from './shared/router_overview.js';
 import { cleanApp } from './shared/model.js';
+import {readDefaultRouter,DEFAULT_ROUTER_KEY} from './shared/profile_tools.js';
 const $ = s => document.querySelector(s);
-let tab, origin = null, chosen = null, lang = 'ru', savedRouter = '';
+let tab, origin = null, chosen = null, lang = 'ru', savedRouter = '', defaultRouter = '', favoritesOnly = false;
 let coreProfileShown = null, coreRequestSerial = 0, modulesRequestSerial = 0;
 let coreCatalogRouter = null, coreCatalogSnapshot = null;
 const T = (source) => t(source,lang);
@@ -18,6 +19,7 @@ async function selectOverviewRouter(target) {
   const state=await readState();
   if (!Object.prototype.hasOwnProperty.call(state.routers,target)) return;
   chosen=target;
+  favoritesOnly=false;
   resetCoreStatus(chosen); // invalidates pending checks before waiting for storage
   savedRouter=await saveSelectedRouter(state,target);
   await refresh();
@@ -40,7 +42,8 @@ function renderRouterOverview(state) {
     meta.textContent=coreText(`${entry.apps} приложений · ${entry.favorites} избранных`,`Apps: ${entry.apps} · favorites: ${entry.favorites}`);
     const chips=document.createElement('span');chips.className='router-overview-chips';
     chips.textContent=[entry.activeTab?coreText('Текущая вкладка','Current tab'):null,
-      entry.coreLinked?coreText('Core привязан','Core linked'):coreText('Core не привязан','Core not linked')].filter(Boolean).join(' · ');
+      entry.coreLinked?coreText('Core привязан','Core linked'):coreText('Core не привязан','Core not linked'),
+      entry.origin===defaultRouter?coreText('★ Основной','★ Default'):null].filter(Boolean).join(' · ');
     select.append(title,meta,chips);
     select.addEventListener('click',()=>selectOverviewRouter(entry.origin).catch(error=>status(error.message,'error')));
     const open=document.createElement('button');open.type='button';open.className='router-overview-open';
@@ -290,9 +293,15 @@ async function diagnoseBridge() {
 }
 function renderApps(profile) {
   const list = $('#apps'); list.replaceChildren();
-  const activeApps=profile.apps.filter(a=>a.enabled!==false);
+  const allApps=profile.apps.filter(a=>a.enabled!==false);
+  const favoriteCount=allApps.filter(a=>a.favorite===true).length;
+  $('#popup-favorite-controls').hidden=allApps.length===0;
+  $('#popup-favorite-count').textContent=String(favoriteCount);
+  $('#popup-favorite-btn').setAttribute('aria-pressed',String(favoritesOnly));
+  $('#popup-favorite-btn').textContent=favoritesOnly?coreText('★ Все приложения','★ All apps'):coreText('☆ Избранное','☆ Favorites');
+  const activeApps=favoritesOnly?allApps.filter(a=>a.favorite===true):allApps;
   if (!activeApps.length) {
-    const msg = document.createElement('p'); msg.className = 'muted'; msg.textContent = T('Пока пусто. Добавь первую веб-панель.'); list.append(msg); return;
+    const msg = document.createElement('p'); msg.className = 'muted'; msg.textContent = favoritesOnly?coreText('Нет избранных приложений','No favorite apps'):T('Пока пусто. Добавь первую веб-панель.'); list.append(msg); return;
   }
   for (const app of activeApps) {
     const btn = document.createElement('button'); btn.className = 'appbutton';
@@ -320,7 +329,7 @@ function renderApps(profile) {
 async function refresh() {
   const state = await readState();
   const keys = routerProfileKeys(state);
-  chosen=chooseRouter(state,chosen,origin,savedRouter);
+  chosen=chooseRouter(state,chosen,origin,defaultRouter||savedRouter);
   const profile = chosen ? state.routers[chosen] : null;
   document.documentElement.dataset.theme = profile?.theme || 'auto';
   $('#connect').hidden = !origin || isCoreServiceOrigin(origin) || Boolean(state.routers[origin]);
@@ -353,6 +362,7 @@ async function refresh() {
 async function initialize() {
   lang=await readLanguage();
   savedRouter=await readSelectedRouter();
+  defaultRouter=await readDefaultRouter();
   translateUI();
   $('#popup-language').addEventListener('change',async e=>{ lang=await writeLanguage(e.target.value); await refresh(); });
   chrome.storage.onChanged.addListener(async (changes,area)=>{if(area==='local'&&LANGUAGE_KEY in changes){lang=await readLanguage();await refresh();}});
@@ -382,6 +392,8 @@ async function initialize() {
   $('#core-modules-btn').addEventListener('click', () => { checkSelectedModules().catch(console.error); });
   $('#core-link-btn').addEventListener('click', () => { confirmCoreAssociation().catch(console.error); });
   $('#choose-router').addEventListener('change', e => { selectOverviewRouter(e.target.value).catch(error=>status(error.message,'error')); });
+  $('#popup-favorite-btn').addEventListener('click',async()=>{favoritesOnly=!favoritesOnly;const data=await readState();if(data.routers[chosen])renderApps(data.routers[chosen]);});
+  chrome.storage.onChanged.addListener(async(changes,area)=>{if(area==='local' && DEFAULT_ROUTER_KEY in changes){defaultRouter=await readDefaultRouter();await refresh();}});
   [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   try { if (tab?.url) origin = routerOrigin(tab.url); } catch { origin = null; }
   if (origin) $('#router-name').value = new URL(origin).host;

@@ -7,7 +7,7 @@
       <img src="assets/routerforge-brand.png" alt="" class="brand-mark">
       <div class="brand-copy"><strong>RouterForge <em>Portal</em></strong><small>Единый центр приложений</small></div>
     </div>
-    <div class="popup-head-actions"><label class="language-control" for="popup-language"><select id="popup-language" aria-label="Язык интерфейса"><option value="ru">RU</option><option value="en">EN</option></select></label><span class="version-tag" id="popup-version">v0.10.7</span></div>
+    <div class="popup-head-actions"><label class="language-control" for="popup-language"><select id="popup-language" aria-label="Язык интерфейса"><option value="ru">RU</option><option value="en">EN</option></select></label><span class="version-tag" id="popup-version">v0.10.8</span></div>
   </header>
   <div class="popup-body">
     <div class="popup-eyebrow"><span class="eyebrow-dot"></span><span>KEENETIC / NETCRAZE</span><span class="divider-dot">·</span><span>WEBUI INTEGRATION</span></div>
@@ -24,13 +24,13 @@
     <section id="connected" hidden>
       <div class="sectionhead"><div><span class="kicker">ПОДКЛЮЧЕНОЕ УСТРОЙСТВО</span><h3 id="router-title">Мой Keenetic</h3></div><span class="status-pill">● Активно</span></div>
       <div id="choose-box" class="field" hidden><label for="choose-router">Выбрать устройство</label><select id="choose-router"></select></div>
-      <div id="router-overview" class="router-overview" hidden>
-        <div class="router-overview-head"><strong id="router-overview-title">Все роутеры</strong><span id="router-overview-count" class="count-chip">0</span></div>
+      <details id="router-overview" class="router-overview" hidden>
+        <summary class="router-overview-head"><strong id="router-overview-title">Все роутеры</strong><span id="router-overview-count" class="count-chip">0</span></summary>
         <div id="router-overview-list" class="router-overview-list"></div>
         <p id="router-overview-help" class="router-overview-help">Профили локальные · статус сети не проверяется</p>
-      </div>
-      <div class="core-status-card" id="core-card">
-        <div class="core-status-head"><strong>RouterForge Core</strong><span id="core-badge">○</span></div>
+      </details>
+      <details class="core-status-card" id="core-card">
+        <summary class="core-status-head"><strong>RouterForge Core</strong><span id="core-badge">○</span></summary>
         <p id="core-status" class="hint" role="status" aria-live="polite">Статус не проверялся</p>
         <div class="core-status-actions"><button id="core-check-btn" class="secondary" type="button">↻ Проверить Core</button><button id="core-open-btn" class="secondary" type="button">↗ Открыть Core</button></div>
         <p id="core-status-help" class="core-status-help">Только по нажатию · локальная проверка /api/health · без логина</p>
@@ -42,8 +42,9 @@
           <p id="core-suggestions-state" class="core-status-help">Сначала получи статус модулей</p>
           <div id="core-suggestions-list" class="core-suggestions-list" hidden></div>
         </div>
-      </div>
+      </details>
       <div class="sectionhead app-section-title"><h3>Приложения</h3><span id="popup-appcount" class="count-chip">0</span></div>
+      <div id="popup-favorite-controls" class="popup-favorite-controls" hidden><button id="popup-favorite-btn" class="secondary" type="button" aria-pressed="false">☆ Избранное</button><span id="popup-favorite-count" class="count-chip">0</span></div>
       <div id="apps" class="applist"></div>
       <div class="popup-actions"><button id="add-btn" class="primary">＋ Управление приложениями</button><button id="open-router-btn" class="secondary">↗ Открыть Keenetic</button></div>
     </section>

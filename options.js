@@ -3,9 +3,10 @@ import {distributionChannel, updateChannelHelp, CHROME_STORE_URL} from './shared
 import { LANGUAGE_KEY, readLanguage, writeLanguage, localizeStatic, t } from './shared/i18n.js';
 import { readState, writeState, routerOrigin, cleanApp, cleanState, newState, KEY, hostMatch, GROUPS, orderedApps, appGroup, moveApp } from './shared/model.js';
 import { CATALOG, catalogById, catalogUrl, makeCatalogApp, validatePort } from './shared/catalog.js';
+import {renameRouterProfile,mergeRouterProfiles,readDefaultRouter,saveDefaultRouter,DEFAULT_ROUTER_KEY} from './shared/profile_tools.js';
 import {routerOverview,routerProfileKeys,isCoreServiceOrigin,coreParentRouter,chooseRouter,readSelectedRouter,saveSelectedRouter} from './shared/router_overview.js';
 const $ = s => document.querySelector(s);
-let state = newState(), selected = '', editingId = null, lang = 'ru', appSearch = '';
+let state = newState(), selected = '', editingId = null, lang = 'ru', appSearch = '', defaultRouter = '';
 const catalogExpanded = new Set(); // UI-only; never changes saved router profiles
 const groupName = group => ({routerforge:'RouterForge',network:lang==='en'?'Network & VPN':'Сеть и VPN',security:lang==='en'?'DNS & Security':'DNS и защита',other:lang==='en'?'Other':'Другое'})[group] || group;
 const p11Text = (ru,en) => lang==='en'?en:ru;
@@ -77,7 +78,7 @@ function renderDeviceOverview() {
     pick.setAttribute('aria-pressed',String(entry.origin===selected));
     pick.append(node('span','router-overview-name',entry.label),
       node('span','router-overview-meta',p11Text(`${entry.apps} приложений · ${entry.favorites} избранных`,`Apps: ${entry.apps} · favorites: ${entry.favorites}`)),
-      node('span','router-overview-chips',entry.coreLinked?p11Text('Core привязан','Core linked'):p11Text('Core не привязан','Core not linked')));
+      node('span','router-overview-chips',(entry.origin===defaultRouter?'★ '+p11Text('Основной','Default')+' · ':'')+(entry.coreLinked?p11Text('Core привязан','Core linked'):p11Text('Core не привязан','Core not linked'))));
     pick.addEventListener('click',()=>selectDeviceOverview(entry.origin).catch(e=>notify(e.message,true)));
     const open=node('button','router-overview-open','↗');open.type='button';
     open.title=p11Text('Открыть роутер','Open router');open.setAttribute('aria-label',open.title+' '+entry.label);
@@ -99,6 +100,13 @@ function render() {
   renderDeviceOverview();
   const has = Boolean(selected);
   $('#no-routers').hidden = has; $('#router-actions').hidden = !has;
+  $('#router-profile-controls').hidden=!has;
+  $('#router-label-edit').disabled=!has;$('#router-rename-btn').disabled=!has;$('#router-default-btn').disabled=!has;
+  $('#router-label-edit').value=has?state.routers[selected].label:'';
+  $('#router-label-title').textContent=p11Text('Название профиля','Profile name');
+  $('#router-rename-btn').textContent=p11Text('Сохранить имя','Save name');
+  $('#router-default-btn').textContent=has && selected===defaultRouter?p11Text('★ Основной роутер','★ Default router'):p11Text('☆ Сделать основным','☆ Set as default');
+  $('#router-default-status').textContent=p11Text('Используется вне вкладки подключённого роутера','Used when no connected router tab is active');
   $('#router-theme').disabled = !has;
   $('#router-theme').value = has ? (state.routers[selected].theme || 'auto') : 'auto';
   $('#app-form').querySelectorAll('input,select,button').forEach(el => el.disabled = !has);
@@ -229,10 +237,20 @@ async function persist(message) {
 async function initialize() {
   lang = await readLanguage();
   state = await readState();
-  selected=chooseRouter(state,null,null,await readSelectedRouter()) || '';
+  defaultRouter=await readDefaultRouter();
+  selected=chooseRouter(state,null,null,defaultRouter||await readSelectedRouter()) || '';
   render(); translateUI();
   $('#ui-language').addEventListener('change',async e=>{lang=await writeLanguage(e.target.value);render();translateUI();notify(lang==='en'?'Language changed.':'Язык изменён.');});
   $('#routers').addEventListener('change', e => { selectDeviceOverview(e.target.value).catch(err=>notify(err.message,true)); });
+  $('#router-rename-btn').addEventListener('click',async()=>{
+    try{if(!selected)throw Error('ROUTER_NOT_SAVED');const target=selected;const next=renameRouterProfile(state,target,$('#router-label-edit').value);state=await writeState(next);render();notify(p11Text('Название профиля сохранено.','Profile name saved.'));}
+    catch(error){notify(p11Text('Не удалось переименовать: ','Rename failed: ')+error.message,true);}
+  });
+  $('#router-default-btn').addEventListener('click',async()=>{
+    try{if(!selected)throw Error('ROUTER_NOT_SAVED');defaultRouter=await saveDefaultRouter(state,selected);render();notify(p11Text('Основной роутер выбран.','Default router selected.'));}
+    catch(error){notify(error.message,true);}
+  });
+  $('#import-mode').addEventListener('change',()=>{const replace=$('#import-mode').value==='replace';$('#import-mode-help').textContent=replace?p11Text('Внимание: полная замена удаляет все текущие профили после отдельного подтверждения.','Warning: replacement removes all existing profiles after explicit confirmation.'):p11Text('Добавятся только новые адреса. Существующие профили, порты, приложения и избранное сохраняются.','Only new device addresses are added. Existing profiles and apps stay untouched.');});
   $('#app-search').addEventListener('input',e=>{appSearch=e.target.value.trim();render();});
   $('#quick-setup').addEventListener('click',async()=>{
     if(!selected)return;const ids=['routerforge','awg-manager','nfqws-web'];
@@ -280,17 +298,25 @@ async function initialize() {
     try {
       if (file.size>200000) throw Error(T('Файл слишком большой.'));
       const next=cleanState(JSON.parse(await file.text()));
-      if (!confirm(lang==='en'?'Replace all existing profiles and applications with the imported configuration?':'Заменить текущие профили и приложения импортированными?')) return;
-      state=next; selected=''; clearForm(); await persist(lang==='en'
-        ? 'Import complete. Open each router tab and grant browser site access from the Portal popup if needed.'
-        : 'Импорт завершён. Если Portal не появился, открой вкладку роутера и нажми «Разрешить доступ и обновить вкладку» в окне Portal.');
+      const replace=$('#import-mode').value==='replace';
+      if(replace){
+        if(!confirm(p11Text(`ПОЛНАЯ ЗАМЕНА: будут удалены ${Object.keys(state.routers).length} текущих профилей. Продолжить?`,`REPLACE ALL: ${Object.keys(state.routers).length} existing profiles will be removed. Continue?`)))return;
+        state=await writeState(next);selected='';clearForm();render();notify(p11Text('Профили полностью заменены. Права браузера выдаются отдельно.','Profiles replaced. Browser permissions must be granted separately.'));
+      }else{
+        const preview=mergeRouterProfiles(state,next);
+        if(preview.added===0)throw Error('NO_NEW_PROFILES');
+        if(!confirm(p11Text(`Добавить ${preview.added} новых профилей? Уже существующих совпадений: ${preview.skipped}. Данные не перезаписываются.`,`Add ${preview.added} new profiles? Skipped existing: ${preview.skipped}. No data overwritten.`)))return;
+        state=await writeState(preview.state);render();notify(p11Text(`Добавлено профилей: ${preview.added}. Существующие сохранены.`,`Profiles added: ${preview.added}. Existing profiles untouched.`));
+      }
     } catch (error) { notify((lang==='en'?'Import failed: ':'Импорт не выполнен: ')+T(error.message),true); }
   });
-  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.7');
+  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.8');
+  $('#options-header-version').textContent=$('#update-current').textContent;
   $('#check-updates').addEventListener('click', manualUpdateCheck);
   chrome.storage.onChanged.addListener(async (changes,area) => {
     if(area==='local' && KEY in changes){ state=await readState(); render(); }
     if(area==='local' && LANGUAGE_KEY in changes){ lang=await readLanguage(); render(); translateUI(); }
+    if(area==='local' && DEFAULT_ROUTER_KEY in changes){ defaultRouter=await readDefaultRouter();render(); }
   });
 }
 initialize().catch(e=>notify(e.message,true));

@@ -2,7 +2,7 @@
 <html lang="ru">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RouterForge Portal — Центр приложений</title><link rel="stylesheet" href="ui.css"></head>
 <body class="options-page">
-<div class="pagebar"><div class="pagebar-inner"><div class="identity"><img src="assets/routerforge-brand.png" class="brand-mark" alt=""><div class="brand-copy"><strong>RouterForge <em>Portal</em></strong><small>WEBUI APPLICATION HUB</small></div></div><div class="pagebar-right"><label class="language-control" for="ui-language"><span>RU / EN</span><select id="ui-language" aria-label="Язык интерфейса"><option value="ru">Русский</option><option value="en">English</option></select></label><span class="edition-pill"><span class="eyebrow-dot"></span> Browser Extension</span><span class="version-tag">v0.10.3</span></div></div></div>
+<div class="pagebar"><div class="pagebar-inner"><div class="identity"><img src="assets/routerforge-brand.png" class="brand-mark" alt=""><div class="brand-copy"><strong>RouterForge <em>Portal</em></strong><small>WEBUI APPLICATION HUB</small></div></div><div class="pagebar-right"><label class="language-control" for="ui-language"><span>RU / EN</span><select id="ui-language" aria-label="Язык интерфейса"><option value="ru">Русский</option><option value="en">English</option></select></label><span class="edition-pill"><span class="eyebrow-dot"></span> Browser Extension</span><span class="version-tag" id="options-header-version">v0.10.8</span></div></div></div>
 <div class="dashboard">
   <header class="page-intro"><div class="intro-text"><div class="kicker">ROUTERFORGE ECOSYSTEM / PORTAL</div><h1>Центр приложений</h1><p class="lead">Сторонние веб-панели в привычном интерфейсе Keenetic — без установки модулей на роутер.</p></div><div class="feature-chips"><span>◈ Независим от Core</span><span>▣ 2 режима открытия</span><span>⌘ Локальные профили</span></div></header>
   <div id="message" role="status" aria-live="polite" hidden></div>
@@ -13,11 +13,16 @@
         <div class="field"><label for="routers">Активный профиль</label><select id="routers"></select></div>
         <div id="no-routers" class="hint">Открой веб-панель Keenetic и подключи устройство через значок расширения.</div>
         <div id="router-actions" class="actions2" hidden><button id="open-router" class="secondary">↗ Открыть роутер</button><button id="delete-router" class="mini danger">Удалить профиль</button></div>
-        <div class="router-overview-settings" id="router-overview-settings" hidden>
-          <div class="router-overview-head"><strong id="router-overview-settings-title">Сохранённые устройства</strong><span class="count-chip" id="router-overview-settings-count">0</span></div>
+        <div class="router-profile-controls" id="router-profile-controls" hidden>
+          <label for="router-label-edit" id="router-label-title">Название профиля</label>
+          <div class="router-profile-edit"><input id="router-label-edit" maxlength="70" autocomplete="off" placeholder="Название роутера"><button id="router-rename-btn" class="secondary" type="button">Сохранить имя</button></div>
+          <div class="router-profile-default"><button id="router-default-btn" class="secondary" type="button">☆ Сделать основным</button><span id="router-default-status" class="hint">Выбирается при открытии Portal вне вкладки роутера</span></div>
+        </div>
+        <details class="router-overview-settings" id="router-overview-settings" hidden>
+          <summary class="router-overview-head"><strong id="router-overview-settings-title">Сохранённые устройства</strong><span class="count-chip" id="router-overview-settings-count">0</span></summary>
           <div class="router-overview-list" id="router-overview-settings-list"></div>
           <p class="router-overview-help" id="router-overview-settings-help">Локальные профили, без фоновой проверки доступности.</p>
-        </div>
+        </details>
       </section>
       <section class="panel">
         <div class="panel-title"><div><span class="kicker">ОФОРМЛЕНИЕ</span><h2>Внешний вид</h2></div><span class="panel-icon">◐</span></div>
@@ -26,13 +31,14 @@
       <section class="panel">
         <div class="panel-title"><div><span class="kicker">ПРОФИЛИ</span><h2>Резервная копия</h2></div><span class="panel-icon">⇅</span></div>
         <p class="hint">Сохрани список устройств и приложений в JSON. Токены и пароли в адресах не храни.</p>
+        <label for="import-mode">Режим восстановления</label><select id="import-mode"><option value="merge">Добавить новые профили (без замены)</option><option value="replace">Полностью заменить все профили</option></select>
         <div class="import-actions"><button id="export" class="secondary">↓ Экспорт JSON</button><button id="import" class="secondary">↑ Импорт JSON</button><input id="file" type="file" accept="application/json,.json" class="sr-only"></div>
-        <p class="hint warning-text">Импорт заменяет текущие настройки. Права браузера выдаются отдельно.</p>
+        <p class="hint warning-text" id="import-mode-help">По умолчанию сохраняем существующие устройства и приложения. При совпадении адреса профиль не заменяется. Права браузера выдаются отдельно.</p>
       </section>
       <section class="panel update-panel" id="portal-updates">
         <div class="panel-title"><div><span class="kicker">RELEASES / UPDATES</span><h2>Обновления Portal</h2></div><span class="panel-icon">↻</span></div>
         <p class="hint">Магазинные версии обновляются через браузер. Для распакованного Chromium-расширения доступна ручная проверка GitHub Releases. Userscript обновляется через Tampermonkey или Violentmonkey.</p>
-        <div class="update-versions"><span>Установлено <b id="update-current">v0.10.7</b></span><span>GitHub <b id="update-remote">—</b></span></div>
+        <div class="update-versions"><span>Установлено <b id="update-current">v0.10.8</b></span><span>GitHub <b id="update-remote">—</b></span></div>
         <p id="update-status" class="hint" role="status" aria-live="polite">Нажми «Проверить» для обращения к GitHub Releases.</p>
         <div class="import-actions"><button id="check-updates" class="secondary" type="button">↻ Проверить обновления</button><a id="update-download" class="secondary rf-update-link" href="#" target="_blank" rel="noopener noreferrer" hidden>↓ Скачать ZIP</a></div>
         <p id="update-hash" class="hint rf-update-hash" hidden></p>
