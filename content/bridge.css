@@ -50,6 +50,13 @@
 #kbridge-drawer .kbapp{display:flex!important;gap:9px!important;width:100%!important;padding:10px!important;margin:3px 0!important;border:0!important;border-radius:5px!important;background:transparent!important;text-align:left!important;color:var(--kb-text)!important;font-size:12px!important;}
 #kbridge-drawer .kbapp:hover{background:var(--kb-hover)!important;}
 #kbridge-drawer .kbmuted{font-size:12px!important;color:var(--kb-muted)!important;}
+/* P5 native-first launcher. Search and manual add are available even without Core. */
+#kbridge-entry .kb-nav-find{color:var(--kb-accent)!important;}
+#kbridge-entry .kb-nav-add{color:var(--kb-accent)!important;font-weight:600!important;}
+#kbridge-drawer .kb-drawer-search{display:block!important;width:100%!important;box-sizing:border-box!important;min-height:36px!important;margin:2px 0 8px!important;padding:7px 10px!important;border:1px solid var(--kb-line)!important;border-radius:6px!important;background:var(--kb-control)!important;color:var(--kb-text)!important;font:inherit!important;font-size:12px!important;}
+#kbridge-drawer .kb-drawer-search:focus-visible{outline:2px solid var(--kb-accent)!important;outline-offset:1px!important;}
+#kbridge-drawer .kb-drawer-add{display:block!important;width:100%!important;margin:0 0 10px!important;padding:8px 10px!important;border:1px solid var(--kb-line)!important;border-radius:6px!important;color:var(--kb-accent)!important;background:var(--kb-hover)!important;text-align:left!important;font-size:12px!important;font-weight:650!important;}
+#kbridge-drawer .kb-drawer-add:hover{background:var(--kb-selected)!important;}
 @media(max-width:850px){#kbridge-workspace{border-radius:0!important;}#kbridge-entry.kbridge-floating{top:60px!important;}}
 
 /* Compact native Keenetic icon rail: a single app button, never a 215px menu. */

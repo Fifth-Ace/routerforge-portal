@@ -334,7 +334,7 @@ async function refresh() {
   document.documentElement.dataset.theme = profile?.theme || 'auto';
   $('#connect').hidden = !origin || isCoreServiceOrigin(origin) || Boolean(state.routers[origin]);
   $('#connected').hidden = !profile;
-  $('#choose-box').hidden = keys.length < 2;
+  $('#choose-box').hidden = true; // P5: the unified router overview is the sole selector
   const chooser = $('#choose-router'); chooser.replaceChildren();
   for (const key of keys) {
     const option = document.createElement('option'); option.value = key;

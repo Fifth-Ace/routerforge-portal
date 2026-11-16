@@ -2,13 +2,13 @@
   if (globalThis.__kbridgeInjected) return;
   globalThis.__kbridgeInjected = true;
 
-  const BRIDGE_VERSION = '0.10.8';
+  const BRIDGE_VERSION = '0.10.9';
   const LOCAL_FIX_ID = 'P14-PRODUCTION';
   const KEY = 'kbridgeState';
   const LANGUAGE_KEY = 'rfPortalLanguage';
   let language = 'ru';
   const TXT = {
-    applications:'Приложения', heading:'ПРИЛОЖЕНИЯ', customize:'+ Настроить приложения',
+    applications:'Приложения', heading:'ПРИЛОЖЕНИЯ', quickFind:'Найти приложение', addAny:'Добавить веб-приложение', searchPlaceholder:'Поиск по имени или адресу', searchNoResults:'Ничего не найдено', customize:'+ Настроить приложения',
     configure:'⚙ Настроить', close:'Закрыть', openTab:'Открыть в отдельной вкладке',
     back:'Вернуться в Keenetic', issue:'Проблемы с открытием панели?',
     help:'Если приложение не загрузилось, попробуй открыть его отдельно. ',
@@ -20,7 +20,7 @@
     tabs:'Открытые приложения', tabClose:'Закрыть вкладку', tabLimit:'Максимум три активные панели; старая вкладка выгружается из памяти', favorites:'ИЗБРАННОЕ', nativeSettings:'Настройки Portal', nativeSubtitle:'Управление приложениями этого роутера · без изменения Keenetic', nativeSearch:'Поиск приложений…', nativeAdd:'Добавить приложение', nativeQuick:'Быстро добавить', nativeFull:'Дополнительные настройки и резервные копии', nativeReturn:'Вернуться к приложениям', nativeName:'Название', nativeAddress:'Адрес HTTP(S)', nativeMode:'Открывать', nativeGroup:'Группа', nativeTheme:'Тема', nativeLanguage:'Язык', nativeFavorite:'Избранное', nativeSave:'Сохранить', nativeCancel:'Отмена', nativeEdit:'Изменить', nativeDelete:'Удалить', nativeUp:'Выше', nativeDown:'Ниже', nativeEmpty:'Здесь пока нет приложений', nativeError:'Не удалось сохранить', nativeSaved:'Изменения сохранены', nativeConfirmDelete:'Удалить приложение из списка?', nativeConfirmQuick:'Добавить RouterForge Core, AWG Manager и nfqws с типовыми портами? Существующие записи не изменятся.', nativeAuto:'Автоматически', nativeEmbed:'Внутри Keenetic', nativeExternal:'В отдельной вкладке', nativeDark:'Тёмная', nativeLight:'Светлая', nativeAutoTheme:'Как в Keenetic', nativeEnabled:'Включено', nativeDisabled:'Отключено', nativeUrlError:'Нужен адрес http:// или https:// без логина и пароля', group_routerforge:'ROUTERFORGE', group_network:'СЕТЬ И VPN', group_security:'DNS И ЗАЩИТА', group_other:'ДРУГОЕ'
   };
   const TXT_EN = {
-    applications:'Applications', heading:'APPLICATIONS', customize:'+ Configure applications',
+    applications:'Applications', heading:'APPLICATIONS', quickFind:'Find an app', addAny:'Add any web app', searchPlaceholder:'Search names or addresses', searchNoResults:'No matching apps', customize:'+ Configure applications',
     configure:'⚙ Configure', close:'Close', openTab:'Open in a separate tab',
     back:'Back to Keenetic', issue:'Having trouble opening the app?',
     help:'If the application does not load, try opening it separately. ',
@@ -40,6 +40,8 @@
     const set=(sel,attr,key)=>{ const el=document.querySelector(sel); if(el){ if(attr==='text')el.textContent=L(key); else el.setAttribute(attr,L(key)); }};
     set('#kbridge-drawer .kbhead strong','text','applications');
     set('#kbridge-drawer .kb-drawer-settings','text','configure');
+    set('#kbridge-drawer .kb-drawer-add','text','addAny');
+    set('#kbridge-drawer .kb-drawer-search','placeholder','searchPlaceholder');
     set('#kbridge-drawer .kbclose','title','close');
     set('#kbridge-workspace .kbcrumb','text','applications');
     for(const [sel,attr,key] of [
@@ -73,6 +75,7 @@
   const MAX_WORKSPACE_FRAMES = 3;
   const frames = new Map(); // id -> {frame,url,loading,slow}, Map order = least recent first
   let frameStack = null;
+  let drawerSearch = ''; // UI-only, never persisted or uploaded
 
   const make = (tag, className = '', text) => {
     const node = document.createElement(tag);
@@ -339,6 +342,19 @@
     if (!drawer) return;
     drawer.hidden = !drawer.hidden;
     if (!drawer.hidden) { renderDrawer(); positionDrawer(); }
+  }
+  // Explicit user actions only. No Core dependency, background probing or router API writes.
+  function openAppSearch() {
+    if (!drawer || !profile || !isAuthenticatedShell()) return;
+    drawer.hidden=false;renderDrawer();positionDrawer();
+    const search=drawer.querySelector('.kb-drawer-search');
+    if (search) { search.focus();search.select(); }
+  }
+  function openNativeAdd() {
+    if (!profile || !isAuthenticatedShell()) return;
+    openNativeSettings();
+    settingsEditingId='__new__';
+    renderNativeSettings();
   }
   function openExternal(id) {
     chrome.runtime.sendMessage({ type: 'OPEN_APP', id }).then(response => {
@@ -762,8 +778,10 @@
   function renderDrawer() {
     if (!drawer || !profile) return;
     const list = drawer.querySelector('.kblist'); list.replaceChildren();
-    const activeApps = p11Ordered();
-    if (!activeApps.length) list.append(make('p', 'kbmuted', L('drawerEmpty')));
+    const query=drawerSearch.trim().toLocaleLowerCase();
+    const activeApps=p11Ordered().filter(app=>!query ||
+      [app.name,app.url,L('group_'+p11Group(app))].some(value=>String(value||'').toLocaleLowerCase().includes(query)));
+    if (!activeApps.length) list.append(make('p','kbmuted',query?L('searchNoResults'):L('drawerEmpty')));
     let lastGroup='';
     for (const app of activeApps) {
       const group=p11Label(app);if(group!==lastGroup){list.append(make('div','kb-group-label',L(group)));lastGroup=group;}
@@ -801,6 +819,11 @@
       more.type = 'button'; more.addEventListener('click', ev => {ev.preventDefault();toggleDrawer();});
       list.append(more);
     }
+    const find = make('button','kb-nav-item kb-nav-find','⌕ '+L('quickFind'));
+    find.type='button';find.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();openAppSearch();});
+    const add = make('button','kb-nav-item kb-nav-add','＋ '+L('addAny'));
+    add.type='button';add.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();openNativeAdd();});
+    list.append(find,add);
     const settings = make('button', 'kb-nav-settings', L('customize'));
     settings.type = 'button'; settings.classList.toggle('kb-active',settingsOpen); settings.setAttribute('aria-current',settingsOpen?'page':'false'); settings.addEventListener('click', ev => {
       ev.preventDefault(); ev.stopPropagation(); openNativeSettings();
@@ -893,7 +916,8 @@
     edit.append(settingsNode('h3','',app?L('nativeEdit'):L('nativeAdd')));
     const formFields=settingsNode('div','kb-ns-fields');edit.append(formFields);
     const name=nativeInput(formFields,L('nativeName'),app?.name||'');name.maxLength=70;
-    const address=nativeInput(formFields,L('nativeAddress'),app?.url||('http://'+location.hostname+':8080/'));
+    const address=nativeInput(formFields,L('nativeAddress'),app?.url||'');
+    address.placeholder='http://'+location.hostname+':8080/'; // example only; never silently assume a port
     const mode=nativeSelect(formFields,L('nativeMode'),app?.mode||'auto', [['auto',L('nativeAuto')],['embedded',L('nativeEmbed')],['external',L('nativeExternal')]]);
     const group=nativeSelect(formFields,L('nativeGroup'),app?nativeGroup(app):'other',p11Groups.map(id=>[id,L('group_'+id)]));
     const enabled=settingsNode('label','kb-ns-checkbox');const check=settingsNode('input');check.type='checkbox';check.checked=app?.enabled!==false;enabled.append(check,settingsNode('span','',L('nativeEnabled')));edit.append(enabled);
@@ -996,7 +1020,13 @@
     configure.addEventListener('click',openNativeSettings);
     const close = make('button','kbclose','×'); close.title = L('close'); close.type='button';
     close.addEventListener('click',dismiss); head.append(configure, close);
-    drawer.append(head,make('div','kblist'));
+    const drawerSearchField=make('input','kb-drawer-search');drawerSearchField.type='search';
+    drawerSearchField.placeholder=L('searchPlaceholder');drawerSearchField.value=drawerSearch;
+    drawerSearchField.setAttribute('aria-label',L('quickFind'));
+    drawerSearchField.addEventListener('input',()=>{drawerSearch=drawerSearchField.value;renderDrawer();});
+    const drawerAdd=make('button','kb-drawer-add','＋ '+L('addAny'));drawerAdd.type='button';
+    drawerAdd.addEventListener('click',openNativeAdd);
+    drawer.append(head,drawerSearchField,drawerAdd,make('div','kblist'));
     nativeRoute = location.href;
     workspace = make('section'); workspace.id = 'kbridge-workspace'; workspace.dataset.kbVersion = BRIDGE_VERSION; workspace.hidden = true;
     const bar = make('div', 'kbbar');
