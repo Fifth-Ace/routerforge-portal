@@ -72,6 +72,13 @@ p{margin-bottom:10px}
 #message.error{border-color:var(--danger);color:var(--danger)}
 .sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
 /* Browser toolbar popup */
+.popup .core-status-card{margin:13px 0 0;border:1px solid var(--line-soft);background:var(--panel);border-radius:7px;padding:10px}
+.popup .core-status-head{display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.popup .core-status-head span{color:var(--ok);font-size:12px}
+.popup .core-status-card .hint{margin:5px 0;font-size:11px;overflow-wrap:anywhere}
+.popup .core-status-actions{display:flex;gap:6px;margin-top:8px}
+.popup .core-status-actions button{flex:1;min-width:0;padding:7px 4px;font-size:10px}
+.popup .core-status-help{font-size:9px;color:var(--soft);margin:6px 0 0}
 body.popup {width:392px;min-width:392px;max-height:610px;overflow-y:auto}
 .popup-brand{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg-top);padding:16px 18px 15px;border-bottom:1px solid var(--line)}
 .popup-brand::after{content:"";position:absolute;bottom:-1px;left:18px;width:78px;height:2px;background:linear-gradient(90deg,var(--accent-2),var(--accent))}

@@ -253,7 +253,7 @@ async function initialize() {
         : 'Импорт завершён. Если Portal не появился, открой вкладку роутера и нажми «Разрешить доступ и обновить вкладку» в окне Portal.');
     } catch (error) { notify((lang==='en'?'Import failed: ':'Импорт не выполнен: ')+T(error.message),true); }
   });
-  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.3');
+  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.5');
   $('#check-updates').addEventListener('click', manualUpdateCheck);
   chrome.storage.onChanged.addListener(async (changes,area) => {
     if(area==='local' && KEY in changes){ state=await readState(); render(); }

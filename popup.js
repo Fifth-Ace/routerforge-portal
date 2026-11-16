@@ -1,12 +1,55 @@
 import { LANGUAGE_KEY, readLanguage, writeLanguage, localizeStatic, t } from './shared/i18n.js';
 import { readState, writeState, routerOrigin, hostMatch } from './shared/model.js';
+import { coreEndpoint, probeCore } from './shared/core_probe.js';
 const $ = s => document.querySelector(s);
 let tab, origin = null, chosen = null, lang = 'ru';
+let coreProfileShown = null, coreRequestSerial = 0;
 const T = (source) => t(source,lang);
-function translateUI(){ document.documentElement.lang=lang; $('#popup-language').value=lang; localizeStatic(document.body,lang); }
+function translateUI(){ document.documentElement.lang=lang; $('#popup-language').value=lang; localizeStatic(document.body,lang); $('#core-status-help').textContent=lang==='en'?'On demand · local /api/health · no login':'Только по нажатию · локальная проверка /api/health · без логина'; }
 
 function status(message, type = 'info') { $('#status').textContent = message; $('#status').dataset.type = type; }
 function options() { chrome.runtime.openOptionsPage(); }
+function coreText(ru,en) { return lang==='en'?en:ru; }
+function resetCoreStatus(profileOrigin) {
+  coreRequestSerial++;
+  coreProfileShown=profileOrigin;
+  const box=$('#core-card'); box.hidden=!profileOrigin;
+  $('#core-badge').textContent='○';
+  $('#core-status').textContent=coreText('Статус не проверялся','Not checked');
+  $('#core-open-btn').disabled=!profileOrigin;
+  $('#core-check-btn').disabled=!profileOrigin;
+  $('#core-check-btn').textContent=coreText('↻ Проверить Core','↻ Check Core');
+  $('#core-open-btn').textContent=coreText('↗ Открыть Core','↗ Open Core');
+}
+async function checkSelectedCore() {
+  const router=chosen;
+  if(!router) return;
+  const endpoint=coreEndpoint(router);
+  // Request immediately in the browser click gesture, before the first await.
+  const permission=chrome.permissions.request({origins:[hostMatch(endpoint.origin)]});
+  const serial=++coreRequestSerial;
+  const button=$('#core-check-btn'); button.disabled=true;
+  $('#core-badge').textContent='…';
+  $('#core-status').textContent=coreText('Проверяю Core на порту 2233…','Checking Core on port 2233…');
+  try {
+    // The browser prompts for access to the selected router host ONLY after this user click.
+    const granted=await permission;
+    if (!granted) throw Error('CORE_PERMISSION_DENIED');
+    const state=await readState();
+    if (!Object.hasOwn(state.routers,router)) throw Error('PROFILE_GONE');
+    const health=await probeCore(router);
+    if(chosen!==router || serial!==coreRequestSerial)return;
+    $('#core-badge').textContent='●';
+    $('#core-status').textContent=coreText('Core доступен · версия ','Core online · version ')+health.version;
+  } catch (error) {
+    if(chosen!==router || serial!==coreRequestSerial)return;
+    $('#core-badge').textContent='○';
+    $('#core-status').textContent=error.message==='CORE_PERMISSION_DENIED'
+      ?coreText('Разрешение браузера не выдано','Browser site permission not granted')
+      :coreText('Core не подтверждён: проверь адрес и порт 2233','Core not verified: check router address and port 2233');
+  } finally {if(chosen===router && serial===coreRequestSerial) button.disabled=false;}
+}
+
 async function diagnoseBridge() {
   const box = $('#diagnostics');
   const button = $('#repair-btn');
@@ -100,6 +143,7 @@ async function refresh() {
     chooser.append(option);
   }
   chooser.value = chosen || '';
+  if (coreProfileShown !== chosen) resetCoreStatus(chosen);
   if (profile) {
     const permitted = chosen === origin && await chrome.permissions.contains({origins:[hostMatch(origin)]});
     status((permitted ? (lang==='en'?'● Portal connected: ':'● Portal подключён: ') : (lang==='en'?'● Saved router profile: ':'● Профиль роутера сохранён: ')) + chosen, permitted?'ok':'info');
@@ -138,6 +182,8 @@ async function initialize() {
   $('#updates-btn').addEventListener('click', () => chrome.runtime.openOptionsPage());
   $('#add-btn').addEventListener('click', options);
   $('#open-router-btn').addEventListener('click', () => { if (chosen) chrome.tabs.create({url: chosen}); });
+  $('#core-check-btn').addEventListener('click', () => { checkSelectedCore().catch(console.error); });
+  $('#core-open-btn').addEventListener('click', () => { if(chosen) chrome.tabs.create({url:coreEndpoint(chosen).page}); });
   $('#choose-router').addEventListener('change', e => { chosen=e.target.value; refresh(); });
   [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   try { if (tab?.url) origin = routerOrigin(tab.url); } catch { origin = null; }
