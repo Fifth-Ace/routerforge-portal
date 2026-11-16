@@ -59,6 +59,11 @@
 #kbridge-drawer .kbapp{display:flex!important;gap:9px!important;width:100%!important;padding:10px!important;margin:3px 0!important;border:0!important;border-radius:5px!important;background:transparent!important;text-align:left!important;color:var(--kb-text)!important;font-size:12px!important;}
 #kbridge-drawer .kbapp:hover{background:var(--kb-hover)!important;}
 #kbridge-drawer .kbmuted{font-size:12px!important;color:var(--kb-muted)!important;}
+/* P7 Smart Workspace: scoped keyboard launcher and session-only recent apps. */
+#kbridge-drawer .kb-p7-hint{font-size:10px!important;color:var(--kb-muted)!important;text-align:right!important;padding:4px 4px 7px!important;}
+#kbridge-drawer .kb-p7-recent{color:var(--kb-accent)!important;}
+#kbridge-drawer .kbapp[data-kb-selected="true"]{background:var(--kb-selected)!important;color:var(--kb-text)!important;outline:1px solid var(--kb-accent)!important;outline-offset:-1px!important;}
+#kbridge-drawer .kbapp:focus-visible{outline:2px solid var(--kb-accent)!important;outline-offset:-2px!important;}
 /* P5 native-first launcher. Search and manual add are available even without Core. */
 #kbridge-entry .kb-nav-find{color:var(--kb-accent)!important;}
 #kbridge-entry .kb-nav-add{color:var(--kb-accent)!important;font-weight:600!important;}

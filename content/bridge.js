@@ -2,7 +2,7 @@
   if (globalThis.__kbridgeInjected) return;
   globalThis.__kbridgeInjected = true;
 
-  const BRIDGE_VERSION = '0.10.11';
+  const BRIDGE_VERSION = '0.10.12';
   const LOCAL_FIX_ID = 'P14-PRODUCTION';
   const KEY = 'kbridgeState';
   const LANGUAGE_KEY = 'rfPortalLanguage';
@@ -17,6 +17,7 @@
     slow:'Панель загружается дольше обычного', refresh:'Перезагрузить панель',
     widthNative:'По ширине Keenetic', widthWide:'На всю доступную ширину', widthError:'Не удалось сохранить ширину',
     fit:'Границы WebUI', fitLeft:'Слева', fitRight:'Справа', fitReset:'Вернуть авто', fitHint:'Авто: по штатной области Keenetic. Если потребуется, введи поправку в пикселях.', fitModeAuto:'Авто · отслеживание окна', fitModeManual:'Ручная поправка активна',
+    quickHint:'↑ ↓ выбор · Enter открыть · Esc закрыть', recentApps:'НЕДАВНИЕ',
     tabs:'Открытые приложения', tabClose:'Закрыть вкладку', tabLimit:'Максимум три активные панели; старая вкладка выгружается из памяти', favorites:'ИЗБРАННОЕ', nativeSettings:'Настройки Portal', nativeSubtitle:'Управление приложениями этого роутера · без изменения Keenetic', nativeSearch:'Поиск приложений…', nativeAdd:'Добавить приложение', nativeQuick:'Быстро добавить', nativeFull:'Дополнительные настройки и резервные копии', nativeReturn:'Вернуться к приложениям', nativeName:'Название', nativeAddress:'Адрес HTTP(S)', nativeMode:'Открывать', nativeGroup:'Группа', nativeTheme:'Тема', nativeLanguage:'Язык', nativeFavorite:'Избранное', nativeSave:'Сохранить', nativeCancel:'Отмена', nativeEdit:'Изменить', nativeDelete:'Удалить', nativeUp:'Выше', nativeDown:'Ниже', nativeEmpty:'Здесь пока нет приложений', nativeError:'Не удалось сохранить', nativeSaved:'Изменения сохранены', nativeConfirmDelete:'Удалить приложение из списка?', nativeConfirmQuick:'Добавить RouterForge Core, AWG Manager и nfqws с типовыми портами? Существующие записи не изменятся.', nativeAuto:'Автоматически', nativeEmbed:'Внутри Keenetic', nativeExternal:'В отдельной вкладке', nativeDark:'Тёмная', nativeLight:'Светлая', nativeAutoTheme:'Как в Keenetic', nativeEnabled:'Включено', nativeDisabled:'Отключено', nativeUrlError:'Нужен адрес http:// или https:// без логина и пароля', group_routerforge:'ROUTERFORGE', group_network:'СЕТЬ И VPN', group_security:'DNS И ЗАЩИТА', group_other:'ДРУГОЕ'
   };
   const TXT_EN = {
@@ -29,6 +30,7 @@
     slow:'This panel is taking longer than usual', refresh:'Reload panel',
     widthNative:'Match Keenetic width', widthWide:'Use available width', widthError:'Could not save width setting',
     fit:'WebUI boundaries', fitLeft:'Left', fitRight:'Right', fitReset:'Restore auto', fitHint:'Auto: tracks the Keenetic content area. Enter pixel correction only if necessary.', fitModeAuto:'Auto · follows window size', fitModeManual:'Manual adjustment active',
+    quickHint:'↑ ↓ select · Enter open · Esc close', recentApps:'RECENT',
     tabs:'Open applications', tabClose:'Close tab', tabLimit:'Up to three active panels; oldest tab is unloaded', favorites:'FAVORITES', nativeSettings:'Portal settings', nativeSubtitle:'Manage apps for this router · Keenetic stays unchanged', nativeSearch:'Search applications…', nativeAdd:'Add application', nativeQuick:'Quick setup', nativeFull:'Advanced settings and backups', nativeReturn:'Back to applications', nativeName:'Name', nativeAddress:'HTTP(S) address', nativeMode:'Open mode', nativeGroup:'Group', nativeTheme:'Theme', nativeLanguage:'Language', nativeFavorite:'Favorite', nativeSave:'Save', nativeCancel:'Cancel', nativeEdit:'Edit', nativeDelete:'Remove', nativeUp:'Move up', nativeDown:'Move down', nativeEmpty:'No applications yet', nativeError:'Could not save', nativeSaved:'Changes saved', nativeConfirmDelete:'Remove this application?', nativeConfirmQuick:'Add RouterForge Core, AWG Manager and nfqws using default ports? Existing entries will be preserved.', nativeAuto:'Automatic', nativeEmbed:'Inside Keenetic', nativeExternal:'Separate tab', nativeDark:'Dark', nativeLight:'Light', nativeAutoTheme:'Follow Keenetic', nativeEnabled:'Enabled', nativeDisabled:'Disabled', nativeUrlError:'Use an http:// or https:// URL without credentials', group_routerforge:'ROUTERFORGE', group_network:'NETWORK & VPN', group_security:'DNS & SECURITY', group_other:'OTHER'
   };
   const L = key => (language === 'en' ? TXT_EN : TXT)[key];
@@ -42,6 +44,7 @@
     set('#kbridge-drawer .kb-drawer-settings','text','configure');
     set('#kbridge-drawer .kb-drawer-add','text','addAny');
     set('#kbridge-drawer .kb-drawer-search','placeholder','searchPlaceholder');
+    set('#kbridge-drawer .kb-p7-hint','text','quickHint');
     set('#kbridge-drawer .kbclose','title','close');
     set('#kbridge-workspace .kbcrumb','text','applications');
     for(const [sel,attr,key] of [
@@ -76,6 +79,8 @@
   const frames = new Map(); // id -> {frame,url,loading,slow}, Map order = least recent first
   let frameStack = null;
   let drawerSearch = ''; // UI-only, never persisted or uploaded
+  let p7RecentIds = []; // ephemeral launches, scoped to authenticated router DOM
+  let p7Selection = 0;
 
   const make = (tag, className = '', text) => {
     const node = document.createElement(tag);
@@ -183,6 +188,7 @@
     entry = drawer = workspace = host = null;
     domObserver = themeObserver = resizeObserver = null;
     layoutTargets = []; navIsCollapsed = false; currentAppId = null; frameStack = null; settingsOpen = false; settingsEditingId = null;
+    p7RecentIds=[];p7Selection=0;drawerSearch='';
   }
   function reconcileAuth() {
     if (!profile || !isAuthenticatedShell()) {
@@ -346,6 +352,7 @@
   // Explicit user actions only. No Core dependency, background probing or router API writes.
   function openAppSearch() {
     if (!drawer || !profile || !isAuthenticatedShell()) return;
+    if(drawer.hidden){drawerSearch='';p7Selection=0;const field=drawer.querySelector('.kb-drawer-search');if(field)field.value='';}
     drawer.hidden=false;renderDrawer();positionDrawer();
     const search=drawer.querySelector('.kb-drawer-search');
     if (search) { search.focus();search.select(); }
@@ -356,6 +363,35 @@
     settingsEditingId='__new__';
     renderNativeSettings();
   }
+  // P7 recent launches are temporary per-router UI state; never written to storage.
+  function p7RememberApp(id) {
+    if (typeof id!=='string') return;
+    p7RecentIds=[id,...p7RecentIds.filter(value=>value!==id)].slice(0,3);
+  }
+  function p7DrawerButtons() {
+    return [...(drawer?.querySelectorAll('.kblist .kbapp')||[])];
+  }
+  function p7HighlightSelection(scroll=false) {
+    const buttons=p7DrawerButtons();
+    if (!buttons.length) {p7Selection=0;return;}
+    p7Selection=Math.max(0,Math.min(p7Selection,buttons.length-1));
+    buttons.forEach((btn,index)=>btn.dataset.kbSelected=String(index===p7Selection));
+    if(scroll)buttons[p7Selection].scrollIntoView({block:'nearest'});
+  }
+  function p7MoveSelection(delta) {
+    const count=p7DrawerButtons().length;
+    if(!count)return;
+    p7Selection=(p7Selection+delta+count)%count;
+    p7HighlightSelection(true);
+  }
+  function p7LaunchSelected() {
+    const button=p7DrawerButtons()[p7Selection];
+    if(button)button.click();
+  }
+  function p7Editable(target) {
+    return Boolean(target?.closest?.('input, textarea, select, [contenteditable="true"], [role="textbox"]'));
+  }
+
   function openExternal(id) {
     chrome.runtime.sendMessage({ type: 'OPEN_APP', id }).then(response => {
       if (!response?.ok) console.warn('RouterForge Portal:', response?.error);
@@ -569,6 +605,7 @@
     return item;
   }
   function appOpen(app) {
+    p7RememberApp(app?.id);
     dismiss();
     if (settingsOpen) leaveNativeSettings(false);
     if (appMode(app) === 'external') { openExternal(app.id); return; }
@@ -782,15 +819,28 @@
     const activeApps=p11Ordered().filter(app=>!query ||
       [app.name,app.url,L('group_'+p11Group(app))].some(value=>String(value||'').toLocaleLowerCase().includes(query)));
     if (!activeApps.length) list.append(make('p','kbmuted',query?L('searchNoResults'):L('drawerEmpty')));
-    let lastGroup='';
-    for (const app of activeApps) {
-      const group=p11Label(app);if(group!==lastGroup){list.append(make('div','kb-group-label',L(group)));lastGroup=group;}
-      const btn = make('button', 'kbapp'); btn.type = 'button';
-      btn.append(make('span', 'kbicon', app.icon), make('span', '', app.name));
-      btn.title = app.url;
-      btn.addEventListener('click', () => appOpen(app));
+    const recent=!query?p7RecentIds.map(id=>activeApps.find(app=>app.id===id)).filter(Boolean):[];
+    const recentSet=new Set(recent.map(app=>app.id));
+    const addApp=app=>{
+      const btn=make('button','kbapp');btn.type='button';
+      btn.dataset.kbQuickApp=app.id;
+      btn.append(make('span','kbicon',app.icon),make('span','',app.name));
+      btn.title=app.url;
+      btn.addEventListener('click',()=>appOpen(app));
       list.append(btn);
+    };
+    if(recent.length){
+      list.append(make('div','kb-group-label kb-p7-recent',L('recentApps')));
+      for(const app of recent)addApp(app);
     }
+    let lastGroup='';
+    for(const app of activeApps){
+      if(recentSet.has(app.id))continue;
+      const group=p11Label(app);
+      if(group!==lastGroup){list.append(make('div','kb-group-label',L(group)));lastGroup=group;}
+      addApp(app);
+    }
+    p7HighlightSelection();
   }
   function renderNav() {
     if (!entry || !profile) return;
@@ -819,7 +869,7 @@
       more.type = 'button'; more.addEventListener('click', ev => {ev.preventDefault();toggleDrawer();});
       list.append(more);
     }
-    const find = make('button','kb-nav-item kb-nav-find','⌕ '+L('quickFind'));
+    const find = make('button','kb-nav-item kb-nav-find','⌕ '+L('quickFind')+' · Alt+Shift+K');
     find.type='button';find.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();openAppSearch();});
     const add = make('button','kb-nav-item kb-nav-add','＋ '+L('addAny'));
     add.type='button';add.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();openNativeAdd();});
@@ -1089,10 +1139,20 @@
     const drawerSearchField=make('input','kb-drawer-search');drawerSearchField.type='search';
     drawerSearchField.placeholder=L('searchPlaceholder');drawerSearchField.value=drawerSearch;
     drawerSearchField.setAttribute('aria-label',L('quickFind'));
-    drawerSearchField.addEventListener('input',()=>{drawerSearch=drawerSearchField.value;renderDrawer();});
+    drawerSearchField.addEventListener('input',()=>{drawerSearch=drawerSearchField.value;p7Selection=0;renderDrawer();});
+    drawerSearchField.addEventListener('keydown',event=>{
+      if(event.key==='ArrowDown'||event.key==='ArrowUp'){
+        event.preventDefault();p7MoveSelection(event.key==='ArrowDown'?1:-1);
+      } else if(event.key==='Enter'){
+        event.preventDefault();p7LaunchSelected();
+      } else if(event.key==='Escape'){
+        event.preventDefault();event.stopPropagation();dismiss();
+      }
+    });
+    const p7Hint=make('div','kb-p7-hint',L('quickHint'));
     const drawerAdd=make('button','kb-drawer-add','＋ '+L('addAny'));drawerAdd.type='button';
     drawerAdd.addEventListener('click',openNativeAdd);
-    drawer.append(head,drawerSearchField,drawerAdd,make('div','kblist'));
+    drawer.append(head,drawerSearchField,p7Hint,drawerAdd,make('div','kblist'));
     nativeRoute = location.href;
     workspace = make('section'); workspace.id = 'kbridge-workspace'; workspace.dataset.kbVersion = BRIDGE_VERSION; workspace.hidden = true;
     const bar = make('div', 'kbbar');
@@ -1167,7 +1227,20 @@
       if (host?.contains(event.target)) closeWorkspace();
     }, true);
     listen(document, 'keydown', event => {
-      if (event.key === 'Escape') { dismiss(); if (!workspace?.hidden) closeWorkspace(); }
+      // Ctrl/Cmd+K works only on the authenticated Keenetic shell and never steals
+      // text-editor shortcuts or shortcuts inside the embedded application's iframe.
+      // Some browsers reserve Ctrl+K for the address bar: Alt+Shift+K is a fallback.
+      const p7Key=event.key.toLowerCase()==='k'&&(
+        ((event.ctrlKey||event.metaKey)&&!event.altKey&&!event.shiftKey)||
+        (event.altKey&&event.shiftKey&&!event.ctrlKey&&!event.metaKey)
+      );
+      if(p7Key&&entry&&isAuthenticatedShell()&&!p7Editable(event.target)){
+        event.preventDefault();openAppSearch();return;
+      }
+      if(event.key==='Escape'){
+        if(drawer&&!drawer.hidden){event.preventDefault();dismiss();return;}
+        if(!workspace?.hidden)closeWorkspace();
+      }
     });
     listen(window, 'popstate', reconcileNativeRoute);
     listen(window, 'hashchange', reconcileNativeRoute);

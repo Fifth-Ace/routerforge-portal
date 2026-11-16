@@ -46,6 +46,6 @@ test('P5: no added privileged permissions or Core requirement',()=>{
   assert.deepEqual(m.permissions,['storage','scripting','activeTab']);
   assert.ok(!m.host_permissions);
   assert.deepEqual(m.optional_host_permissions,['http://*/*','https://*/*']);
-  assert.equal(m.version,'0.10.11');
+  assert.equal(m.version,'0.10.12');
   assert.ok(read('userscript/runtime.template.js').includes("const VERSION='"+m.version+"'"));
 });
