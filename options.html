@@ -13,6 +13,11 @@
         <div class="field"><label for="routers">Активный профиль</label><select id="routers"></select></div>
         <div id="no-routers" class="hint">Открой веб-панель Keenetic и подключи устройство через значок расширения.</div>
         <div id="router-actions" class="actions2" hidden><button id="open-router" class="secondary">↗ Открыть роутер</button><button id="delete-router" class="mini danger">Удалить профиль</button></div>
+        <div class="router-overview-settings" id="router-overview-settings" hidden>
+          <div class="router-overview-head"><strong id="router-overview-settings-title">Сохранённые устройства</strong><span class="count-chip" id="router-overview-settings-count">0</span></div>
+          <div class="router-overview-list" id="router-overview-settings-list"></div>
+          <p class="router-overview-help" id="router-overview-settings-help">Локальные профили, без фоновой проверки доступности.</p>
+        </div>
       </section>
       <section class="panel">
         <div class="panel-title"><div><span class="kicker">ОФОРМЛЕНИЕ</span><h2>Внешний вид</h2></div><span class="panel-icon">◐</span></div>
@@ -27,7 +32,7 @@
       <section class="panel update-panel" id="portal-updates">
         <div class="panel-title"><div><span class="kicker">RELEASES / UPDATES</span><h2>Обновления Portal</h2></div><span class="panel-icon">↻</span></div>
         <p class="hint">Магазинные версии обновляются через браузер. Для распакованного Chromium-расширения доступна ручная проверка GitHub Releases. Userscript обновляется через Tampermonkey или Violentmonkey.</p>
-        <div class="update-versions"><span>Установлено <b id="update-current">v0.10.6</b></span><span>GitHub <b id="update-remote">—</b></span></div>
+        <div class="update-versions"><span>Установлено <b id="update-current">v0.10.7</b></span><span>GitHub <b id="update-remote">—</b></span></div>
         <p id="update-status" class="hint" role="status" aria-live="polite">Нажми «Проверить» для обращения к GitHub Releases.</p>
         <div class="import-actions"><button id="check-updates" class="secondary" type="button">↻ Проверить обновления</button><a id="update-download" class="secondary rf-update-link" href="#" target="_blank" rel="noopener noreferrer" hidden>↓ Скачать ZIP</a></div>
         <p id="update-hash" class="hint rf-update-hash" hidden></p>

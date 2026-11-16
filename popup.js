@@ -3,9 +3,10 @@ import { readState, writeState, routerOrigin, hostMatch } from './shared/model.j
 import { coreEndpoint, probeCore } from './shared/core_probe.js';
 import { readCoreCatalogInTab, summarizeCoreModules } from './shared/core_catalog.js';
 import { coreOriginForRouter, suggestCoreWebApps } from './shared/core_suggestions.js';
+import { routerOverview, routerProfileKeys, isCoreServiceOrigin, chooseRouter, readSelectedRouter, saveSelectedRouter } from './shared/router_overview.js';
 import { cleanApp } from './shared/model.js';
 const $ = s => document.querySelector(s);
-let tab, origin = null, chosen = null, lang = 'ru';
+let tab, origin = null, chosen = null, lang = 'ru', savedRouter = '';
 let coreProfileShown = null, coreRequestSerial = 0, modulesRequestSerial = 0;
 let coreCatalogRouter = null, coreCatalogSnapshot = null;
 const T = (source) => t(source,lang);
@@ -13,6 +14,41 @@ function translateUI(){ document.documentElement.lang=lang; $('#popup-language')
 
 function status(message, type = 'info') { $('#status').textContent = message; $('#status').dataset.type = type; }
 function options() { chrome.runtime.openOptionsPage(); }
+async function selectOverviewRouter(target) {
+  const state=await readState();
+  if (!Object.prototype.hasOwnProperty.call(state.routers,target)) return;
+  chosen=target;
+  resetCoreStatus(chosen); // invalidates pending checks before waiting for storage
+  savedRouter=await saveSelectedRouter(state,target);
+  await refresh();
+}
+function renderRouterOverview(state) {
+  const items=routerOverview(state,origin);
+  const panel=$('#router-overview'), list=$('#router-overview-list');
+  panel.hidden=items.length<2;
+  list.replaceChildren();
+  $('#router-overview-count').textContent=String(items.length);
+  $('#router-overview-title').textContent=coreText('Все роутеры','All routers');
+  $('#router-overview-help').textContent=coreText('Профили локальные · статус сети не проверяется','Local profiles · network status not checked');
+  for (const entry of items) {
+    const row=document.createElement('div'); row.className='router-overview-item';
+    if (entry.origin===chosen) row.classList.add('selected');
+    const select=document.createElement('button');select.type='button';select.className='router-overview-pick';
+    select.setAttribute('aria-pressed',String(entry.origin===chosen));
+    const title=document.createElement('span');title.className='router-overview-name';title.textContent=entry.label;
+    const meta=document.createElement('span');meta.className='router-overview-meta';
+    meta.textContent=coreText(`${entry.apps} приложений · ${entry.favorites} избранных`,`Apps: ${entry.apps} · favorites: ${entry.favorites}`);
+    const chips=document.createElement('span');chips.className='router-overview-chips';
+    chips.textContent=[entry.activeTab?coreText('Текущая вкладка','Current tab'):null,
+      entry.coreLinked?coreText('Core привязан','Core linked'):coreText('Core не привязан','Core not linked')].filter(Boolean).join(' · ');
+    select.append(title,meta,chips);
+    select.addEventListener('click',()=>selectOverviewRouter(entry.origin).catch(error=>status(error.message,'error')));
+    const open=document.createElement('button');open.type='button';open.className='router-overview-open';
+    open.title=coreText('Открыть роутер','Open router');open.setAttribute('aria-label',open.title+' '+entry.label);
+    open.textContent='↗';open.addEventListener('click',()=>chrome.tabs.create({url:entry.origin}));
+    row.append(select,open);list.append(row);
+  }
+}
 function coreText(ru,en) { return lang==='en'?en:ru; }
 function resetCoreStatus(profileOrigin) {
   coreRequestSerial++;
@@ -283,20 +319,21 @@ function renderApps(profile) {
 }
 async function refresh() {
   const state = await readState();
-  const keys = Object.keys(state.routers);
-  if (!state.routers[chosen]) chosen = (origin && state.routers[origin]) ? origin : keys[0] || null;
+  const keys = routerProfileKeys(state);
+  chosen=chooseRouter(state,chosen,origin,savedRouter);
   const profile = chosen ? state.routers[chosen] : null;
   document.documentElement.dataset.theme = profile?.theme || 'auto';
-  $('#connect').hidden = !origin || Boolean(state.routers[origin]);
+  $('#connect').hidden = !origin || isCoreServiceOrigin(origin) || Boolean(state.routers[origin]);
   $('#connected').hidden = !profile;
   $('#choose-box').hidden = keys.length < 2;
   const chooser = $('#choose-router'); chooser.replaceChildren();
   for (const key of keys) {
     const option = document.createElement('option'); option.value = key;
-    option.textContent = state.routers[key].label + ' · ' + key;
+    option.textContent = (isCoreServiceOrigin(key) && coreParentRouter(state,key) ? 'RouterForge Core (legacy)' : state.routers[key].label) + ' · ' + key;
     chooser.append(option);
   }
   chooser.value = chosen || '';
+  renderRouterOverview(state);
   if (coreProfileShown !== chosen) resetCoreStatus(chosen);
   $('#core-link-state').textContent=profile && profile.coreLink===coreOriginForRouter(chosen)
     ?coreText('✓ Локальная связь подтверждена','✓ Local link confirmed'):
@@ -315,6 +352,7 @@ async function refresh() {
 }
 async function initialize() {
   lang=await readLanguage();
+  savedRouter=await readSelectedRouter();
   translateUI();
   $('#popup-language').addEventListener('change',async e=>{ lang=await writeLanguage(e.target.value); await refresh(); });
   chrome.storage.onChanged.addListener(async (changes,area)=>{if(area==='local'&&LANGUAGE_KEY in changes){lang=await readLanguage();await refresh();}});
@@ -343,7 +381,7 @@ async function initialize() {
   $('#core-open-btn').addEventListener('click', () => { if(chosen) chrome.tabs.create({url:coreEndpoint(chosen).page}); });
   $('#core-modules-btn').addEventListener('click', () => { checkSelectedModules().catch(console.error); });
   $('#core-link-btn').addEventListener('click', () => { confirmCoreAssociation().catch(console.error); });
-  $('#choose-router').addEventListener('change', e => { chosen=e.target.value; refresh(); });
+  $('#choose-router').addEventListener('change', e => { selectOverviewRouter(e.target.value).catch(error=>status(error.message,'error')); });
   [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   try { if (tab?.url) origin = routerOrigin(tab.url); } catch { origin = null; }
   if (origin) $('#router-name').value = new URL(origin).host;

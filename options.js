@@ -3,6 +3,7 @@ import {distributionChannel, updateChannelHelp, CHROME_STORE_URL} from './shared
 import { LANGUAGE_KEY, readLanguage, writeLanguage, localizeStatic, t } from './shared/i18n.js';
 import { readState, writeState, routerOrigin, cleanApp, cleanState, newState, KEY, hostMatch, GROUPS, orderedApps, appGroup, moveApp } from './shared/model.js';
 import { CATALOG, catalogById, catalogUrl, makeCatalogApp, validatePort } from './shared/catalog.js';
+import {routerOverview,routerProfileKeys,isCoreServiceOrigin,coreParentRouter,chooseRouter,readSelectedRouter,saveSelectedRouter} from './shared/router_overview.js';
 const $ = s => document.querySelector(s);
 let state = newState(), selected = '', editingId = null, lang = 'ru', appSearch = '';
 const catalogExpanded = new Set(); // UI-only; never changes saved router profiles
@@ -56,16 +57,46 @@ function clearForm() {
   editingId = null; $('#app-form').reset(); $('#form-title').textContent = T('Добавить приложение');
   $('#save').textContent = T('Сохранить приложение'); $('#cancel').hidden = true; $('#app-group').value='other'; $('#app-favorite').checked=false;
 }
+async function selectDeviceOverview(target) {
+  if (!Object.prototype.hasOwnProperty.call(state.routers,target)) return;
+  selected=target;
+  appSearch='';$('#app-search').value='';clearForm();render();
+  await saveSelectedRouter(state,target);
+}
+function renderDeviceOverview() {
+  const entries=routerOverview(state);
+  const box=$('#router-overview-settings'), list=$('#router-overview-settings-list');
+  box.hidden=entries.length<2;
+  list.replaceChildren();
+  $('#router-overview-settings-count').textContent=String(entries.length);
+  $('#router-overview-settings-title').textContent=p11Text('Сохранённые устройства','Saved devices');
+  $('#router-overview-settings-help').textContent=p11Text('Сохранённые профили. Доступность не проверяется.','Saved profiles. Availability is not checked.');
+  for (const entry of entries) {
+    const row=node('div','router-overview-item'+(entry.origin===selected?' selected':''));
+    const pick=node('button','router-overview-pick');pick.type='button';
+    pick.setAttribute('aria-pressed',String(entry.origin===selected));
+    pick.append(node('span','router-overview-name',entry.label),
+      node('span','router-overview-meta',p11Text(`${entry.apps} приложений · ${entry.favorites} избранных`,`Apps: ${entry.apps} · favorites: ${entry.favorites}`)),
+      node('span','router-overview-chips',entry.coreLinked?p11Text('Core привязан','Core linked'):p11Text('Core не привязан','Core not linked')));
+    pick.addEventListener('click',()=>selectDeviceOverview(entry.origin).catch(e=>notify(e.message,true)));
+    const open=node('button','router-overview-open','↗');open.type='button';
+    open.title=p11Text('Открыть роутер','Open router');open.setAttribute('aria-label',open.title+' '+entry.label);
+    open.addEventListener('click',()=>chrome.tabs.create({url:entry.origin}));
+    row.append(pick,open);list.append(row);
+  }
+}
 function render() {
   const list = $('#routers'); const old = selected;
   list.replaceChildren();
-  for (const [origin, profile] of Object.entries(state.routers)) {
-    const item = document.createElement('option'); item.value = origin; item.textContent = `${profile.label} — ${origin}`;
+  for (const origin of routerProfileKeys(state)) {
+    const profile=state.routers[origin];
+    const item = document.createElement('option'); item.value = origin; item.textContent = `${isCoreServiceOrigin(origin) && coreParentRouter(state,origin) ? 'RouterForge Core (legacy)' : profile.label} — ${origin}`;
     list.append(item);
   }
-  selected = state.routers[old] ? old : Object.keys(state.routers)[0] || '';
+  selected = chooseRouter(state, old, null, null) || '';
   document.documentElement.dataset.theme = (selected && state.routers[selected].theme) || 'auto';
   list.value = selected;
+  renderDeviceOverview();
   const has = Boolean(selected);
   $('#no-routers').hidden = has; $('#router-actions').hidden = !has;
   $('#router-theme').disabled = !has;
@@ -197,9 +228,11 @@ async function persist(message) {
 }
 async function initialize() {
   lang = await readLanguage();
-  state = await readState(); render(); translateUI();
+  state = await readState();
+  selected=chooseRouter(state,null,null,await readSelectedRouter()) || '';
+  render(); translateUI();
   $('#ui-language').addEventListener('change',async e=>{lang=await writeLanguage(e.target.value);render();translateUI();notify(lang==='en'?'Language changed.':'Язык изменён.');});
-  $('#routers').addEventListener('change', e => { selected = e.target.value; appSearch='';$('#app-search').value=''; clearForm(); render(); });
+  $('#routers').addEventListener('change', e => { selectDeviceOverview(e.target.value).catch(err=>notify(err.message,true)); });
   $('#app-search').addEventListener('input',e=>{appSearch=e.target.value.trim();render();});
   $('#quick-setup').addEventListener('click',async()=>{
     if(!selected)return;const ids=['routerforge','awg-manager','nfqws-web'];
@@ -253,7 +286,7 @@ async function initialize() {
         : 'Импорт завершён. Если Portal не появился, открой вкладку роутера и нажми «Разрешить доступ и обновить вкладку» в окне Portal.');
     } catch (error) { notify((lang==='en'?'Import failed: ':'Импорт не выполнен: ')+T(error.message),true); }
   });
-  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.6');
+  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.7');
   $('#check-updates').addEventListener('click', manualUpdateCheck);
   chrome.storage.onChanged.addListener(async (changes,area) => {
     if(area==='local' && KEY in changes){ state=await readState(); render(); }
