@@ -1,11 +1,15 @@
 import { LANGUAGE_KEY, readLanguage, writeLanguage, localizeStatic, t } from './shared/i18n.js';
 import { readState, writeState, routerOrigin, hostMatch } from './shared/model.js';
 import { coreEndpoint, probeCore } from './shared/core_probe.js';
+import { readCoreCatalogInTab, summarizeCoreModules } from './shared/core_catalog.js';
+import { coreOriginForRouter, suggestCoreWebApps } from './shared/core_suggestions.js';
+import { cleanApp } from './shared/model.js';
 const $ = s => document.querySelector(s);
 let tab, origin = null, chosen = null, lang = 'ru';
-let coreProfileShown = null, coreRequestSerial = 0;
+let coreProfileShown = null, coreRequestSerial = 0, modulesRequestSerial = 0;
+let coreCatalogRouter = null, coreCatalogSnapshot = null;
 const T = (source) => t(source,lang);
-function translateUI(){ document.documentElement.lang=lang; $('#popup-language').value=lang; localizeStatic(document.body,lang); $('#core-status-help').textContent=lang==='en'?'On demand · local /api/health · no login':'Только по нажатию · локальная проверка /api/health · без логина'; }
+function translateUI(){ document.documentElement.lang=lang; $('#popup-language').value=lang; localizeStatic(document.body,lang); $('#core-status-help').textContent=lang==='en'?'On demand · local /api/health · no login':'Только по нажатию · локальная проверка /api/health · без логина'; $('#core-modules-btn').textContent=lang==='en'?'▣ Module status':'▣ Статус модулей'; }
 
 function status(message, type = 'info') { $('#status').textContent = message; $('#status').dataset.type = type; }
 function options() { chrome.runtime.openOptionsPage(); }
@@ -20,6 +24,19 @@ function resetCoreStatus(profileOrigin) {
   $('#core-check-btn').disabled=!profileOrigin;
   $('#core-check-btn').textContent=coreText('↻ Проверить Core','↻ Check Core');
   $('#core-open-btn').textContent=coreText('↗ Открыть Core','↗ Open Core');
+  modulesRequestSerial++;
+  $('#core-modules-btn').disabled=!profileOrigin;
+  $('#core-modules-btn').textContent=coreText('▣ Статус модулей','▣ Module status');
+  $('#core-link-btn').textContent=coreText('🔗 Связать локально','🔗 Link locally');
+  $('#core-modules-status').textContent=coreText('Не проверялись','Not checked');
+  $('#core-modules-list').replaceChildren();
+  $('#core-modules-list').hidden=true;
+  coreCatalogRouter=null;coreCatalogSnapshot=null;
+  $('#core-link-btn').disabled=!profileOrigin;
+  $('#core-link-state').textContent=coreText('Связь не проверялась','Link not checked');
+  $('#core-suggestions-list').replaceChildren();
+  $('#core-suggestions-list').hidden=true;
+  $('#core-suggestions-state').textContent=coreText('Сначала получи статус модулей','Read modules first');
 }
 async function checkSelectedCore() {
   const router=chosen;
@@ -48,6 +65,143 @@ async function checkSelectedCore() {
       ?coreText('Разрешение браузера не выдано','Browser site permission not granted')
       :coreText('Core не подтверждён: проверь адрес и порт 2233','Core not verified: check router address and port 2233');
   } finally {if(chosen===router && serial===coreRequestSerial) button.disabled=false;}
+}
+
+
+// P2.2: only an already-open Core tab with an authenticated Core session may read /api/catalog.
+// No cookies, passwords, network scans, background refresh or router mutations.
+async function checkSelectedModules() {
+  const router=chosen;
+  if (!router) return;
+  const endpoint=coreEndpoint(router);
+  // Must happen synchronously inside the user click, before any await.
+  const permission=chrome.permissions.request({origins:[hostMatch(endpoint.origin)]});
+  const serial=++modulesRequestSerial;
+  const button=$('#core-modules-btn'); button.disabled=true;
+  const msg=$('#core-modules-status'), list=$('#core-modules-list');
+  list.replaceChildren(); list.hidden=true;
+  coreCatalogRouter=null;coreCatalogSnapshot=null;
+  $('#core-suggestions-list').replaceChildren();
+  $('#core-suggestions-list').hidden=true;
+  msg.textContent=coreText('Читаю каталог Core…','Reading Core catalogue…');
+  const current=()=>chosen===router && serial===modulesRequestSerial;
+  try {
+    if (!(await permission)) throw Error('NO_PERMISSION');
+    const state=await readState();
+    if (!Object.hasOwn(state.routers,router)) throw Error('PROFILE_GONE');
+    const tabs=await chrome.tabs.query({});
+    const tab=tabs.find(item=>{
+      try {return Number.isInteger(item.id) && new URL(item.url).origin===endpoint.origin;} catch{return false;}
+    });
+    if (!tab) throw Error('CORE_TAB_MISSING');
+    const results=await chrome.scripting.executeScript({
+      target:{tabId:tab.id},func:readCoreCatalogInTab,args:[endpoint.origin]
+    });
+    if (!current()) return;
+    const response=results?.[0]?.result;
+    if (response?.kind==='auth_required') throw Error('CORE_LOGIN_REQUIRED');
+    if (response?.kind!=='ok') throw Error('CORE_CATALOG_UNAVAILABLE');
+    const summary=summarizeCoreModules(response);
+    coreCatalogRouter=router; coreCatalogSnapshot=response;
+    msg.textContent=coreText(
+      `Установлено модулей: ${summary.total} · запущено служб: ${summary.running}`,
+      `Installed modules: ${summary.total} · running services: ${summary.running}`
+    );
+    for (const module of summary.items) {
+      const row=document.createElement('div');row.className='core-module-row';
+      const name=document.createElement('span'); name.className='core-module-name';
+      name.textContent=module.name+(module.version?' · '+module.version:'');
+      const status=document.createElement('span'); status.className='core-module-state';
+      status.dataset.state=module.status;
+      status.textContent=module.status==='running'?coreText('● работает','● running'):
+        module.status==='disabled'?coreText('○ отключён','○ disabled'):coreText('○ установлен','○ installed');
+      row.append(name,status);list.append(row);
+    }
+    if (summary.total>summary.items.length) {
+      const more=document.createElement('p');more.className='core-status-help';
+      more.textContent=coreText(`Показаны первые ${summary.items.length} модулей`,`Showing first ${summary.items.length} modules`);
+      list.append(more);
+    }
+    list.hidden=false;
+    await renderCoreSuggestions();
+  } catch (error) {
+    if (!current()) return;
+    msg.textContent=error.message==='NO_PERMISSION'?coreText('Доступ к Core не выдан','Core permission denied'):
+      error.message==='CORE_TAB_MISSING'?coreText('Сначала открой Core кнопкой выше, затем повтори проверку','Open Core with the button above, then check again'):
+      error.message==='CORE_LOGIN_REQUIRED'?coreText('Авторизуйся во вкладке Core и повтори проверку','Sign in to Core tab and try again'):
+      coreText('Не удалось прочитать каталог Core','Could not read Core catalogue');
+  } finally {if (current()) button.disabled=false;}
+}
+
+
+// P2.3: user's explicit local association; NOT a remote ownership credential.
+async function confirmCoreAssociation() {
+  const router=chosen;
+  if (!router || coreCatalogRouter !== router || !coreCatalogSnapshot) {
+    $('#core-link-state').textContent=coreText('Сначала открой Core и прочитай модули','Open Core and read modules first');
+    return;
+  }
+  if (!confirm(coreText('Связать профиль с локальным Core? Это не даёт прав управления и не подтверждает владение для доступа через интернет.',
+    'Link this profile to local Core? This grants no control rights or remote ownership proof.'))) return;
+  const state=await readState();
+  const profile=state.routers[router];
+  if (!profile || router !== chosen) return;
+  profile.coreLink=coreEndpoint(router).origin;
+  await writeState(state);
+  if (router !== chosen) return;
+  $('#core-link-state').textContent=coreText('✓ Локальная связь подтверждена','✓ Local link confirmed');
+  await renderCoreSuggestions();
+}
+
+// P2.4: only user-clicked suggestions are stored. No Core writes, auto-discovery or edits.
+async function renderCoreSuggestions() {
+  const router=chosen;
+  const list=$('#core-suggestions-list');
+  list.replaceChildren();list.hidden=true;
+  const info=$('#core-suggestions-state');
+  if (!router || coreCatalogRouter !== router || !coreCatalogSnapshot) {
+    info.textContent=coreText('Сначала получи статус модулей','Read modules first');return;
+  }
+  const state=await readState();
+  const profile=state.routers[router];
+  if (router !== chosen) return;
+  if (!profile || profile.coreLink !== coreOriginForRouter(router)) {
+    info.textContent=coreText('Подтверди локальную связь, чтобы увидеть приложения','Confirm local link to view app suggestions');return;
+  }
+  const apps=suggestCoreWebApps(coreCatalogSnapshot,router,profile.apps);
+  info.textContent=apps.length ? coreText(`Предложено приложений: ${apps.length}`,`Suggested applications: ${apps.length}`) :
+    coreText('Новых веб-приложений нет','No new web apps');
+  for(const candidate of apps.slice(0,8)) {
+    const row=document.createElement('div');row.className='core-suggestion-row';
+    const title=document.createElement('span');title.className='core-suggestion-name';
+    title.textContent=candidate.name+' · '+new URL(candidate.url).port;
+    const btn=document.createElement('button');btn.type='button';btn.className='secondary';
+    btn.textContent=coreText('＋ Добавить','＋ Add');
+    btn.addEventListener('click',()=>{addCoreSuggestion(candidate).catch(error=>{
+      info.textContent=coreText('Не удалось сохранить: ','Could not save: ')+error.message;
+    });});
+    row.append(title,btn);list.append(row);
+  }
+  list.hidden=false;
+}
+
+async function addCoreSuggestion(candidate) {
+  const router=chosen;
+  if (!router || coreCatalogRouter !== router || !coreCatalogSnapshot) return;
+  const state=await readState();
+  const profile=state.routers[router];
+  if (!profile || profile.coreLink !== coreOriginForRouter(router) || router!==chosen) return;
+  const eligible=suggestCoreWebApps(coreCatalogSnapshot,router,profile.apps)
+    .find(item=>item.coreSourceId===candidate.coreSourceId && item.url===candidate.url);
+  if (!eligible) return;
+  if(profile.apps.length >= 100) throw Error('ROUTER_APP_LIMIT_100');
+  const app=cleanApp({id:crypto.randomUUID(),...eligible,enabled:true});
+  state.routers[router].apps.push(app);
+  if(router!==chosen) return;
+  await writeState(state);
+  if(router!==chosen) return;
+  await renderCoreSuggestions();
+  await refresh();
 }
 
 async function diagnoseBridge() {
@@ -144,6 +298,9 @@ async function refresh() {
   }
   chooser.value = chosen || '';
   if (coreProfileShown !== chosen) resetCoreStatus(chosen);
+  $('#core-link-state').textContent=profile && profile.coreLink===coreOriginForRouter(chosen)
+    ?coreText('✓ Локальная связь подтверждена','✓ Local link confirmed'):
+    coreText('Связь не подтверждена','Link not confirmed');
   if (profile) {
     const permitted = chosen === origin && await chrome.permissions.contains({origins:[hostMatch(origin)]});
     status((permitted ? (lang==='en'?'● Portal connected: ':'● Portal подключён: ') : (lang==='en'?'● Saved router profile: ':'● Профиль роутера сохранён: ')) + chosen, permitted?'ok':'info');
@@ -184,6 +341,8 @@ async function initialize() {
   $('#open-router-btn').addEventListener('click', () => { if (chosen) chrome.tabs.create({url: chosen}); });
   $('#core-check-btn').addEventListener('click', () => { checkSelectedCore().catch(console.error); });
   $('#core-open-btn').addEventListener('click', () => { if(chosen) chrome.tabs.create({url:coreEndpoint(chosen).page}); });
+  $('#core-modules-btn').addEventListener('click', () => { checkSelectedModules().catch(console.error); });
+  $('#core-link-btn').addEventListener('click', () => { confirmCoreAssociation().catch(console.error); });
   $('#choose-router').addEventListener('change', e => { chosen=e.target.value; refresh(); });
   [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   try { if (tab?.url) origin = routerOrigin(tab.url); } catch { origin = null; }

@@ -56,7 +56,8 @@ export function cleanApp(src) {
   const nativeLeftTrimPx = Number.isInteger(Number(src.nativeLeftTrimPx)) && Number(src.nativeLeftTrimPx) >= 0 && Number(src.nativeLeftTrimPx) <= 160 ? Number(src.nativeLeftTrimPx) : 0;
   const nativeRightTrimPx = Number.isInteger(Number(src.nativeRightTrimPx)) && Number(src.nativeRightTrimPx) >= 0 && Number(src.nativeRightTrimPx) <= 160 ? Number(src.nativeRightTrimPx) : 0;
   const presetId = /^[a-z0-9-]{2,35}$/.test(String(src.presetId || '')) ? src.presetId : undefined;
-  return { id, name, url, mode, icon, enabled, favorite, group, layoutWidth, nativeWidthPct, nativeLeftTrimPx, nativeRightTrimPx, manualBounds, ...(presetId ? {presetId} : {}) };
+  const coreSourceId = /^[mi]_[a-z0-9_-]{2,60}$/i.test(String(src.coreSourceId || '')) ? String(src.coreSourceId) : undefined;
+  return { id, name, url, mode, icon, enabled, favorite, group, layoutWidth, nativeWidthPct, nativeLeftTrimPx, nativeRightTrimPx, manualBounds, ...(presetId ? {presetId} : {}), ...(coreSourceId ? {coreSourceId} : {}) };
 }
 
 export function cleanState(src) {
@@ -74,7 +75,12 @@ export function cleanState(src) {
     if (new Set(apps.map(a => a.id)).size !== apps.length) throw Error('Повторяющиеся ID приложений.');
     const presets=apps.filter(a=>a.presetId).map(a=>a.presetId);
     if (new Set(presets).size !== presets.length) throw Error('Повторяющиеся интеграции каталога.');
-    out.routers[key] = { label, apps, theme: THEMES.includes(value.theme) ? value.theme : 'auto' };
+    const coreURL = new URL(key);
+    coreURL.protocol = 'http:';
+    coreURL.port = '2233';
+    // Optional consent marker: never grants API credentials or remote management rights.
+    const coreLink = value.coreLink === coreURL.origin ? coreURL.origin : '';
+    out.routers[key] = { label, apps, theme: THEMES.includes(value.theme) ? value.theme : 'auto', ...(coreLink ? {coreLink} : {}) };
   }
   return out;
 }

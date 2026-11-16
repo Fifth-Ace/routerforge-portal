@@ -7,7 +7,7 @@
       <img src="assets/routerforge-brand.png" alt="" class="brand-mark">
       <div class="brand-copy"><strong>RouterForge <em>Portal</em></strong><small>Единый центр приложений</small></div>
     </div>
-    <div class="popup-head-actions"><label class="language-control" for="popup-language"><select id="popup-language" aria-label="Язык интерфейса"><option value="ru">RU</option><option value="en">EN</option></select></label><span class="version-tag" id="popup-version">v0.10.5</span></div>
+    <div class="popup-head-actions"><label class="language-control" for="popup-language"><select id="popup-language" aria-label="Язык интерфейса"><option value="ru">RU</option><option value="en">EN</option></select></label><span class="version-tag" id="popup-version">v0.10.6</span></div>
   </header>
   <div class="popup-body">
     <div class="popup-eyebrow"><span class="eyebrow-dot"></span><span>KEENETIC / NETCRAZE</span><span class="divider-dot">·</span><span>WEBUI INTEGRATION</span></div>
@@ -29,6 +29,14 @@
         <p id="core-status" class="hint" role="status" aria-live="polite">Статус не проверялся</p>
         <div class="core-status-actions"><button id="core-check-btn" class="secondary" type="button">↻ Проверить Core</button><button id="core-open-btn" class="secondary" type="button">↗ Открыть Core</button></div>
         <p id="core-status-help" class="core-status-help">Только по нажатию · локальная проверка /api/health · без логина</p>
+        <div class="core-modules-panel"><button id="core-modules-btn" class="secondary" type="button">▣ Статус модулей</button>
+          <p id="core-modules-status" class="hint" role="status" aria-live="polite">Не проверялись</p>
+          <div id="core-modules-list" class="core-modules-list" hidden></div>
+          <p class="core-status-help">Требуется открытая вкладка Core и вход в неё. Только чтение.</p>
+          <div class="core-link-row"><button id="core-link-btn" class="secondary" type="button">🔗 Связать локально</button><span id="core-link-state">Связь не подтверждена</span></div>
+          <p id="core-suggestions-state" class="core-status-help">Сначала получи статус модулей</p>
+          <div id="core-suggestions-list" class="core-suggestions-list" hidden></div>
+        </div>
       </div>
       <div class="sectionhead app-section-title"><h3>Приложения</h3><span id="popup-appcount" class="count-chip">0</span></div>
       <div id="apps" class="applist"></div>

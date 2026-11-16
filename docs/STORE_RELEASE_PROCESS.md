@@ -12,6 +12,21 @@ One source revision, one version, distinct store packages.
 6. Submit each store update for review manually. Neither this script nor the main repository CI uploads or publishes to stores, creates a GitHub release, or stores browser-marketplace credentials.
 7. When both stores publish the new version, update public download links and release notes; browser stores handle signed auto-updates.
 
+## P2.3–P2.4 local Core link and application proposals
+
+- Explicit local link requires reading an opened Core tab first. It does not prove ownership remotely, authenticate an API client, or allow remote management.
+- Only the expected Core origin is saved in the per-router profile; no credentials or cookies are read or stored.
+- Only installed modules/integrations with validated same-router web metadata can be suggested.
+- Each suggested app must be added by a separate click. Existing settings, custom apps, and preset ports are not changed.
+
+## P2.2 local read-only module status
+
+- Manual action in Portal popup, bound to the selected saved router profile.
+- User first opens and signs in to the standard RouterForge Core page on port 2233.
+- Extension runs a **GET /api/catalog** inside that exact Core tab; it never stores or reads credentials/cookies.
+- A 401/403 response is shown as "sign in to Core"; no bypass of Core authentication, no polling.
+- No RouterForge Core or router firmware changes, no additional manifest permissions.
+
 ## Safety
 
 - Store users must never be told to download and install a GitHub ZIP over the store extension. The Portal shows the native update-channel notice instead.
