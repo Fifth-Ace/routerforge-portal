@@ -2,7 +2,7 @@
   if (globalThis.__kbridgeInjected) return;
   globalThis.__kbridgeInjected = true;
 
-  const BRIDGE_VERSION = '0.10.10';
+  const BRIDGE_VERSION = '0.10.11';
   const LOCAL_FIX_ID = 'P14-PRODUCTION';
   const KEY = 'kbridgeState';
   const LANGUAGE_KEY = 'rfPortalLanguage';
@@ -974,6 +974,71 @@
       controls.prepend(enabled,fav);controls.append(up,down,edit,del);row.append(controls);list.append(row);
     }
   }
+
+  // P6: Core is an optional source for existing native app profiles. The router's
+  // app editor still accepts any HTTP(S) URL without installing RouterForge.
+  let p6PreviewApps=[];
+  async function p6NativeReadCore() {
+    try {
+      const result=await chrome.runtime.sendMessage({type:'P6_CORE_PREVIEW',router:origin});
+      if (!result?.ok) throw Error(result?.error||'CORE_CATALOG_READ_FAILED');
+      p6PreviewApps=Array.isArray(result.apps)?result.apps:[];
+      renderNativeSettings();
+      nativeNotice(p6PreviewApps.length
+        ?(language==='en'?'Available from Core: ':'Доступно из Core: ')+p6PreviewApps.length
+        :(language==='en'?'Nothing new to add.':'Новых приложений для добавления нет.'));
+    } catch(error) {p6PreviewApps=[];nativeNotice(p6NativeMessage(error?.message),true);}
+  }
+  function p6NativeMessage(error) {
+    const text=String(error||'');
+    const descriptions={
+      CORE_LINK_REQUIRED:['Сначала свяжи этот роутер с Core через Portal.','Link this router to Core in Portal first.'],
+      CORE_SITE_PERMISSION_REQUIRED:['Разреши доступ к адресу Core через расширение Portal.','Grant Core site access in Portal first.'],
+      CORE_TAB_REQUIRED:['Открой вкладку RouterForge Core на этом роутере.','Open a RouterForge Core tab for this router.'],
+      CORE_LOGIN_REQUIRED:['Войди в Core в его вкладке и повтори.','Sign in to the Core tab and retry.'],
+      CORE_CATALOG_READ_FAILED:['Не удалось получить каталог Core.','Unable to read the Core catalogue.'],
+      ROUTER_TAB_REQUIRED:['Открой настройки из веб-интерфейса Keenetic.','Open settings in Keenetic WebUI.'],
+      SELECTION_STALE_OR_DUPLICATE:['Каталог изменился. Обнови список и повтори.','Catalogue changed. Refresh the list and retry.'],
+      ROUTER_APP_LIMIT_100:['Достигнут лимит 100 приложений.','The limit of 100 apps has been reached.']
+    };
+    const match=Object.keys(descriptions).find(key=>text.includes(key));
+    return match?descriptions[match][language==='en'?1:0]:text;
+  }
+  async function p6NativeImport(ids) {
+    if (!ids.length) return;
+    if (!confirm(language==='en'?`Add ${ids.length} selected Core apps to this Keenetic menu? Existing entries will not change.`:`Добавить ${ids.length} приложений из Core в меню Keenetic? Существующие записи не изменятся.`)) return;
+    try {
+      const result=await chrome.runtime.sendMessage({type:'P6_CORE_IMPORT',router:origin,sourceIds:ids});
+      if (!result?.ok) throw Error(result?.error||'CORE_IMPORT_FAILED');
+      p6PreviewApps=[];
+      renderNativeSettings();
+      nativeNotice(language==='en'?`Added: ${result.added}`:`Добавлено: ${result.added}`);
+    } catch(error) {nativeNotice(p6NativeMessage(error?.message),true);}
+  }
+  function p6RenderCoreImport(panel) {
+    // The userscript shim has no extension ID or scripting privileges.
+    if (typeof chrome.runtime?.id !== 'string' || !chrome.runtime.id) return;
+    const section=settingsNode('section','kb-p6-core');
+    section.append(settingsNode('h3','',language==='en'?'Import from RouterForge Core':'Импорт из RouterForge Core'));
+    section.append(settingsNode('p','kb-ns-muted',language==='en'
+      ?'Optional: read installed modules and third-party Web UIs from your signed-in Core tab. Manual apps always work without Core.'
+      :'Необязательно: взять модули и сторонние веб-панели из открытой авторизованной вкладки Core. Ручное добавление работает без Core.'));
+    section.append(settingsButton(language==='en'?'↻ Get Core apps':'↻ Получить приложения из Core',p6NativeReadCore));
+    if(p6PreviewApps.length) {
+      section.append(settingsButton(language==='en'?`＋ Add all ${p6PreviewApps.length}`:`＋ Добавить все (${p6PreviewApps.length})`,()=>p6NativeImport(p6PreviewApps.map(item=>item.coreSourceId)),'kb-ns-primary'));
+      const list=settingsNode('div','kb-p6-list');
+      for(const item of p6PreviewApps) {
+        const row=settingsNode('div','kb-p6-row');
+        const title=settingsNode('div','kb-p6-details');
+        title.append(settingsNode('strong','',item.icon+' '+item.name),settingsNode('small','',item.url));
+        row.append(title,settingsButton('＋',()=>p6NativeImport([item.coreSourceId])));
+        list.append(row);
+      }
+      section.append(list);
+    }
+    panel.append(section);
+  }
+
   function renderNativeSettings() {
     const panel=workspace?.querySelector('.kb-native-settings');if(!panel||!settingsOpen||!profile)return;
     panel.replaceChildren();
@@ -987,6 +1052,7 @@
     const langSelect=nativeSelect(preferences,L('nativeLanguage'),language,[['ru','Русский'],['en','English']]);
     langSelect.addEventListener('change',async()=>{try{await chrome.storage.local.set({[LANGUAGE_KEY]:langSelect.value});}catch(e){nativeNotice(L('nativeError')+': '+e.message,true);}});
     panel.append(preferences);
+    p6RenderCoreImport(panel);
     const tools=settingsNode('div','kb-ns-toolbar');
     const search=settingsNode('input','kb-ns-search');search.type='search';search.placeholder=L('nativeSearch');search.value=settingsSearch;search.setAttribute('aria-label',L('nativeSearch'));
     search.addEventListener('input',()=>{settingsSearch=search.value;renderNativeSettingsList(panel.querySelector('.kb-ns-list'));});

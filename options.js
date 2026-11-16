@@ -310,7 +310,7 @@ async function initialize() {
       }
     } catch (error) { notify((lang==='en'?'Import failed: ':'Импорт не выполнен: ')+T(error.message),true); }
   });
-  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.10');
+  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.11');
   $('#options-header-version').textContent=$('#update-current').textContent;
   $('#check-updates').addEventListener('click', manualUpdateCheck);
   chrome.storage.onChanged.addListener(async (changes,area) => {

@@ -1,4 +1,13 @@
 /* P2 native-content layout: scoped extension CSS, no firmware modifications. */
+/* P6 native optional Core import uses the same app editor and never covers Keenetic globally. */
+#kbridge-workspace .kb-p6-core{display:grid!important;gap:9px!important;margin:12px 0!important;padding:12px!important;border:1px solid var(--kb-line)!important;border-radius:7px!important;background:var(--kb-card)!important;}
+#kbridge-workspace .kb-p6-core h3{margin:0!important;font-size:14px!important;}
+#kbridge-workspace .kb-p6-core p{margin:0!important;font-size:12px!important;}
+#kbridge-workspace .kb-p6-list{display:grid!important;gap:5px!important;max-height:290px!important;overflow:auto!important;}
+#kbridge-workspace .kb-p6-row{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;border-top:1px solid var(--kb-line)!important;padding:6px 0!important;}
+#kbridge-workspace .kb-p6-details{display:grid!important;gap:2px!important;min-width:0!important;}
+#kbridge-workspace .kb-p6-details strong{font-size:12px!important;}
+#kbridge-workspace .kb-p6-details small{font-size:11px!important;color:var(--kb-muted)!important;overflow-wrap:anywhere!important;}
 #kbridge-entry, #kbridge-drawer, #kbridge-workspace {
   --kb-accent:#0699e4; --kb-text:#e0e8f1; --kb-muted:#93a4b8;
   --kb-nav:#1b2638; --kb-surface:#192537; --kb-line:#334356;
