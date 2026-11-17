@@ -13,7 +13,7 @@ for f in ROOT.rglob('*'):
     if not f.is_file(): continue
     rel=f.relative_to(ROOT).as_posix()
     if f.is_symlink(): raise SystemExit('SYMLINK_FORBIDDEN: '+rel)
-    if re.fullmatch(r'(manifest\.json|background\.js|popup\.(html|js)|options\.(html|js)|ui\.css|_locales/[a-z]{2}/messages\.json|shared/[a-z0-9_-]+\.js|content/[a-z0-9_-]+\.(js|css)|assets/[a-z0-9_.-]+\.(png|svg|ico))',rel):
+    if rel in {'portal-center.html','portal-center.js','portal-center.css','shared/portal2_monitor.js','shared/portal2_monitor_worker.js'} or re.fullmatch(r'(manifest\.json|background\.js|popup\.(html|js)|options\.(html|js)|ui\.css|_locales/[a-z]{2}/messages\.json|shared/[a-z0-9_-]+\.js|content/[a-z0-9_-]+\.(js|css)|assets/[a-z0-9_.-]+\.(png|svg|ico))',rel):
         files.append((rel,f))
 files.sort()
 assert len(files)>=15

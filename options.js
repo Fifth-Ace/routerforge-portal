@@ -11,7 +11,60 @@ const catalogExpanded = new Set(); // UI-only; never changes saved router profil
 const groupName = group => ({routerforge:'RouterForge',network:lang==='en'?'Network & VPN':'Сеть и VPN',security:lang==='en'?'DNS & Security':'DNS и защита',other:lang==='en'?'Other':'Другое'})[group] || group;
 const p11Text = (ru,en) => lang==='en'?en:ru;
 const T = (source, vars) => t(source, lang, vars);
-function translateUI(){ document.documentElement.lang=lang; $('#ui-language').value=lang; localizeStatic(document.body,lang); document.title=lang==='en'?'RouterForge Portal — Application Center':'RouterForge Portal — Центр приложений'; }
+
+// R5.9: localize only known static labels. Never translate app names/URLs.
+function rf59ApplyOptionsLocale(){
+  const en=lang==='en';document.documentElement.lang=en?'en':'ru';
+  const labels={
+    '.brand-copy small':['ЦЕНТР ВЕБ-ПРИЛОЖЕНИЙ','WEBUI APPLICATION HUB'],
+    '.edition-pill':['Расширение браузера','Browser Extension'],
+    '.feature-chips span:nth-child(1)':['◈ Не зависит от Core','◈ Independent of Core'],
+    '.feature-chips span:nth-child(2)':['▣ 2 способа открытия','▣ 2 opening modes'],
+    '.feature-chips span:nth-child(3)':['⌘ Локальные профили','⌘ Local profiles'],
+    '.page-footer span:first-child':['RouterForge Ecosystem / Portal · локальное браузерное расширение','RouterForge Ecosystem / Portal · local browser extension'],
+    '.page-footer span:last-child':['Неофициальное расширение для Keenetic / Netcraze','Unofficial extension for Keenetic / Netcraze'],
+    '.page-intro .kicker':['ЭКОСИСТЕМА ROUTERFORGE / PORTAL','ROUTERFORGE ECOSYSTEM / PORTAL'],
+    '.page-intro h1':['Центр приложений','Application Center'],
+    '.page-intro .lead':['Сторонние веб-панели в интерфейсе Keenetic — без модулей на роутере.','Third-party web panels in Keenetic UI — no router modules required.'],
+    '.router-card .panel-title .kicker':['УСТРОЙСТВО','DEVICE'],
+    '.router-card .panel-title h2':['Маршрутизаторы','Routers'],
+    '.router-card label[for="routers"]':['Активный профиль','Active profile'],
+    '#open-router':['↗ Открыть роутер','↗ Open router'],
+    '#delete-router':['Удалить профиль','Remove profile'],
+    '.sidecol .panel:has(#router-theme) .panel-title .kicker':['ОФОРМЛЕНИЕ','APPEARANCE'],
+    '.sidecol .panel:has(#router-theme) .panel-title h2':['Внешний вид','Appearance'],
+    'label[for="router-theme"]':['Тема Portal для этого роутера','Portal theme for this router'],
+    '.apps-panel .panel-title .kicker':['РЕЕСТР ПРИЛОЖЕНИЙ','APPLICATION REGISTRY'],
+    '.apps-panel .panel-title h2':['Мои приложения','My applications'],
+    '#quick-setup':['⚡ Быстро подключить 3 приложения','⚡ Quickly add 3 applications'],
+    '.catalog-panel .panel-title .kicker':['КАТАЛОГ ИНТЕГРАЦИЙ','INTEGRATION CATALOG'],
+    '.catalog-panel .panel-title h2':['Сервисы Keenetic / Entware','Keenetic / Entware services'],
+    '.catalog-intro':['Только приложения для Keenetic и Entware. Другие веб-сервисы можно добавить вручную.','Apps for Keenetic and Entware only. Add other web services manually.'],
+    '.editor-panel .panel-title .kicker':['РЕДАКТОР ПРИЛОЖЕНИЙ','APPLICATION EDITOR'],
+    '.update-panel .panel-title .kicker':['ВЫПУСКИ / ОБНОВЛЕНИЯ','RELEASES / UPDATES'],
+    '.update-panel .panel-title h2':['Обновления Portal','Portal updates'],
+    '#check-updates':['↻ Проверить обновления','↻ Check for updates'],
+    '.ecosystem-card .panel-title .kicker':['ЭКОСИСТЕМА','ECOSYSTEM'],
+    '.ecosystem-links a[href*="github.com/Fifth-Ace/routerforge"]':['⌘ RouterForge на GitHub','⌘ RouterForge on GitHub'],
+    '.ecosystem-links a[href*="t.me/RouterForge"]':['✈ Telegram-сообщество','✈ Telegram community'],
+    'label[for="name"]':['Название','Name'],
+    'label[for="url"]':['Адрес веб-интерфейса (включая порт)','Web interface URL (including port)'],
+    'label[for="app-group"]':['Группа','Group'],
+    'label[for="mode"]':['Способ открытия','Open mode']
+  };
+  for(const [selector,pair] of Object.entries(labels)){
+    const el=document.querySelector(selector);if(el)el.textContent=pair[en?1:0];
+  }
+  const hints={
+    '#app-search':['Поиск приложений','Search applications'],
+    '#router-label-edit':['Название роутера','Router name']
+  };
+  for(const [selector,pair] of Object.entries(hints)){
+    const el=document.querySelector(selector);if(el)el.placeholder=pair[en?1:0];
+  }
+}
+
+function translateUI(){ document.documentElement.lang=lang; $('#ui-language').value=lang; localizeStatic(document.body,lang); document.title=lang==='en'?'RouterForge Portal — Application Center':'RouterForge Portal — Центр приложений'; rf59ApplyOptionsLocale(); }
 function notify(message, fail = false) {
   const el = $('#message'); el.hidden = false; el.className = `alert${fail?' error':''}`; el.textContent = message;
 }
@@ -310,7 +363,7 @@ async function initialize() {
       }
     } catch (error) { notify((lang==='en'?'Import failed: ':'Импорт не выполнен: ')+T(error.message),true); }
   });
-  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '0.10.13');
+  $('#update-current').textContent='v'+(chrome.runtime?.getManifest?.()?.version || '1.0.0');
   $('#options-header-version').textContent=$('#update-current').textContent;
   $('#check-updates').addEventListener('click', manualUpdateCheck);
   chrome.storage.onChanged.addListener(async (changes,area) => {

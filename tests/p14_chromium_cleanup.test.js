@@ -9,7 +9,7 @@ const manifest=JSON.parse(read('../manifest.json'));
 
 test('P14 chromium build uses MV3 and only optional website access',()=>{
   assert.equal(manifest.manifest_version,3);
-  assert.deepEqual(manifest.permissions,['storage','scripting','activeTab']);
+  assert.deepEqual(manifest.permissions,['storage','scripting','activeTab','alarms']);
   assert.ok(!('host_permissions' in manifest));
   assert.equal(manifest.version,JSON.parse(read('../package.json')).version);
   assert.ok(!('version_name' in manifest));

@@ -29,8 +29,8 @@ test('P8 manual and authenticated Core imports remain independent and embedded b
 });
 test('P8 three distribution channels share exact version with no new permissions',()=>{
   const m=JSON.parse(read('manifest.json'));
-  assert.equal(m.version,'0.10.13');
-  assert.deepEqual(m.permissions,['storage','scripting','activeTab']);
+  assert.equal(m.version,'1.0.0');
+  assert.deepEqual(m.permissions,['storage','scripting','activeTab','alarms']);
   assert.deepEqual(m.optional_host_permissions,['http://*/*','https://*/*']);
   assert.equal(m.host_permissions,undefined);
   assert.ok(read('userscript/runtime.template.js').includes("const VERSION='"+m.version+"'"));

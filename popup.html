@@ -7,8 +7,9 @@
       <img src="assets/routerforge-brand.png" alt="" class="brand-mark">
       <div class="brand-copy"><strong>RouterForge <em>Portal</em></strong><small>Единый центр приложений</small></div>
     </div>
-    <div class="popup-head-actions"><label class="language-control" for="popup-language"><select id="popup-language" aria-label="Язык интерфейса"><option value="ru">RU</option><option value="en">EN</option></select></label><span class="version-tag" id="popup-version">v0.10.13</span></div>
+    <div class="popup-head-actions"><label class="language-control" for="popup-language"><select id="popup-language" aria-label="Язык интерфейса"><option value="ru">RU</option><option value="en">EN</option></select></label><span class="version-tag" id="popup-version">v1.0.0</span></div>
   </header>
+  <nav class="portal-main-tabs" aria-label="Разделы Portal"><button type="button" id="portal-mode-apps" aria-current="page">Приложения</button><button type="button" id="portal-mode-servers">Серверы</button></nav>
   <div class="popup-body">
     <div class="popup-eyebrow"><span class="eyebrow-dot"></span><span>KEENETIC / NETCRAZE</span><span class="divider-dot">·</span><span>WEBUI INTEGRATION</span></div>
     <div id="status" class="notice" role="status">Проверка вкладки…</div>
@@ -49,6 +50,7 @@
       <div class="popup-actions"><button id="add-btn" class="primary">＋ Управление приложениями</button><button id="open-router-btn" class="secondary">↗ Открыть Keenetic</button></div>
     </section>
   </div>
-  <footer class="popup-footer"><button id="settings-btn" class="textbutton">⚙ Настройки Portal</button><button id="updates-btn" class="textbutton" type="button">↻ Обновления</button><nav class="ecosystem-links" aria-label="Экосистема RouterForge"><a href="https://github.com/Fifth-Ace/routerforge" target="_blank" rel="noopener noreferrer" title="RouterForge на GitHub">⌘ RouterForge</a><a href="https://t.me/RouterForge" target="_blank" rel="noopener noreferrer" title="Сообщество RouterForge">✈ Telegram</a></nav></footer>
+  <section id="portal-popup-servers" class="portal-popup-servers" hidden><p class="hint">Последние данные · без проверки при открытии · HTTP RTT, не ICMP ping.</p><div id="portal-popup-server-list"></div></section>
+  <footer class="popup-footer"><button id="portal2-center" class="textbutton" type="button">▣ Центр управления</button><button id="settings-btn" class="textbutton">⚙ Настройки Portal</button><button id="updates-btn" class="textbutton" type="button">↻ Обновления</button><nav class="ecosystem-links" aria-label="Экосистема RouterForge"><a href="https://github.com/Fifth-Ace/routerforge" target="_blank" rel="noopener noreferrer" title="RouterForge на GitHub">⌘ RouterForge</a><a href="https://t.me/RouterForge" target="_blank" rel="noopener noreferrer" title="Сообщество RouterForge">✈ Telegram</a></nav></footer>
 <script type="module" src="popup.js"></script>
 </body></html>

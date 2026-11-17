@@ -7,7 +7,7 @@ def gate(ok,msg):
     if not ok: raise SystemExit('SECURITY_FAIL: '+msg)
 gate(m['manifest_version']==3,'MUST_BE_MV3')
 gate(m['name']=='RouterForge Portal','NAME')
-gate(set(m['permissions'])=={'storage','scripting','activeTab'},'PERMISSIONS_DRIFT')
+gate(set(m['permissions'])=={'storage','scripting','activeTab','alarms'},'PERMISSIONS_DRIFT')
 gate(set(m.get('optional_host_permissions',[]))=={'http://*/*','https://*/*'},'OPTIONAL_PERMISSIONS_DRIFT')
 gate(not m.get('host_permissions'),'UNCONDITIONAL_HOST_PERMISSIONS')
 gate(not m.get('externally_connectable'),'EXTERNAL_MESSAGING')

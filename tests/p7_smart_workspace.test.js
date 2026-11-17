@@ -43,8 +43,8 @@ test('P7 keeps all manual and Core apps, recent list does not duplicate apps',()
 });
 test('P7 Chromium, Firefox and Userscript share the unchanged bridge and permissions',()=>{
   const m=JSON.parse(read('manifest.json'));
-  assert.equal(m.version,'0.10.13');
-  assert.deepEqual(m.permissions,['storage','scripting','activeTab']);
+  assert.equal(m.version,'1.0.0');
+  assert.deepEqual(m.permissions,['storage','scripting','activeTab','alarms']);
   assert.ok(!m.host_permissions);
   assert.ok(read('userscript/runtime.template.js').includes('__BRIDGE_JS__'));
   assert.match(bridge,/P14-PRODUCTION/);

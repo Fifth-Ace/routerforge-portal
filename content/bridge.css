@@ -199,3 +199,29 @@
 
 #kbridge-workspace .kbbuttons button[hidden]{display:none!important;}
 #kbridge-workspace .kb-workspace-tabs[hidden]{display:none!important;}
+
+/* R5.7 native Keenetic server/settings tab: scoped to extension-owned panel. */
+.kb-native-settings .kb-rf57-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px}
+.kb-native-settings .kb-rf57-tabs button[aria-current="page"]{background:#14618a!important;color:#fff!important;border-color:#33a4e0!important}
+.kb-native-settings .kb-rf57-servers{display:grid;gap:13px}
+.kb-native-settings .kb-rf57-list{display:grid;gap:10px}
+.kb-native-settings .kb-rf57-card{display:grid;gap:8px;padding:12px;border:1px solid rgba(119,170,206,.28);border-radius:9px;background:rgba(11,24,40,.35)}
+.kb-native-settings .kb-rf57-details{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:12px}
+.kb-native-settings .kb-rf57-details span{min-width:160px;flex:1;overflow-wrap:anywhere}
+
+
+/* R5.9 / user-requested server shortcuts; strictly extension-owned Keenetic DOM. */
+#kbridge-entry .kb-rf59-server-head,#kbridge-drawer .kb-rf59-server-head{
+  color:var(--kb-muted)!important;font-size:11px!important;font-weight:700!important;
+  letter-spacing:.075em!important;padding:12px 15px 4px!important;
+}
+#kbridge-entry .kb-nav-item.kb-rf59-server-item{display:flex!important;gap:8px!important;min-width:0!important;align-items:center!important}
+#kbridge-entry .kb-rf59-server-item .kb-nav-name{display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;min-width:0!important;flex:1 1 auto!important}
+#kbridge-entry .kb-rf59-server-item[aria-current="page"]{color:var(--kb-accent)!important;background:var(--kb-hover)!important}
+#kbridge-entry .kb-rf59-server-empty{font-size:11px!important;color:var(--kb-muted)!important;padding:8px 15px!important}
+#kbridge-drawer .kb-rf59-server-head{padding:12px 8px 4px!important;color:var(--kb-accent)!important}
+#kbridge-drawer .kb-rf59-server-item{display:flex!important;align-items:center!important;gap:8px!important;width:100%!important;text-align:left!important;overflow:hidden!important}
+#kbridge-drawer .kb-rf59-server-name{overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis!important}
+#kbridge-entry[data-kb-collapsed="true"] .kb-rf59-server-head{display:none!important}
+#kbridge-workspace .kb-rf59-selection{display:flex!important;gap:8px!important;align-items:center!important;flex-wrap:wrap!important;margin:0 0 8px!important}
+#kbridge-workspace .kb-rf59-selection button{border:1px solid var(--kb-line)!important;border-radius:5px!important;color:var(--kb-text)!important;background:var(--kb-hover)!important;padding:6px 9px!important;cursor:pointer!important}

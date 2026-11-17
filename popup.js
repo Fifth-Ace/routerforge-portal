@@ -427,3 +427,71 @@ async function initialize() {
   await refresh();
 }
 initialize().catch(error => status((lang==='en'?'Error: ':'Ошибка: ') + error.message, 'error'));
+
+
+// R5.2 compact popup, last-known data only. No network requests or hidden probes.
+const portalCenter=(serverId='')=>chrome.tabs.create({url:chrome.runtime.getURL('options.html?tab=servers'+(serverId?'&server='+encodeURIComponent(serverId):''))}).catch(console.warn);
+document.getElementById('portal2-center')?.addEventListener('click',()=>portalCenter());
+const appsButton=document.getElementById('portal-mode-apps');
+const serversButton=document.getElementById('portal-mode-servers');
+const appsBody=document.querySelector('.popup-body');
+const serversBody=document.getElementById('portal-popup-servers');
+const mini=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el;};
+const miniPercent=m=>m&&Number.isFinite(m.current)&&Number.isFinite(m.total)&&m.total>0?Math.round(m.current*100/m.total)+'%':'—';
+const miniBytes=n=>{if(!Number.isFinite(n)||n<0)return '—';let i=0;const u=['B','KiB','MiB','GiB'];while(n>=1024&&i<u.length-1){n/=1024;i++;}return (i?n.toFixed(1):Math.round(n))+' '+u[i];};
+function miniOpenUrl(app){
+ const raw=app?.addressMode==='local'?app?.urlLocal:app?.urlRemote;
+ if(typeof raw!=='string'||!raw)return null;
+ try{const parsed=new URL(raw);if(!['http:','https:'].includes(parsed.protocol)||parsed.username||parsed.password||parsed.hash)return null;return parsed.href;}catch{return null;}
+}
+function renderPortalServers(){
+ chrome.storage.local.get(['rfPortal2Registry','rfPortalR5Snapshots','rfPortalR5MonitorConfig']).then(data=>{
+  const list=document.getElementById('portal-popup-server-list');if(!list)return;list.replaceChildren();
+  const servers=data.rfPortal2Registry?.servers||[],apps=data.rfPortal2Registry?.apps||[],snaps=data.rfPortalR5Snapshots||{},config=data.rfPortalR5MonitorConfig||{};
+  if(!servers.length){list.append(mini('p','portal-mini-empty','Серверов пока нет. Добавь их в Центре управления.'));return;}
+  for(const server of servers){
+   const box=mini('article','portal-mini-card');
+   const title=mini('div','portal-mini-title');title.append(mini('strong','',server.name));
+   const more=mini('button','portal-mini-more','Подробнее');more.type='button';more.addEventListener('click',()=>portalCenter(server.id));title.append(more);box.append(title);
+   const panels=apps.filter(a=>a.serverId===server.id);
+   if(!panels.length){box.append(mini('p','portal-mini-empty','Нет веб-панелей'));list.append(box);continue;}
+   for(const app of panels){
+    const v=snaps[app.id]?.latest,hasMetrics=app.adapter==='3xui'&&v&&(v.state==='OK'||v.state==='XRAY_STOPPED');
+    const elapsed=v?Date.now()-Date.parse(v.checkedAt):Infinity;
+    const stale=!Number.isFinite(elapsed)||elapsed<0||elapsed>Math.max(180000,3*(config[app.id]?.period||1)*60000);
+    const state=app.adapter!=='3xui'?'WebUI':config[app.id]?.enabled&&config[app.id]?.needsAuth?'Нужен Vault · прошлые данные':!v?'Не проверялся':stale?'Нет свежих данных':({OK:'Доступен',XRAY_STOPPED:'Xray остановлен',API_AUTH_REQUIRED:'Нужен вход',API_FORBIDDEN:'Нет прав',TIMEOUT:'Таймаут',NETWORK_ERROR:'Ошибка сети',PERMISSION_REQUIRED:'Нет разрешения',VAULT_LOCKED:'Vault закрыт'})[v.state]||v.state;
+    const line=mini('div','portal-mini-panel');const first=mini('div','portal-mini-panel-top');first.append(mini('span','portal-mini-panel-name',app.name));
+    first.append(mini('span','portal-mini-state',state));first.append(mini('span','portal-mini-rtt',app.adapter==='3xui'&&Number.isFinite(v?.rttMs)?'HTTP RTT '+v.rttMs+' мс':'HTTP RTT —'));
+    if(app.adapter==='3xui'){
+     const metrics=mini('div','portal-mini-metrics');
+     for(const [k,val] of [['CPU',hasMetrics&&Number.isFinite(v.cpu)?v.cpu.toFixed(1)+'%':'—'],['RAM',hasMetrics?miniPercent(v.mem):'—'],['Диск',hasMetrics?miniPercent(v.disk):'—'],['Xray',hasMetrics?(v.xray?.state==='running'?'работает':v.xray?.state==='stopped'?'остановлен':'—'):'—']]){
+      const cell=mini('span','');cell.append(mini('small','',k+' '),mini('b','',val));metrics.append(cell);
+     }line.append(metrics);
+     if(hasMetrics&&v.rate)line.append(mini('span','portal-mini-traffic','↑ '+miniBytes(v.rate.up)+'/с · ↓ '+miniBytes(v.rate.down)+'/с'));
+     if(v?.checkedAt&&Number.isFinite(Date.parse(v.checkedAt)))line.append(mini('span','portal-mini-checked','Проверено '+new Date(v.checkedAt).toLocaleString('ru-RU')));
+    }
+    const url=miniOpenUrl(app);const open=mini('button','portal-mini-open','↗ Веб-панель');open.type='button';open.disabled=!url;
+    if(!url)open.title='Нет полного корректного URL';else open.addEventListener('click',()=>chrome.tabs.create({url}).catch(console.warn));
+    first.append(open);line.prepend(first);box.append(line);
+   }
+   list.append(box);
+  }
+ }).catch(err=>{const list=document.getElementById('portal-popup-server-list');if(list){list.replaceChildren(mini('p','portal-mini-empty','Не удалось прочитать сохранённые данные'));}console.warn('Portal popup local snapshot:',err?.message);});
+}
+const POPUP_TAB_KEY='rfPortalPopupLastTab';
+let userSelectedPopupTab=false;
+function mode(what,remember=false){
+ const serverMode=what==='servers';appsBody.hidden=serverMode;serversBody.hidden=!serverMode;
+ appsButton.setAttribute('aria-current',serverMode?'false':'page');serversButton.setAttribute('aria-current',serverMode?'page':'false');
+ if(remember){userSelectedPopupTab=true;chrome.storage.local.set({[POPUP_TAB_KEY]:serverMode?'servers':'apps'}).catch(console.warn);}
+ if(serverMode){renderPortalServers();chrome.runtime.sendMessage({type:'PORTAL_R5_MONITOR_REFRESH_DUE'}).catch(()=>{});}
+}
+appsButton?.addEventListener('click',()=>mode('apps',true));
+serversButton?.addEventListener('click',()=>mode('servers',true));
+chrome.storage.onChanged.addListener((changes,area)=>{if(area==='local'&&!serversBody.hidden&&(changes.rfPortalR5Snapshots||changes.rfPortal2Registry||changes.rfPortalR5MonitorConfig))renderPortalServers();});
+// New installs default to Applications. Later openings restore only a known
+// user-selected tab; never let an async storage read override a new click.
+mode('apps');
+chrome.storage.local.get(POPUP_TAB_KEY).then(data=>{
+ if(!userSelectedPopupTab&&data[POPUP_TAB_KEY]==='servers')mode('servers');
+}).catch(console.warn);

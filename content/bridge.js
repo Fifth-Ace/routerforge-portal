@@ -2,7 +2,7 @@
   if (globalThis.__kbridgeInjected) return;
   globalThis.__kbridgeInjected = true;
 
-  const BRIDGE_VERSION = '0.10.13';
+  const BRIDGE_VERSION = '1.0.0';
   const LOCAL_FIX_ID = 'P14-PRODUCTION';
   const KEY = 'kbridgeState';
   const LANGUAGE_KEY = 'rfPortalLanguage';
@@ -836,6 +836,7 @@
       if(group!==lastGroup){list.append(make('div','kb-group-label',L(group)));lastGroup=group;}
       addApp(app);
     }
+    rf59AppendServerMenu(list,true);
     p7HighlightSelection();
   }
   function renderNav() {
@@ -870,10 +871,21 @@
     const add = make('button','kb-nav-item kb-nav-add','＋ '+L('addAny'));
     add.type='button';add.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();openNativeAdd();});
     list.append(find,add);
+    // Native extension only: userscript has no trusted extension App Center context.
+    if(chrome.runtime?.id){
+      const portal2=make('button','kb-nav-item kb-nav-center','▣ '+(language==='en'?'RouterForge Portal':'RouterForge Portal'));
+      portal2.type='button';
+      portal2.addEventListener('click',ev=>{
+        ev.preventDefault();ev.stopPropagation();
+        chrome.runtime.sendMessage({type:'OPEN_PORTAL_CENTER'}).then(r=>{if(!r?.ok)console.warn('Portal Center:',r?.error);}).catch(console.warn);
+      });
+      list.append(portal2);
+    }
     const settings = make('button', 'kb-nav-settings', L('customize'));
     settings.type = 'button'; settings.classList.toggle('kb-active',settingsOpen); settings.setAttribute('aria-current',settingsOpen?'page':'false'); settings.addEventListener('click', ev => {
       ev.preventDefault(); ev.stopPropagation(); openNativeSettings();
     });
+    rf59AppendServerMenu(list);
     list.append(settings); entry.append(list);
     setCurrent(currentAppId);
   }
@@ -1085,6 +1097,93 @@
     panel.append(section);
   }
 
+
+  // R5.7 two panes in the authenticated Keenetic Portal settings. Data is
+  // read from extension storage, never fetched from VPS or injected into host DOM.
+  let rf57SettingsTab='apps';
+
+  // R5.9: one more group in the Portal-owned Keenetic menu, sourced exclusively
+  // from chrome.storage.local. Names and stored read-only snapshot states only.
+  let rf59SelectedServer='';
+  function rf59AppendServerMenu(list,drawerMode=false){
+    const heading=make('div','kb-rf59-server-head',language==='en'?'SERVERS':'СЕРВЕРЫ');
+    const bucket=make('div','kb-rf59-server-items');
+    list.append(heading,bucket);
+    chrome.storage.local.get('rfPortal2Registry').then(result=>{
+      if(!bucket.isConnected || !entry || !profile)return;
+      const servers=Array.isArray(result.rfPortal2Registry?.servers)?result.rfPortal2Registry.servers.slice(0,50):[];
+      bucket.replaceChildren();
+      if(!servers.length){bucket.append(make('div','kb-rf59-server-empty',language==='en'?'No connected servers':'Нет подключённых серверов'));return;}
+      for(const server of servers){
+        if(typeof server?.id!=='string'||!/^[a-zA-Z0-9_-]{4,80}$/.test(server.id))continue;
+        const label=String(server.name||'Server').slice(0,100);
+        const btn=make('button',drawerMode?'kbapp kb-rf59-server-item':'kb-nav-item kb-rf59-server-item');
+        btn.type='button';btn.dataset.rf59Server=server.id;btn.title=label;
+        if(drawerMode){btn.append(make('span','kbicon','▣'),make('span','kb-rf59-server-name',label));}
+        else btn.append(make('span','kb-nav-icon','▣'),make('span','kb-nav-name',label));
+        if(settingsOpen&&rf57SettingsTab==='servers'&&rf59SelectedServer===server.id)btn.setAttribute('aria-current','page');
+        btn.addEventListener('click',event=>{
+          event.preventDefault();event.stopPropagation();
+          rf59SelectedServer=server.id;rf57SettingsTab='servers';
+          openNativeSettings();renderNativeSettings();dismiss();
+        });
+        bucket.append(btn);
+      }
+    }).catch(error=>console.warn('RouterForge Portal server menu:',error?.message||error));
+  }
+  // Refresh only extension-owned menu/content when server registry changes.
+  chrome.storage.onChanged.addListener((changes,area)=>{
+    if(area!=='local'||!changes.rfPortal2Registry)return;
+    if(entry)renderNav();
+    if(drawer&&!drawer.hidden)renderDrawer();
+    if(settingsOpen&&rf57SettingsTab==='servers')renderNativeSettings();
+  });
+
+  async function rf57NativeServers(panel){
+    const box=settingsNode('section','kb-rf57-servers');panel.append(box);
+    const introduction=settingsNode('p','kb-ns-muted',language==='en'?'Last saved server metrics. No automatic check on opening.':'Последние сохранённые показатели серверов. При открытии проверок нет.');
+    box.append(introduction);
+    const manage=settingsButton(language==='en'?'⚙ Full settings / Backup':'⚙ Все настройки и резервная копия',()=>chrome.runtime.sendMessage({type:'OPEN_OPTIONS'}).catch(e=>nativeNotice(String(e),true)),'kb-ns-primary');
+    box.append(manage);
+    const list=settingsNode('div','kb-rf57-list');box.append(list);
+    if(!chrome.runtime?.id){list.append(settingsNode('p','kb-ns-muted','Для управления серверами требуется установленное расширение Portal.'));return;}
+    try{
+      const result=await chrome.storage.local.get(['rfPortal2Registry','rfPortalR5Snapshots','rfPortalR5MonitorConfig']);
+      if(!box.isConnected||!settingsOpen||rf57SettingsTab!=='servers')return;
+      const registry=result.rfPortal2Registry||{},snapshots=result.rfPortalR5Snapshots||{},cfg=result.rfPortalR5MonitorConfig||{};
+      const servers=Array.isArray(registry.servers)?registry.servers.slice(0,100):[];
+      if(rf59SelectedServer&&!servers.some(s=>s.id===rf59SelectedServer))rf59SelectedServer='';
+      const chooser=settingsNode('div','kb-rf59-selection');
+      const all=settingsButton(language==='en'?'All connected servers':'Все подключённые серверы',()=>{rf59SelectedServer='';renderNativeSettings();});
+      all.setAttribute('aria-pressed',String(!rf59SelectedServer));chooser.append(all);
+      if(rf59SelectedServer){const selected=servers.find(s=>s.id===rf59SelectedServer);if(selected)chooser.append(settingsNode('strong','',String(selected.name||'Server').slice(0,100)));}
+      box.insertBefore(chooser,list);
+      const shown=rf59SelectedServer?servers.filter(s=>s.id===rf59SelectedServer):servers;
+      const apps=Array.isArray(registry.apps)?registry.apps:[];
+      list.replaceChildren();
+      if(!servers.length){list.append(settingsNode('p','kb-ns-muted',language==='en'?'No servers yet. Add them in extension settings.':'Серверов пока нет. Добавь их в настройках расширения.'));return;}
+      for(const server of shown){
+        const card=settingsNode('article','kb-rf57-card');card.append(settingsNode('strong','',String(server.name||'Server').slice(0,100)));
+        for(const app of apps.filter(a=>a.serverId===server.id).slice(0,12)){
+          const info=settingsNode('div','kb-rf57-details');const latest=snapshots[app.id]?.latest;
+          const age=latest?Date.now()-Date.parse(latest.checkedAt):Infinity;
+          const stale=!Number.isFinite(age)||age<0||age>Math.max(180000,3*(cfg[app.id]?.period||1)*60000);
+          const state=!latest?(language==='en'?'Not checked':'Не проверялся'):stale?(language==='en'?'Stale':'Данные устарели'):latest.state==='OK'?(language==='en'?'Available':'Доступен'):String(latest.state||(language==='en'?'Unavailable':'Недоступен')).slice(0,60);
+          const rtt=Number.isFinite(latest?.rttMs)?'HTTP RTT '+latest.rttMs+' мс':'HTTP RTT —';
+          const percent=value=>value&&Number.isFinite(value.current)&&Number.isFinite(value.total)&&value.total>0?Math.round(value.current*100/value.total)+'%':'—';
+          const cpu=latest?.state==='OK'&&Number.isFinite(latest.cpu)?latest.cpu.toFixed(1)+'%':'—';
+          const summary=String(app.name||'WebUI').slice(0,75)+' · '+state+' · '+rtt+' · CPU '+cpu+' · RAM '+percent(latest?.mem)+' · Disk '+percent(latest?.disk);
+          info.append(settingsNode('span','',summary));
+          const launch=settingsButton(language==='en'?'↗ Web panel':'↗ Веб-панель',()=>{
+            try{const raw=app.addressMode==='local'?app.urlLocal:app.urlRemote;const u=new URL(raw);if(!['http:','https:'].includes(u.protocol)||u.username||u.password||u.hash)throw Error('BAD_URL');window.open(u.href,'_blank','noopener,noreferrer');}
+            catch(e){nativeNotice('WEB_PANEL_URL_INVALID',true);}
+          });info.append(launch);card.append(info);
+        }
+        list.append(card);
+      }
+    }catch(e){list.replaceChildren(settingsNode('p','kb-ns-muted','Не удалось получить сохранённые данные серверов'));}
+  }
+
   function renderNativeSettings() {
     const panel=workspace?.querySelector('.kb-native-settings');if(!panel||!settingsOpen||!profile)return;
     panel.replaceChildren();
@@ -1092,6 +1191,13 @@
     const title=settingsNode('div');title.append(settingsNode('h2','',L('nativeSettings')),settingsNode('p','',L('nativeSubtitle')));
     heading.append(title,settingsButton('← '+L('nativeReturn'),()=>leaveNativeSettings(true)));panel.append(heading);
     const notice=settingsNode('div','kb-ns-notice');notice.hidden=true;notice.setAttribute('role','status');panel.append(notice);
+    const tabs=settingsNode('nav','kb-rf57-tabs');
+    for(const [id,label] of [['apps',language==='en'?'Applications':'Приложения'],['servers',language==='en'?'Servers':'Серверы']]){
+      const tab=settingsButton(label,()=>{rf57SettingsTab=id;settingsEditingId=null;renderNativeSettings();});
+      tab.setAttribute('aria-current',rf57SettingsTab===id?'page':'false');tabs.append(tab);
+    }
+    panel.append(tabs);
+    if(rf57SettingsTab==='servers'){rf57NativeServers(panel).catch(error=>nativeNotice(String(error),true));return;}
     const preferences=settingsNode('div','kb-ns-preferences');
     const themeSelect=nativeSelect(preferences,L('nativeTheme'),profile.theme||'auto', [['auto',L('nativeAutoTheme')],['dark',L('nativeDark')],['light',L('nativeLight')]]);
     themeSelect.addEventListener('change',()=>nativeWrite(router=>{router.theme=themeSelect.value;}));
