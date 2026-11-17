@@ -1,32 +1,29 @@
-# Установка RouterForge Portal — Chrome, Edge, Opera и Firefox
+# Установка RouterForge Portal 1.0.0
 
-**Официальный сайт:** https://fifth-ace.github.io/routerforge-portal/  
-**Chrome Web Store:** https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij  
-**GitHub Release (ручной канал):** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.3
+**Сайт:** https://fifth-ace.github.io/routerforge-portal/
+**Chrome Web Store:** https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij
+**GitHub Release:** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0
 
-## Google Chrome — рекомендуемый способ
+## Google Chrome — магазин
 
-1. Открой [RouterForge Portal в Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij).
-2. Нажми **«Установить»** и подтверди разрешения браузера.
-3. Войди в Keenetic / NETCRAZE, открой Portal и разреши доступ только к доверенному адресу своего роутера.
+Открой [Portal в Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) и установи расширение. Магазин обновляет его самостоятельно. **Версия 1.0.0 в GitHub уже опубликована, но в магазине она может появиться позднее после проверки обновления.**
 
-Обновления установленного из магазина расширения доставляет Chrome Web Store. Включать режим разработчика и распаковывать ZIP **не нужно**.
+## Edge, Brave, Opera, Vivaldi — Chromium
 
-## Microsoft Edge и Opera — ручной канал
+Используй магазин Chrome Web Store, если браузер поддерживает этот способ. Для ручной установки скачай [Chromium ZIP v1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal-chromium-v1.0.0.zip), проверь SHA256 по [SHA256SUMS](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/SHA256SUMS.txt), распакуй в постоянную папку и выбери **Загрузить распакованное расширение** в режиме разработчика браузера. `manifest.json` должен быть в корне выбранной папки.
 
-1. Скачай [Chromium ZIP v0.10.3](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip) и сверь SHA-256 по файлу `SHA256SUMS.txt` релиза.
-2. Распакуй в постоянную папку; в корне должен лежать `manifest.json`.
-3. Открой `edge://extensions` или `opera://extensions`, включи режим разработчика и выбери **«Загрузить распакованное»**.
-4. Открой WebUI роутера и выдай доступ только к нужному адресу.
+## Firefox — на проверке Mozilla
 
-## Mozilla Firefox — userscript
+Нативное дополнение ожидает модерации AMO. Пока доступен [userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js) через [Tampermonkey](https://www.tampermonkey.net/) или [Violentmonkey](https://violentmonkey.github.io/). Firefox XPI с пометкой `UNSIGNED-DEV` из GitHub — **неподписанный тестовый пакет**, не для обычной установки.
 
-Установи Tampermonkey или Violentmonkey, затем [RouterForge Portal userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js) и подтверди установку в менеджере. `UNSIGNED-DEV.xpi` из GitHub — **только для временных проверок**, а не для постоянной установки.
+## Tampermonkey / Violentmonkey
 
-## Обновление с локальной ZIP-копии
+Установи менеджер скриптов и открой [routerforge-portal.user.js](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js). Userscript добавляет меню приложений в Keenetic WebUI. **Удалённые серверы, Vault и мониторинг 3x-ui доступны в нативном расширении**, а не в userscript.
 
-Перед переходом на магазинную сборку экспортируй профили в JSON. Локальная и магазинная версии имеют разные браузерные ID и не разделяют хранилище. Не запускай обе одновременно на одной странице — появится дубль меню.
+## Обновление и безопасность
 
-Если уже используешь ZIP-версию в Edge/Opera, сохраняй папку и вручную обновляй её содержимое после резервного копирования. После импорта профилей при необходимости выбери в Portal «Разрешить доступ и обновить вкладку».
-
-**Безопасность:** Portal не собирает пароли и не требует отправлять адреса роутера разработчику. Предоставляй разрешения только доверенным локальным адресам.
+- **Не удаляй установленное расширение**, чтобы не потерять Chrome local storage.
+- Перед переключением между магазинной и распакованной версиями создай **полный защищённый бэкап**: их идентификаторы и локальные хранилища могут различаться.
+- Не запускай расширение и userscript одновременно на одной странице Keenetic.
+- Предоставляй браузерные разрешения только доверенным адресам роутеров и серверов.
+- Portal может хранить добавленные пользователем пароли и токены **в зашифрованном локальном Vault**, но не передаёт их разработчику. См. [политику приватности](../PRIVACY.md).

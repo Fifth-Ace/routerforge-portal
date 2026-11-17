@@ -1,121 +1,76 @@
 <div align="center">
 
-<a href="https://github.com/Fifth-Ace/routerforge"><img src="https://raw.githubusercontent.com/Fifth-Ace/routerforge/main/docs/assets/routerforge-banner.jpg" alt="RouterForge — фирменный баннер проекта" width="100%"></a>
+<a href="https://github.com/Fifth-Ace/routerforge"><img src="https://raw.githubusercontent.com/Fifth-Ace/routerforge/main/docs/assets/routerforge-banner.jpg" alt="RouterForge — фирменный баннер" width="100%"></a>
 
-# RouterForge Portal
+# RouterForge Portal 1.0.0 🚀
 
-**Один интерфейс для веб-приложений Keenetic / Netcraze. Прямо в браузере.**
+**Приложения Keenetic, локальные веб-сервисы и удалённые серверы — в одном интерфейсе браузера.**
 
-Добавляй AWG Manager, RouterForge Core, nfqws и другие панели в привычное меню роутера — без установки дополнительного ПО на сам Keenetic.
+[🇷🇺 Русский](README.md) · [🇬🇧 English](README_EN.md)
 
-[**🇷🇺 Русский**](README.md) · [**🇬🇧 English**](README_EN.md)
-
-[![Release](https://img.shields.io/github/v/release/Fifth-Ace/routerforge-portal?style=flat-square&label=release&color=38bdf8)](https://github.com/Fifth-Ace/routerforge-portal/releases/latest)
+[![Release](https://img.shields.io/github/v/release/Fifth-Ace/routerforge-portal?style=flat-square&label=Stable&color=38bdf8)](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0)
 [![CI](https://img.shields.io/github/actions/workflow/status/Fifth-Ace/routerforge-portal/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/Fifth-Ace/routerforge-portal/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/Fifth-Ace/routerforge-portal?style=flat-square)](LICENSE)
-![Chrome / Edge / Opera](https://img.shields.io/badge/Chrome%20%7C%20Edge%20%7C%20Opera-MV3-24313d?style=flat-square)
-![Firefox](https://img.shields.io/badge/Firefox-userscript-24313d?style=flat-square)
-![Tampermonkey / Violentmonkey](https://img.shields.io/badge/Tampermonkey%20%7C%20Violentmonkey-v0.10.3-24313d?style=flat-square)
 
-### [🧩 Установить в Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) · [📦 Edge / Opera / ZIP](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip) · [🦊 Firefox / userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)
+### [🧩 Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) · [🌐 Официальный сайт](https://fifth-ace.github.io/routerforge-portal/) · [📦 Релиз 1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0)
 
-[📦 Все версии](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.3) · [💬 Telegram](https://t.me/RouterForge)
-
-[Возможности](#возможности) · [Установка](#установка) · [Скриншоты](#как-выглядит) · [FAQ](#частые-вопросы)
+**Chromium: расширение в магазине** · **Firefox: ожидает модерации Mozilla** · **Tampermonkey / Violentmonkey: userscript**
 
 </div>
 
 ---
 
-[🌐 Официальный сайт](https://fifth-ace.github.io/routerforge-portal/) · [🧩 Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij)
+## Что такое Portal?
+
+RouterForge Portal встраивает меню веб-приложений и список подключённых серверов в **Keenetic / NETCRAZE WebUI**. Сервисные панели можно открывать внутри интерфейса роутера либо отдельной вкладкой. Для работы **не нужно устанавливать Portal на роутер, использовать RouterForge Core или создавать облачный аккаунт**.
+
+## Возможности стабильной версии 1.0.0
+
+| Раздел | Возможности |
+|---|---|
+| 🧩 **Keenetic WebUI** | Боковое меню приложений и серверов, категории, избранное, поиск, недавние приложения |
+| 🖥️ **Несколько роутеров** | Независимые профили, выбранный и основной роутер, свои настройки и приложения |
+| 🪟 **Рабочая область** | До 3 открытых вкладок сессии, встроенные панели, отдельная вкладка, настройка ширины и границ |
+| 📚 **Каталог** | RouterForge Core, AWG Manager, nfqws и другие сервисы Keenetic/Entware; добавление своих URL |
+| 🖧 **Серверы** | Локальные и внешние серверы, несколько панелей на сервер, полные URL и нестандартные порты |
+| 📊 **3x-ui** | HTTP RTT, CPU, RAM, диск, Xray, доступные показатели трафика, ручная диагностика и опрос 1–60 мин |
+| 🔐 **Portal Vault** | Шифрованное локальное хранилище токенов и учётных данных с мастер-паролем |
+| 💾 **Полный бэкап** | Зашифрованный экспорт/импорт профилей Keenetic, серверов, приложений, настроек и Vault |
+| 🎨 **Интерфейс** | RU/EN, светлая/тёмная/системная темы, компактные карточки и popup |
+
+Мониторинг и обращения к серверным API зависят от разрешений браузера, токенов и явного согласия пользователя. Встраивание сторонней страницы может быть запрещено её CSP или X-Frame-Options — тогда используй отдельную вкладку.
 
 ## Установка
 
-**RouterForge Portal v0.10.3** устанавливается в браузер, а не на роутер. Выбери подходящий способ — как в VOT, все каналы доступны прямо здесь, без поисков в списке файлов релиза.
+| Платформа | Канал | Установка |
+|---|---|---|
+| **Google Chrome** | Chrome Web Store | [Установить расширение](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) |
+| **Edge, Brave, Opera, Vivaldi и другие совместимые Chromium** | Магазин, если поддерживается, или ручной ZIP | [Chromium ZIP 1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal-chromium-v1.0.0.zip) |
+| **Mozilla Firefox** | Нативное дополнение ожидает проверки AMO | Пока доступен [userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js) через менеджер |
+| **Tampermonkey / Violentmonkey** | Userscript для WebUI Keenetic | [Установить .user.js](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js) |
 
-| Браузер | Рекомендуемый способ | Установка |
-|:--|:--|:--|
-| **Google Chrome** | Нативное расширение MV3 | **[Установить из Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij)** |
-| **Microsoft Edge** | Нативное расширение MV3 | **[⬇ Скачать для Edge](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip)** |
-| **Opera** | Нативное расширение MV3 | **[⬇ Скачать для Opera](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip)** |
-| **Mozilla Firefox** | Userscript через менеджер | **[⬇ Установить для Firefox](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
-| **Chromium / Firefox с Tampermonkey** | Userscript | **[⬇ Установить userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
-| **Opera / другие браузеры с Violentmonkey** | Userscript | **[⬇ Установить userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
+[📦 Все файлы 1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0) · [🔒 Контрольные суммы](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/SHA256SUMS.txt) · [Инструкция RU](docs/INSTALL-RU.md) · [Installation EN](docs/INSTALL-EN.md)
 
-### Chrome, Edge, Opera — нативное расширение
-1. **Google Chrome:** [открой RouterForge Portal в Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) и нажми «Установить». Магазин управляет обновлениями автоматически.
-2. **Edge / Opera (ручной канал):** [скачай ZIP](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip) и распакуй в постоянную папку с `manifest.json`. В `edge://extensions` / `opera://extensions` включи режим разработчика и выбери «Загрузить распакованное расширение».
-3. Открой Keenetic / NETCRAZE, авторизуйся и предоставь Portal доступ **только к нужному адресу роутера**. Если после импорта JSON появится предупреждение, нажми «Разрешить доступ и обновить вкладку».
+**Каналы распространения:** Chrome Web Store уже публикует Portal, но обновление именно до **1.0.0** может появиться позднее после проверки магазина. ZIP из GitHub — самостоятельный ручной канал. **Firefox XPI в Assets неподписан и предназначен только для тестирования**, не для обычной установки.
 
-**Важно:** в Chrome магазинное расширение и распакованная копия имеют разные ID и локальные хранилища. Перед переходом экспортируй профили в JSON и не включай обе копии одновременно.
+**Userscript:** Tampermonkey/Violentmonkey обеспечивают интеграцию приложений в Keenetic WebUI. **Portal Vault, удалённые серверы и мониторинг 3x-ui относятся к браузерному расширению**, не обещаются в userscript.
 
-### Firefox, Tampermonkey, Violentmonkey — userscript
+### Обновление без потери данных
 
-1. Установи менеджер скриптов: **[Tampermonkey](https://www.tampermonkey.net/)** или **[Violentmonkey](https://violentmonkey.github.io/)**. Для Opera рекомендуем Violentmonkey.
-2. Нажми **[«Установить RouterForge Portal userscript»](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** и подтверди установку в менеджере. Если браузер вместо этого скачал `.user.js`, импортируй файл через меню установленного менеджера.
-3. Открой WebUI роутера и настрой Portal. В Chromium для Tampermonkey 5.2+ может потребоваться режим разработчика, а в Chromium 138+ — разрешение пользовательских скриптов в настройках расширения.
+Для установленного из магазина расширения дождись обновления через магазин. Не удаляй существующую установку: профили, серверы и Vault хранятся локально по идентификатору расширения. При переходе между магазинной и распакованной версиями их хранилища могут отличаться — заранее создай **полный защищённый бэкап**. Пароль бэкапа и мастер-пароль Vault могут быть разными.
 
-> [!WARNING]
-> **Firefox XPI не является подписанным релизом для постоянной установки.** Файл [routerforge-portal-firefox-UNSIGNED-DEV-v0.10.3.xpi](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-firefox-UNSIGNED-DEV-v0.10.3.xpi) предназначен только для временных проверок в подходящей среде Firefox. Для обычного Firefox используй userscript. Для Chrome доступна официальная [карточка в Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij); для Firefox обычный путь — userscript.
-
-> [!IMPORTANT]
-> Выбирай **один способ** на одном роутере: одновременный запуск userscript и нативного расширения создаст дублирующее меню. Перед обновлением экспортируй JSON; для нативного расширения сохраняй ту же папку, чтобы не потерять браузерный ID и локальные данные. Нативный ZIP обновляется вручную; userscript может использовать штатную проверку обновлений менеджера.
-
-**[📦 Все файлы v0.10.3](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.3)** · **[🔐 SHA256SUMS.txt](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/SHA256SUMS.txt)** · [Инструкция на русском](docs/INSTALL-RU.md) · [English guide](README_EN.md)
-
-**Tampermonkey:** после подключения устройства настройки Portal открываются прямо внутри интерфейса Keenetic; резервные копии и дополнительные параметры доступны через кнопку «Дополнительные настройки и резервные копии».
-
-## Что это такое?
-
-**RouterForge Portal** объединяет веб-панели установленных на роутере сервисов в одном месте. Он добавляет раздел приложений в интерфейс Keenetic, предлагает каталог известных интеграций и запоминает адреса, порты и выбранный способ открытия.
-
-> [!IMPORTANT]
-> Portal **не устанавливает** приложения на роутер и **не заменяет** штатную панель Keenetic. Управляемый сервис должен быть установлен и доступен отдельно.
+Не включай нативное расширение и userscript на одной странице роутера одновременно — появится дублирующее меню.
 
 ## Как выглядит
 
-<p align="center">
-  <a href="docs/screenshots/portal-live-demo.gif"><img src="docs/screenshots/portal-live-demo.gif" alt="RouterForge Portal внутри NETCRAZE/Keenetic: RouterForge Core, nfqws2 и AWG Manager" width="100%"></a>
-</p>
-<p align="center"><sub>Десять настоящих скриншотов NETCRAZE Ultra, предоставленных пользователем: настройки Portal, RouterForge Core, nfqws2, AWG Manager и каталог. Приложения открыты внутри штатной панели NETCRAZE/Keenetic. Анимация циклическая; нажми на изображение, чтобы открыть крупнее.</sub></p>
+<p align="center"><a href="docs/screenshots/portal-live-demo.gif"><img src="docs/screenshots/portal-live-demo.gif" alt="RouterForge Portal в интерфейсе Keenetic" width="100%"></a></p>
 
-## Возможности
+<sub>Демонстрация интеграции веб-приложений в Keenetic. Полный интерфейс серверов и Vault появился позднее и не показан на исторической анимации.</sub>
 
-| | Что умеет |
-|:---|:---|
-| 🧩 **Единое меню** | Добавляет пункт приложений в штатный WebUI Keenetic после входа в систему. |
-| 📚 **Готовый каталог** | RouterForge Core, AWG Manager, nfqws-keenetic-web, nfqws2-ui, NeoFit, AdGuard Home, XKeen UI. |
-| 🛠️ **Свои сервисы** | Любые другие веб-панели по адресу и порту; можно настроить несколько роутеров. |
-| 🪟 **Два режима** | Встроенная область в Keenetic или отдельная вкладка. Если iframe запрещён CSP/X-Frame-Options, используй вкладку. |
-| 🎨 **Оформление** | Светлая и тёмная темы, русский и английский язык. |
-| 💾 **Профили** | Локальные настройки, импорт и экспорт JSON. |
-| 🗂️ **Workspace** | До трёх живых вкладок без перезагрузки, избранное и группы приложений, встроенные настройки. |
-| 📐 **Адаптивность** | Автоматически следует границам штатного WebUI при изменении размера окна. |
-| 🔄 **Обновления** | Нативное расширение обновляется вручную, без скрытой установки кода. |
+## Приватность и безопасность
 
-## Частые вопросы
+Данные Portal сохраняются **локально в браузере**. Учётные данные и токены, если пользователь их добавил, хранятся зашифрованными в Vault; защищённый бэкап использует PBKDF2-SHA256 и AES-256-GCM. Сам Portal не предоставляет разработчику облачный доступ к пользовательским данным. Разрешения на серверы и внешние веб-панели выдаются пользователем.
 
-<details><summary><b>Нужно ли устанавливать RouterForge Core?</b></summary>
+[Политика приватности](PRIVACY.md) · [Безопасность](SECURITY.md) · [Сообщить об ошибке](https://github.com/Fifth-Ace/routerforge-portal/issues)
 
-Нет. Portal — независимый проект. Для работы конкретной веб-панели соответствующий сервис должен быть установлен и доступен на роутере.
-</details>
-<details><summary><b>Почему приложение открывается в отдельной вкладке, а не внутри Keenetic?</b></summary>
-
-Некоторые интерфейсы запрещают встраивание с помощью CSP или X-Frame-Options. Portal не отключает эти ограничения: выбери режим «Отдельно».
-</details>
-<details><summary><b>Можно ли использовать userscript и ZIP одновременно?</b></summary>
-
-Не стоит: на одной странице появятся дублирующиеся меню. Выбери один канал; настройки между вариантами можно перенести экспортом/импортом JSON.
-</details>
-<details><summary><b>А автообновления и безопасность?</b></summary>
-
-Для исторической версии v0.9.0 менеджер userscript мог проверять обновления через GitHub Releases. Это **не** означает автоматическую проверку GitHub Attestation. Для нативной версии не предусмотрено скрытой установки нового кода; проверяй контрольные суммы релизных файлов и обновляй папку расширения вручную. [Подробнее о безопасности](SECURITY.md).
-</details>
-
-## Приватность и разработка
-
-Portal хранит профили в браузере, не запрашивает пароли Keenetic, не сканирует сеть и не отправляет телеметрию разработчикам. Сетевой запрос к GitHub для проверки обновлений нативной версии выполняется только по кнопке пользователя. **[Политика приватности](PRIVACY.md)** · **[Сообщить о проблеме](https://github.com/Fifth-Ace/routerforge-portal/issues)**.
-
-Открытый исходный код · [MIT License](LICENSE) · [Проект RouterForge](https://github.com/Fifth-Ace/routerforge) · [Telegram](https://t.me/RouterForge)
-
-<sub>RouterForge Portal — независимое неофициальное дополнение для Keenetic / Netcraze, не связанное с производителями устройств.</sub>
+**RouterForge Portal — независимое неофициальное расширение для Keenetic / NETCRAZE.** [RouterForge Ecosystem](https://github.com/Fifth-Ace/routerforge) · [Telegram](https://t.me/RouterForge) · [MIT](LICENSE)

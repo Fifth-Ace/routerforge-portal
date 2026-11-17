@@ -1,32 +1,29 @@
-# RouterForge Portal installation — Chrome, Edge, Opera and Firefox
+# Install RouterForge Portal 1.0.0
 
-**Official website:** https://fifth-ace.github.io/routerforge-portal/  
-**Chrome Web Store:** https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij  
-**GitHub Release (manual channel):** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.3
+**Website:** https://fifth-ace.github.io/routerforge-portal/
+**Chrome Web Store:** https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij
+**GitHub Release:** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0
 
-## Google Chrome — recommended
+## Google Chrome — store install
 
-1. Open [RouterForge Portal on Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij).
-2. Click **Add to Chrome** and review the browser permissions.
-3. Sign in to Keenetic / NETCRAZE, open Portal and grant access only to router addresses you trust.
+Open [Portal in Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) and install the extension. The store manages updates. **GitHub v1.0.0 is published, but the 1.0.0 store update may appear later following a separate review.**
 
-The Chrome Web Store delivers extension updates. You **don't** need Developer Mode or a ZIP file.
+## Edge, Brave, Opera, Vivaldi — Chromium
 
-## Microsoft Edge / Opera — manual channel
+Use Chrome Web Store where supported, or download [Chromium ZIP v1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal-chromium-v1.0.0.zip). Verify the [SHA256 checksums](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/SHA256SUMS.txt), extract to a permanent folder, and choose **Load unpacked** in your browser's extension Developer Mode. The chosen folder must contain `manifest.json` at its root.
 
-1. Download [Chromium ZIP v0.10.3](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip) and compare its SHA-256 to `SHA256SUMS.txt` in the release.
-2. Extract the archive into a permanent folder; `manifest.json` must be at the root.
-3. Open `edge://extensions` or `opera://extensions`, enable Developer Mode and select **Load unpacked**.
-4. Open your router WebUI and grant access only to the intended address.
+## Firefox — Mozilla review pending
 
-## Mozilla Firefox — userscript
+The native extension is awaiting AMO review. Until approval, use the [userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js) via [Tampermonkey](https://www.tampermonkey.net/) or [Violentmonkey](https://violentmonkey.github.io/). The GitHub `UNSIGNED-DEV` Firefox XPI is **an unsigned development artifact**, not a normal installation package.
 
-Install Tampermonkey or Violentmonkey, then [RouterForge Portal userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js). The GitHub `UNSIGNED-DEV.xpi` is **for temporary testing only**, not a signed permanent install.
+## Tampermonkey / Violentmonkey
 
-## Switching from the unpacked ZIP
+Install a script manager and open [routerforge-portal.user.js](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js). The userscript provides Keenetic WebUI app navigation. **Remote servers, Portal Vault and 3x-ui monitoring require the native extension**.
 
-Export profiles to JSON before installing the Chrome Web Store version. Store and unpacked extensions have different IDs and local storage. Do not enable both on one router page (duplicate menus).
+## Updating safely
 
-If you use the ZIP in Edge/Opera, back up the folder and replace the files in place for manual updates. After JSON import, use **Grant access and reload tab** in Portal when requested.
-
-**Privacy:** Portal doesn't collect passwords or send local router addresses to the developer. Grant host permissions only for addresses you trust.
+- **Do not uninstall your existing extension** before updating: this may remove local browser storage.
+- Before switching between store and unpacked channels, create a **full encrypted backup**. Extension IDs and storage may differ.
+- Avoid enabling both the native extension and userscript on the same Keenetic page.
+- Grant browser host permissions only for trusted router/server addresses.
+- Portal can store user-provided credentials **encrypted in a local Vault**, without sending them to the developer. See [Privacy](../PRIVACY.md).

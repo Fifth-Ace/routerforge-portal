@@ -2,120 +2,75 @@
 
 <a href="https://github.com/Fifth-Ace/routerforge"><img src="https://raw.githubusercontent.com/Fifth-Ace/routerforge/main/docs/assets/routerforge-banner.jpg" alt="RouterForge project banner" width="100%"></a>
 
-# RouterForge Portal
+# RouterForge Portal 1.0.0 🚀
 
-**One place for Keenetic / Netcraze web applications. Right inside your browser.**
+**Keenetic web apps, local services and remote servers — one browser dashboard.**
 
-Put AWG Manager, RouterForge Core, nfqws and other web panels into your router's familiar navigation — without installing extra components on the router.
+[🇷🇺 Русский](README.md) · [🇬🇧 English](README_EN.md)
 
-[**🇷🇺 Русский**](README.md) · [**🇬🇧 English**](README_EN.md)
-
-[![Release](https://img.shields.io/github/v/release/Fifth-Ace/routerforge-portal?style=flat-square&label=release&color=38bdf8)](https://github.com/Fifth-Ace/routerforge-portal/releases/latest)
+[![Release](https://img.shields.io/github/v/release/Fifth-Ace/routerforge-portal?style=flat-square&label=Stable&color=38bdf8)](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0)
 [![CI](https://img.shields.io/github/actions/workflow/status/Fifth-Ace/routerforge-portal/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/Fifth-Ace/routerforge-portal/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/Fifth-Ace/routerforge-portal?style=flat-square)](LICENSE)
-![Chrome / Edge / Opera](https://img.shields.io/badge/Chrome%20%7C%20Edge%20%7C%20Opera-MV3-24313d?style=flat-square)
-![Firefox](https://img.shields.io/badge/Firefox-userscript-24313d?style=flat-square)
-![Tampermonkey / Violentmonkey](https://img.shields.io/badge/Tampermonkey%20%7C%20Violentmonkey-v0.10.3-24313d?style=flat-square)
 
-### [🧩 Install from Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) · [📦 Edge / Opera / ZIP](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip) · [🦊 Firefox / userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)
+### [🧩 Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) · [🌐 Website](https://fifth-ace.github.io/routerforge-portal/) · [📦 Release 1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0)
 
-[📦 All downloads](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.3) · [💬 Telegram](https://t.me/RouterForge)
-
-[Features](#features) · [Install](#installation) · [Screenshots](#screenshots) · [FAQ](#faq)
+**Chromium: store listing live** · **Firefox: Mozilla review pending** · **Tampermonkey / Violentmonkey: userscript**
 
 </div>
 
 ---
 
-[🌐 Official website](https://fifth-ace.github.io/routerforge-portal/) · [🧩 Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij)
+## What is RouterForge Portal?
+
+Portal brings web applications and connected-server shortcuts into **Keenetic / NETCRAZE WebUI**. Open apps inside your router interface or in a separate browser tab. **No router-side Portal package, mandatory RouterForge Core installation or cloud account required.**
+
+## Stable 1.0.0 capabilities
+
+| Area | Highlights |
+|---|---|
+| 🧩 **Keenetic WebUI** | Sidebar with applications and servers, favorites, groups, search and recent apps |
+| 🖥️ **Multiple routers** | Separate profiles and per-router preferences |
+| 🪟 **Workspace** | Up to 3 live session tabs, embedded/external opening, width and boundary controls |
+| 📚 **Catalog** | RouterForge Core, AWG Manager, nfqws and other Keenetic/Entware apps, custom URLs |
+| 🖧 **Servers** | Local and remote servers, multiple panels per server, full URLs and custom ports |
+| 📊 **3x-ui** | HTTP RTT, CPU, RAM, disk, Xray, available traffic metrics, manual checks and 1–60 min polling |
+| 🔐 **Portal Vault** | Local encrypted credentials and API tokens protected by a master password |
+| 💾 **Full backup** | Encrypted export/import of Keenetic profiles, apps, servers, preferences and Vault |
+| 🎨 **UI** | Russian/English, light/dark/system themes, responsive cards and compact popup |
+
+Monitoring and remote API access depend on browser permissions, credentials and explicit user consent. Third-party CSP / X-Frame-Options may block embedding; use the external-tab mode instead.
 
 ## Installation
 
-**RouterForge Portal v0.10.3** runs in your browser, not on the router. Choose a channel below. All installation methods are visible here, VOT-style, with direct release links.
+| Browser | Channel | Install |
+|---|---|---|
+| **Google Chrome** | Chrome Web Store | [Install extension](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) |
+| **Edge, Brave, Opera, Vivaldi and compatible Chromium** | Store when supported, or manual ZIP | [Chromium ZIP 1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal-chromium-v1.0.0.zip) |
+| **Mozilla Firefox** | Native extension under AMO review | [Userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js) for now |
+| **Tampermonkey / Violentmonkey** | Keenetic WebUI userscript | [Install .user.js](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js) |
 
-| Browser | Recommended channel | Install |
-|:--|:--|:--|
-| **Google Chrome** | Native MV3 extension | **[Install from Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij)** |
-| **Microsoft Edge** | Native MV3 extension | **[⬇ Download for Edge](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip)** |
-| **Opera** | Native MV3 extension | **[⬇ Download for Opera](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip)** |
-| **Mozilla Firefox** | Userscript with a manager | **[⬇ Install for Firefox](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
-| **Chromium / Firefox with Tampermonkey** | Userscript | **[⬇ Install userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
-| **Opera / other browsers with Violentmonkey** | Userscript | **[⬇ Install userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** |
+[📦 All 1.0.0 assets](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0) · [🔒 SHA256 checksums](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/SHA256SUMS.txt) · [Russian guide](docs/INSTALL-RU.md) · [English guide](docs/INSTALL-EN.md)
 
-### Chrome, Edge, Opera — native extension
-1. **Google Chrome:** [open RouterForge Portal in Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) and click **Add to Chrome**. The store handles updates automatically.
-2. **Edge / Opera (manual channel):** [download the ZIP](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-chromium-v0.10.3.zip), extract it into a permanent folder with `manifest.json`, then enable **Developer Mode → Load unpacked** in `edge://extensions` / `opera://extensions`.
-3. Sign in to your Keenetic / NETCRAZE and grant access **only to the router addresses you trust**. If a prompt appears after JSON import, use **Grant access and reload tab**.
+**Store version note:** The Chrome Web Store listing is live, but the **1.0.0 update may still be awaiting store review**. The GitHub ZIP is a separate manual channel. The Firefox XPI supplied in GitHub Assets is **unsigned and development-only**; it is not a published AMO add-on.
 
-**Important:** the Chrome Web Store installation and unpacked ZIP use different extension IDs and local storage. Export profiles to JSON before switching; don't enable both copies simultaneously.
+**Userscript scope:** Tampermonkey/Violentmonkey provide Keenetic WebUI app integration. **Portal Vault, external server management and 3x-ui monitoring are native-extension features**, not promised in the userscript.
 
-### Firefox, Tampermonkey, Violentmonkey — userscript
+### Preserve your data during upgrades
 
-1. Install **[Tampermonkey](https://www.tampermonkey.net/)** or **[Violentmonkey](https://violentmonkey.github.io/)**. Violentmonkey is recommended for Opera.
-2. Choose **[Install RouterForge Portal userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal.user.js)** and confirm in your userscript manager. If the browser downloads the `.user.js` file instead, import the file through the manager's UI.
-3. Open the router WebUI and configure Portal. Tampermonkey 5.2+ on Chromium may require Developer Mode; Chromium 138+ may also require enabling user scripts in the extension details.
+Keep your existing extension installed when updating. Browser-local profiles, servers and Vault are associated with an extension ID; Chrome Web Store and unpacked installs can use separate storage. Export a **full encrypted backup** before switching channels. Backup and Vault master passwords may differ.
 
-> [!WARNING]
-> **The Firefox XPI is unsigned and not a permanent-install release.** The [routerforge-portal-firefox-UNSIGNED-DEV-v0.10.3.xpi](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/routerforge-portal-firefox-UNSIGNED-DEV-v0.10.3.xpi) asset is only for temporary testing on an appropriate Firefox configuration. For normal Firefox use the userscript. Chrome users can use the [official Chrome Web Store listing](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij); Firefox users should use the userscript.
+Do not run the native extension and userscript on the same router page simultaneously; this creates duplicate menus.
 
-> [!IMPORTANT]
-> Use **only one channel** on the same router page. Running native extension and userscript together creates duplicate navigation. Export JSON before updating; keep the same unpacked extension folder to preserve the browser extension ID and local data. Native ZIP updates are manual; userscript managers may check for updates using their own mechanisms.
+## Preview
 
-**[📦 All v0.10.3 assets](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v0.10.3)** · **[🔐 SHA256SUMS.txt](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v0.10.3/SHA256SUMS.txt)** · [English installation guide](docs/INSTALL-EN.md) · [Русская версия](README.md)
+<p align="center"><a href="docs/screenshots/portal-live-demo.gif"><img src="docs/screenshots/portal-live-demo.gif" alt="RouterForge Portal in Keenetic WebUI" width="100%"></a></p>
 
-**Tampermonkey:** after connecting a router, Portal settings open inside the Keenetic WebUI; backup and advanced options remain available from the dedicated settings button.
+<sub>Historical Keenetic app integration demo; the 1.0.0 server/Vault interface is not shown in this animation.</sub>
 
-## What is it?
+## Privacy & security
 
-**RouterForge Portal** brings the web interfaces of existing router services together. It adds an Applications section to the Keenetic interface, offers a catalog of known integrations, and remembers hosts, ports and launch modes.
+Portal keeps its data **locally in your browser**. User-added credentials and tokens are encrypted in the Vault; encrypted backups use PBKDF2-SHA256 and AES-256-GCM. Portal does not provide developers with a cloud copy of your settings. External host access requires browser permission.
 
-> [!IMPORTANT]
-> Portal **does not install** services on your router and **does not replace** the Keenetic interface. Each web application must already be installed and reachable.
+[Privacy](PRIVACY.md) · [Security](SECURITY.md) · [Report an issue](https://github.com/Fifth-Ace/routerforge-portal/issues)
 
-## Screenshots
-
-<p align="center">
-  <a href="docs/screenshots/portal-live-demo.gif"><img src="docs/screenshots/portal-live-demo.gif" alt="RouterForge Portal inside NETCRAZE/Keenetic: RouterForge Core, nfqws2 and AWG Manager" width="100%"></a>
-</p>
-<p align="center"><sub>Ten real NETCRAZE Ultra screenshots supplied by a user: Portal settings, nfqws2, AWG Manager, RouterForge Core and the app catalog, displayed inside the native NETCRAZE/Keenetic WebUI. The animation loops; click it for a larger view.</sub></p>
-
-## Features
-
-| | What it does |
-|:---|:---|
-| 🧩 **Unified menu** | Adds Applications navigation to the native Keenetic WebUI after login. |
-| 📚 **Built-in catalog** | RouterForge Core, AWG Manager, nfqws-keenetic-web, nfqws2-ui, NeoFit, AdGuard Home and XKeen UI. |
-| 🛠️ **Custom services** | Add any web panel by URL and port; configure multiple routers. |
-| 🪟 **Two launch modes** | Embedded within Keenetic or a separate browser tab. When CSP/X-Frame-Options block embedding, use a tab. |
-| 🎨 **Appearance** | Dark/light themes and Russian/English UI. |
-| 💾 **Profiles** | Local settings, JSON import and export. |
-| 🗂️ **Workspace** | Up to three live iframe tabs, favorites, groups, settings inside Keenetic. |
-| 📐 **Responsive** | Respects the native WebUI boundaries when the browser window is resized. |
-| 🔄 **Updates** | Manual updates for the native unpacked extension; no silent code installation. |
-
-## FAQ
-
-<details><summary><b>Is RouterForge Core required?</b></summary>
-
-No. Portal is independent. The specific web service you want to open must already be installed and reachable.
-</details>
-<details><summary><b>Why does a service open in a separate tab?</b></summary>
-
-Some services prevent iframe embedding through CSP or X-Frame-Options. Portal does not bypass these protections. Choose a separate tab instead.
-</details>
-<details><summary><b>Can I use the userscript and the native extension together?</b></summary>
-
-Avoid doing so on the same router page: it will duplicate the menu. Choose one channel; JSON export/import can migrate settings between them.
-</details>
-<details><summary><b>Are updates secure and automatic?</b></summary>
-
-Legacy v0.9.0 userscript managers could check GitHub Release update links, but they do **not** validate GitHub build attestations. Native extensions do not silently replace their executable code; verify release file hashes and update your unpacked extension manually. [Read the security policy](SECURITY.md).
-</details>
-
-## Privacy and development
-
-Portal keeps router profiles in the browser, never requests Keenetic passwords, does not scan the network and sends no developer telemetry. The native extension contacts GitHub for updates only when you click the check button. **[Privacy](PRIVACY.md)** · **[Report a problem](https://github.com/Fifth-Ace/routerforge-portal/issues)**.
-
-Open source · [MIT License](LICENSE) · [RouterForge project](https://github.com/Fifth-Ace/routerforge) · [Telegram](https://t.me/RouterForge)
-
-<sub>RouterForge Portal is an independent, unofficial Keenetic / Netcraze companion and is not affiliated with the device manufacturers.</sub>
+**RouterForge Portal is an independent, unofficial Keenetic / NETCRAZE extension.** [RouterForge Ecosystem](https://github.com/Fifth-Ace/routerforge) · [Telegram](https://t.me/RouterForge) · [MIT](LICENSE)

@@ -10,8 +10,8 @@
       element.textContent = element.dataset[lang];
     }
     document.title = lang === 'en'
-      ? 'RouterForge Portal — your Keenetic apps in one place'
-      : 'RouterForge Portal — приложения Keenetic в одном меню';
+      ? 'RouterForge Portal 1.0.0 — Keenetic apps and remote servers'
+      : 'RouterForge Portal 1.0.0 — Keenetic, серверы и 3x-ui';
     ruButton.setAttribute('aria-pressed', String(lang === 'ru'));
     enButton.setAttribute('aria-pressed', String(lang === 'en'));
     settingsImage.src = lang === 'en' ? './media/portal-settings-en.webp' : './media/portal-settings-ru.webp';
