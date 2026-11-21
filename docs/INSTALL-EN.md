@@ -2,6 +2,7 @@
 
 **Website:** https://fifth-ace.github.io/routerforge-portal/
 **Chrome Web Store:** https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij
+**Firefox Add-ons:** https://addons.mozilla.org/ru/firefox/addon/routerforge-portal/
 **GitHub Release:** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0
 
 ## Google Chrome — store install
@@ -12,9 +13,9 @@ Open [Portal in Chrome Web Store](https://chromewebstore.google.com/detail/ikghh
 
 Use Chrome Web Store where supported, or download [Chromium ZIP v1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal-chromium-v1.0.0.zip). Verify the [SHA256 checksums](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/SHA256SUMS.txt), extract to a permanent folder, and choose **Load unpacked** in your browser's extension Developer Mode. The chosen folder must contain `manifest.json` at its root.
 
-## Firefox — Mozilla review pending
+## Firefox — Mozilla Add-ons
 
-The native extension is awaiting AMO review. Until approval, use the [userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js) via [Tampermonkey](https://www.tampermonkey.net/) or [Violentmonkey](https://violentmonkey.github.io/). The GitHub `UNSIGNED-DEV` Firefox XPI is **an unsigned development artifact**, not a normal installation package.
+Install [RouterForge Portal from Mozilla Add-ons](https://addons.mozilla.org/ru/firefox/addon/routerforge-portal/). Firefox installs the signed add-on and handles updates. The `UNSIGNED-DEV` XPI on GitHub is for development only.
 
 ## Tampermonkey / Violentmonkey
 

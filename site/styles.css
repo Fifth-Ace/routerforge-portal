@@ -4,3 +4,18 @@
 @media(min-width:751px){.install-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .install-card,.install-card .install-brand,.install-card .install-brand>div{min-width:0}
 .install-card h3{overflow-wrap:anywhere}
+
+/* Official store cards */
+.store-showcase{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:29px 0 12px}
+.store-tile{display:flex;align-items:center;gap:10px;min-width:0;min-height:105px;padding:14px 12px;background:linear-gradient(145deg,#152d43,#101927);border:1px solid #345a7a;border-radius:16px;transition:transform .2s,border-color .2s,box-shadow .2s}
+.store-tile:hover,.store-tile:focus-visible{transform:translateY(-3px);border-color:#66cafa;box-shadow:0 12px 32px #12588455;outline:none}
+.store-tile.firefox-store{background:linear-gradient(145deg,#28223b,#111927);border-color:#644a73}
+.store-tile.firefox-store:hover{border-color:#ffb05c}
+.store-icon{flex:0 0 42px}.store-text{min-width:0;display:grid;gap:4px}
+.store-text small{font-size:9px;letter-spacing:.04em;color:#83accd;font-weight:750}
+.store-text strong{font-size:14px;color:#f2f7ff;line-height:1.2}
+.store-text em{font-size:10px;color:#9bb0c5;font-style:normal}.store-next{margin-left:auto;color:#81ccf8}
+.firefox-install{border-color:#694e7f!important;background:linear-gradient(145deg,#2a203b,#111a29 72%)!important}
+@media(max-width:1100px){.store-showcase{grid-template-columns:1fr}.store-tile{min-height:84px}}
+@media(max-width:750px){.store-showcase{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.store-showcase{grid-template-columns:1fr}}

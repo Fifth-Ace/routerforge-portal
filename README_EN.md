@@ -12,13 +12,15 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/Fifth-Ace/routerforge-portal/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/Fifth-Ace/routerforge-portal/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/Fifth-Ace/routerforge-portal?style=flat-square)](LICENSE)
 
-### [🧩 Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) · [🌐 Website](https://fifth-ace.github.io/routerforge-portal/) · [📦 Release 1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0)
+### [🧩 Chrome Web Store](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) · [🦊 Firefox Add-ons](https://addons.mozilla.org/ru/firefox/addon/routerforge-portal/) · [🌐 Website](https://fifth-ace.github.io/routerforge-portal/) · [📦 Release 1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0)
 
-**Chromium: store listing live** · **Firefox: Mozilla review pending** · **Tampermonkey / Violentmonkey: userscript**
+**Chrome and Firefox: official stores · browser-managed updates** · **Tampermonkey / Violentmonkey: userscript**
 
 </div>
 
 ---
+
+<table><tr><td width="50%"><a href="https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij"><img src="docs/assets/store-chrome.svg" alt="Install from Chrome Web Store" width="100%"></a></td><td width="50%"><a href="https://addons.mozilla.org/ru/firefox/addon/routerforge-portal/"><img src="docs/assets/store-firefox.svg" alt="Install from Firefox Add-ons" width="100%"></a></td></tr></table>
 
 ## What is RouterForge Portal?
 
@@ -46,12 +48,12 @@ Monitoring and remote API access depend on browser permissions, credentials and 
 |---|---|---|
 | **Google Chrome** | Chrome Web Store | [Install extension](https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij) |
 | **Edge, Brave, Opera, Vivaldi and compatible Chromium** | Store when supported, or manual ZIP | [Chromium ZIP 1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal-chromium-v1.0.0.zip) |
-| **Mozilla Firefox** | Native extension under AMO review | [Userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js) for now |
+| **Mozilla Firefox** | Mozilla Add-ons | [Install Firefox add-on](https://addons.mozilla.org/ru/firefox/addon/routerforge-portal/) |
 | **Tampermonkey / Violentmonkey** | Keenetic WebUI userscript | [Install .user.js](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js) |
 
 [📦 All 1.0.0 assets](https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0) · [🔒 SHA256 checksums](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/SHA256SUMS.txt) · [Russian guide](docs/INSTALL-RU.md) · [English guide](docs/INSTALL-EN.md)
 
-**Store version note:** The Chrome Web Store listing is live, but the **1.0.0 update may still be awaiting store review**. The GitHub ZIP is a separate manual channel. The Firefox XPI supplied in GitHub Assets is **unsigned and development-only**; it is not a published AMO add-on.
+**Official stores:** Chrome Web Store and Firefox Add-ons provide browser-managed installation and updates. Store versions may lag behind GitHub v1.0.0 during review. GitHub ZIP remains a manual channel; unsigned Firefox XPI assets are for development only.
 
 **Userscript scope:** Tampermonkey/Violentmonkey provide Keenetic WebUI app integration. **Portal Vault, external server management and 3x-ui monitoring are native-extension features**, not promised in the userscript.
 

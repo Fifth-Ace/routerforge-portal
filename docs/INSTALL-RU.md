@@ -2,6 +2,7 @@
 
 **Сайт:** https://fifth-ace.github.io/routerforge-portal/
 **Chrome Web Store:** https://chromewebstore.google.com/detail/ikghhhcbgfepddcjammfhaeomohfajij
+**Firefox Add-ons:** https://addons.mozilla.org/ru/firefox/addon/routerforge-portal/
 **GitHub Release:** https://github.com/Fifth-Ace/routerforge-portal/releases/tag/v1.0.0
 
 ## Google Chrome — магазин
@@ -12,9 +13,9 @@
 
 Используй магазин Chrome Web Store, если браузер поддерживает этот способ. Для ручной установки скачай [Chromium ZIP v1.0.0](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal-chromium-v1.0.0.zip), проверь SHA256 по [SHA256SUMS](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/SHA256SUMS.txt), распакуй в постоянную папку и выбери **Загрузить распакованное расширение** в режиме разработчика браузера. `manifest.json` должен быть в корне выбранной папки.
 
-## Firefox — на проверке Mozilla
+## Firefox — Mozilla Add-ons
 
-Нативное дополнение ожидает модерации AMO. Пока доступен [userscript](https://github.com/Fifth-Ace/routerforge-portal/releases/download/v1.0.0/routerforge-portal.user.js) через [Tampermonkey](https://www.tampermonkey.net/) или [Violentmonkey](https://violentmonkey.github.io/). Firefox XPI с пометкой `UNSIGNED-DEV` из GitHub — **неподписанный тестовый пакет**, не для обычной установки.
+Установи [RouterForge Portal из Mozilla Add-ons](https://addons.mozilla.org/ru/firefox/addon/routerforge-portal/). Firefox устанавливает подписанное дополнение и выполняет штатные обновления. XPI с пометкой `UNSIGNED-DEV` в GitHub — тестовый пакет.
 
 ## Tampermonkey / Violentmonkey
 
